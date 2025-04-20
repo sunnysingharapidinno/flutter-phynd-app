@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:phynd_app/data/models/user_signup_payload.dart';
+import 'package:phynd_app/data/models/payload/user_signup_payload_model.dart';
 import 'package:phynd_app/presentation/widgets/input_fields/password_input_field.dart';
 import 'package:phynd_app/presentation/widgets/input_fields/text_input_field.dart';
 

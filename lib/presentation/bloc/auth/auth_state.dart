@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:phynd_app/data/models/profile_model.dart';
+import 'package:phynd_app/data/models/response/profile_model.dart';
 
 enum AuthStatus {
   initial,

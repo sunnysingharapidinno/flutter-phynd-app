@@ -82,7 +82,7 @@ class ServerAPIEndpoints {
   static const String editPublisherApiKeys =
       'api/v1/publisher/edit-api-key-name';
   static const String getCategories = 'api/v1/categories';
-  static const String gameGameType = 'api/v1/games/category';
+  static const String getGameList = 'api/v1/games/category';
   static const String publisherAssetDetails = 'api/v1/publisher/asset';
   static const String getPublisherGames = 'api/v1/pub/game/me';
   static const String getPublisherGameDetails = 'api/v1/publisher/game';
@@ -148,4 +148,5 @@ class ServerAPIEndpoints {
   static const String getReferralCode = 'api/v1/users/me/referral-code';
   static const String analyticsTrackingEvent = 'api/v1/track/event';
   static const String postReport = 'api/v1/issue-report';
+  static const String gameOverView = 'api/v1/game-overview';
 }

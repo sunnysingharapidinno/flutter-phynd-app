@@ -312,6 +312,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.1"
+  shared_preferences_tizen:
+    dependency: "direct main"
+    description:
+      name: shared_preferences_tizen
+      sha256: "9e93b543d658a9d5f4280a4e05a7b088c8b199eb644ce0bc9036fc1525749450"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
   shared_preferences_web:
     dependency: transitive
     description:
@@ -381,6 +389,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.4"
+  tizen_interop:
+    dependency: transitive
+    description:
+      name: tizen_interop
+      sha256: "46303c36a7e45491ce0149c77a3f54f3d57654938983c482ab0363a8ebe6ee27"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.0"
   typed_data:
     dependency: transitive
     description:
