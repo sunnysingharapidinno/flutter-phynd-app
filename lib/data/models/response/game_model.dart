@@ -76,10 +76,10 @@ class GameDetails {
   final int rentalDuration;
   final bool syndicated;
   final String? websiteUrl;
-  final String twitterLink;
-  final String discordLink;
-  final String whitePaperLink;
-  final String telegramLink;
+  final String? twitterLink;
+  final String? discordLink;
+  final String? whitePaperLink;
+  final String? telegramLink;
   final List<String> languageSupported;
   final List<String> modes;
   final List<Map<String, String?>> platforms;
@@ -170,17 +170,25 @@ class GameDetails {
       rentalDuration: json['rental_duration'],
       syndicated: json['syndicated'],
       websiteUrl: json['website_url'],
-      twitterLink: json['twitter_link'],
-      discordLink: json['discord_link'],
-      whitePaperLink: json['white_paper_link'],
-      telegramLink: json['telegram_link'],
+      twitterLink: json['twitter_link']?.toString(),
+      discordLink: json['discord_link']?.toString(),
+      whitePaperLink: json['white_paper_link']?.toString(),
+      telegramLink: json['telegram_link']?.toString(),
       languageSupported: List<String>.from(json['language_supported']),
       modes: List<String>.from(json['modes']),
+      // platforms: List<Map<String, String?>>.from(
+      //   (json['platforms'] as List).map((p) => {
+      //         'image_url': p['image_url'],
+      //         'name': p['name'],
+      //       }),
+      // ),
       platforms: List<Map<String, String?>>.from(
-        (json['platforms'] as List).map((p) => {
-              'image_url': p['image_url'],
-              'name': p['name'],
-            }),
+        (json['platforms'] as List)
+            .map((p) => {
+                  'image_url': p['image_url'] as String?,
+                  'name': p['name'] as String?,
+                })
+            .map((e) => e.cast<String, String?>()),
       ),
       browserSupport: List<String?>.from(json['browser_support']),
       tags: List<String?>.from(json['tags']),

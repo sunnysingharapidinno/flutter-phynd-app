@@ -1,9 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
+import 'package:phynd_app/data/models/response/game_model.dart';
+import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/presentation/layouts/base_layout.dart';
+import 'package:phynd_app/presentation/widgets/image/image.dart';
+import 'package:phynd_app/presentation/widgets/loader/circular_load.dart';
 
-class GamePage extends StatelessWidget {
+class GamePage extends StatefulWidget {
   const GamePage({super.key});
+
+  @override
+  State<GamePage> createState() => _GamePageState();
+}
+
+class _GamePageState extends State<GamePage> {
+  GameDetails? _gameDetails;
+  late bool _isLoading = false;
+  final GameService _gameService = GameService();
+  final gameSlug = 'xst-electric-sheep-9a116e1e';
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchGameDetails();
+  }
+
+// will be used once gameSlug is dynamic
+  // @override
+  // void didUpdateWidget(covariant GamePage oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
+  //   if (widget.gameSlug != oldWidget.gameSlug) {
+  //     _fetchGameDetails(); // Re-fetch when gameSlug changes
+  //   }
+  // }
+
+  Future<void> _fetchGameDetails() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final details = await _gameService.getGameDetails(gameSlug: gameSlug);
+      setState(() => _gameDetails = details);
+    } catch (e) {
+      print("Error fetching game details: $e");
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,127 +53,121 @@ class GamePage extends StatelessWidget {
       title: 'Game',
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Game Header
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context)
-                            .extension<AppTheme>()!
-                            .get('primary'),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        Icons.games,
-                        size: 40,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+        child: _isLoading
+            ? Center(
+                child: CircularLoad(),
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Game Header
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
                         children: [
-                          Text(
-                            'Game Title',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context)
-                                  .extension<AppTheme>()!
-                                  .get('text'),
+                          GameImageThumbnail(
+                              imageUrl: _gameDetails
+                                  ?.gameScreenshots.firstOrNull?.url),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _gameDetails!.gameTitle,
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context)
+                                        .extension<AppTheme>()!
+                                        .get('text'),
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  _gameDetails?.publisherDisplayName ?? "--",
+                                  style: TextStyle(
+                                    color: Theme.of(context)
+                                        .extension<AppTheme>()!
+                                        .get('text'),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    _buildStatItem(
+                                      context,
+                                      'Rating',
+                                      '4.8',
+                                      Icons.star,
+                                    ),
+                                    const SizedBox(width: 16),
+                                    _buildStatItem(
+                                      context,
+                                      'Downloads',
+                                      '1.2M',
+                                      Icons.download,
+                                    ),
+                                    const SizedBox(width: 16),
+                                    _buildStatItem(
+                                      context,
+                                      'Size',
+                                      '100MB',
+                                      Icons.storage,
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Publisher Name',
-                            style: TextStyle(
-                              color: Theme.of(context)
-                                  .extension<AppTheme>()!
-                                  .get('text'),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              _buildStatItem(
-                                context,
-                                'Rating',
-                                '4.8',
-                                Icons.star,
-                              ),
-                              const SizedBox(width: 16),
-                              _buildStatItem(
-                                context,
-                                'Downloads',
-                                '1.2M',
-                                Icons.download,
-                              ),
-                              const SizedBox(width: 16),
-                              _buildStatItem(
-                                context,
-                                'Size',
-                                '100MB',
-                                Icons.storage,
-                              ),
-                            ],
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            // Game Description
-            _buildSection(
-              context,
-              'Description',
-              'This is a detailed description of the game. It includes information about gameplay, features, and other relevant details.',
-            ),
-            const SizedBox(height: 24),
-            // Screenshots
-            _buildSection(
-              context,
-              'Screenshots',
-              SizedBox(
-                height: 200,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 3,
-                  itemBuilder: (context, index) => Container(
-                    width: 300,
-                    margin: const EdgeInsets.only(right: 8),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context)
-                          .extension<AppTheme>()!
-                          .get('primary'),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Screenshot ${index + 1}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
+                  ),
+                  const SizedBox(height: 24),
+                  // Game Description
+                  _buildSection(
+                    context,
+                    'Description',
+                    _gameDetails!.shortBio,
+                  ),
+                  const SizedBox(height: 24),
+                  // Screenshots
+                  _buildSection(
+                    context,
+                    'Screenshots',
+                    SizedBox(
+                      height: 200,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _gameDetails?.gameScreenshots.length ??
+                            0, // Ensure it uses dynamic length
+                        itemBuilder: (context, index) {
+                          final screenshot =
+                              _gameDetails?.gameScreenshots[index];
+                          return Container(
+                            width: 300,
+                            margin: const EdgeInsets.only(right: 8),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context)
+                                  .extension<AppTheme>()!
+                                  .get('primary'),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: GameImageThumbnail(
+                              imageUrl: screenshot
+                                  ?.url, // Use the URL of the screenshot
+                              size: 300, // You can adjust the size here
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }
