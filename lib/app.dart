@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Phynd App',
         theme: lightTheme,
-        routes: AppRoutes.routes,
+        onGenerateRoute: AppRoutes.generateRoute,
         initialRoute: AppRoutes.home,
       ),
     );

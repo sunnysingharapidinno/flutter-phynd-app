@@ -1,3 +1,5 @@
+import 'package:phynd_app/core/enums/marketplace.dart';
+
 class GamePayload {
   final List<String>? gameChain;
   final String? gameName;
@@ -15,7 +17,7 @@ class GamePayload {
   final List<String>? publisherId;
   final List<String>? tags;
   final bool? playNow;
-  final List<String>? featuredType;
+  final List<MarketplaceGameType>? featuredType;
   final List<String>? studioId;
   final List<String>? developerId;
 
@@ -59,7 +61,7 @@ class GamePayload {
       'publisher_id': publisherId,
       'tags': tags,
       'playNow': playNow,
-      'featured_type': featuredType,
+      'featured_type': featuredType?.map((type) => type.value).toList(),
       'studio_id': studioId,
       'developer_id': developerId,
     };
@@ -83,7 +85,8 @@ class GamePayload {
       publisherId: (json['publisher_id'] as List?)?.cast<String>(),
       tags: (json['tags'] as List?)?.cast<String>(),
       playNow: json['playNow'],
-      featuredType: (json['featured_type'] as List?)?.cast<String>(),
+      featuredType:
+          (json['featured_type'] as List?)?.cast<MarketplaceGameType>(),
       studioId: (json['studio_id'] as List?)?.cast<String>(),
       developerId: (json['developer_id'] as List?)?.cast<String>(),
     );

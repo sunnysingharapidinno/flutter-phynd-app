@@ -7,7 +7,9 @@ import 'package:phynd_app/presentation/widgets/image/image.dart';
 import 'package:phynd_app/presentation/widgets/loader/circular_load.dart';
 
 class GamePage extends StatefulWidget {
-  const GamePage({super.key});
+  final String gameSlug;
+
+  const GamePage({super.key, required this.gameSlug});
 
   @override
   State<GamePage> createState() => _GamePageState();
@@ -17,7 +19,6 @@ class _GamePageState extends State<GamePage> {
   GameDetails? _gameDetails;
   late bool _isLoading = false;
   final GameService _gameService = GameService();
-  final gameSlug = 'xst-electric-sheep-9a116e1e';
 
   @override
   void initState() {
@@ -38,7 +39,8 @@ class _GamePageState extends State<GamePage> {
     setState(() => _isLoading = true);
 
     try {
-      final details = await _gameService.getGameDetails(gameSlug: gameSlug);
+      final details =
+          await _gameService.getGameDetails(gameSlug: widget.gameSlug);
       setState(() => _gameDetails = details);
     } catch (e) {
       print("Error fetching game details: $e");

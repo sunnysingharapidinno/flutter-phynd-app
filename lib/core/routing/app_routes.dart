@@ -22,16 +22,47 @@ class AppRoutes {
   static const String support = '/support';
   static const String termsAndConditions = '/terms-and-conditions';
 
-  static Map<String, WidgetBuilder> get routes => {
-        home: (context) => const HomePage(),
-        login: (context) => const LoginPage(),
-        registration: (context) => const RegistrationScreen(),
-        game: (context) => const GamePage(),
-        playerProfile: (context) => const PlayerProfilePage(),
-        publisherProfile: (context) => const PublisherProfilePage(),
-        search: (context) => const SearchPage(),
-        quest: (context) => const QuestPage(),
-        support: (context) => const SupportPage(),
-        termsAndConditions: (context) => const TermsAndConditionsPage(),
-      };
+  static Route<dynamic> generateRoute(RouteSettings settings) {
+    final args = settings.arguments;
+
+    switch (settings.name) {
+      case home:
+        return MaterialPageRoute(builder: (_) => const HomePage());
+      case login:
+        return MaterialPageRoute(builder: (_) => const LoginPage());
+      case registration:
+        return MaterialPageRoute(builder: (_) => const RegistrationScreen());
+      case game:
+        if (args is String) {
+          return MaterialPageRoute(
+            builder: (_) => GamePage(gameSlug: args),
+          );
+        }
+        return _errorRoute("Missing or invalid gameSlug");
+      case playerProfile:
+        return MaterialPageRoute(builder: (_) => const PlayerProfilePage());
+      case publisherProfile:
+        return MaterialPageRoute(builder: (_) => const PublisherProfilePage());
+      case search:
+        return MaterialPageRoute(builder: (_) => const SearchPage());
+      case quest:
+        return MaterialPageRoute(builder: (_) => const QuestPage());
+      case support:
+        return MaterialPageRoute(builder: (_) => const SupportPage());
+      case termsAndConditions:
+        return MaterialPageRoute(
+            builder: (_) => const TermsAndConditionsPage());
+      default:
+        return _errorRoute("Route not found");
+    }
+  }
+
+  static Route<dynamic> _errorRoute(String message) {
+    return MaterialPageRoute(
+      builder: (_) => Scaffold(
+        appBar: AppBar(title: const Text("Error")),
+        body: Center(child: Text(message)),
+      ),
+    );
+  }
 }

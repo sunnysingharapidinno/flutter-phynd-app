@@ -41,12 +41,18 @@ class GameService {
         ...(filters?.publisherId ?? []),
       ];
 
+      List<String>? featuredTypes =
+          filters?.featuredType?.map((type) => type.value).toList();
+
       final body = {
         ...?filters?.toJson(),
         'page': page,
         'limit': limit,
         'publisher_id': mergedStudioIds.isNotEmpty ? mergedStudioIds : null,
-        'network': filters?.network ?? 'web3',
+        'featured_type': featuredTypes,
+        'game_chain': [],
+        'network': "WEB3"
+        // 'network': filters?.network ?? 'web3',
       };
 
       final response = await api.post(
@@ -61,7 +67,6 @@ class GameService {
 
       return (count: data['count'] as int, data: games);
     } catch (e) {
-      print('Error: $e');
       throw Exception('Failed to fetch marketplace games: $e');
     }
   }
