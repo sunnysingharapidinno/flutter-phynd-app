@@ -272,6 +272,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.4"
+  rainway_plugin:
+    dependency: "direct main"
+    description:
+      path: "tizen/lib/rainway_plugin"
+      relative: true
+    source: path
+    version: "0.0.1"
   shared_preferences:
     dependency: "direct main"
     description:

@@ -5,6 +5,7 @@ import 'package:phynd_app/presentation/screens/login_page.dart';
 import 'package:phynd_app/presentation/screens/player_profile_page.dart';
 import 'package:phynd_app/presentation/screens/publisher_profile_page.dart';
 import 'package:phynd_app/presentation/screens/quest_page.dart';
+import 'package:phynd_app/presentation/screens/rainway_screen.dart';
 import 'package:phynd_app/presentation/screens/registration_page.dart';
 import 'package:phynd_app/presentation/screens/search_page.dart';
 import 'package:phynd_app/presentation/screens/support_page.dart';
@@ -21,6 +22,7 @@ class AppRoutes {
   static const String quest = '/quest';
   static const String support = '/support';
   static const String termsAndConditions = '/terms-and-conditions';
+  static const String rainwayGame = '/rainway-game';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;
@@ -49,6 +51,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const QuestPage());
       case support:
         return MaterialPageRoute(builder: (_) => const SupportPage());
+      case rainwayGame:
+        return MaterialPageRoute(builder: (_) => const RainwayPage());
       case termsAndConditions:
         return MaterialPageRoute(
             builder: (_) => const TermsAndConditionsPage());
