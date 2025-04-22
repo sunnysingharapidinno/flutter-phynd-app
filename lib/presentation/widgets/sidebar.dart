@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phynd_app/core/routing/app_routes.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
+import 'package:phynd_app/presentation/bloc/auth/auth_bloc.dart';
+import 'package:phynd_app/presentation/bloc/auth/auth_event.dart';
+import 'package:phynd_app/presentation/bloc/auth/auth_state.dart';
 
 class Sidebar extends StatelessWidget {
   const Sidebar({super.key});
@@ -21,12 +25,12 @@ class Sidebar extends StatelessWidget {
       'route': AppRoutes.search,
       'isDivider': false,
     },
-    {
-      'title': 'Games',
-      'icon': Icons.games,
-      'route': AppRoutes.game,
-      'isDivider': false,
-    },
+    // {
+    //   'title': 'Games',
+    //   'icon': Icons.games,
+    //   'route': AppRoutes.game,
+    //   'isDivider': false,
+    // },
     {
       'title': 'Quests',
       'icon': Icons.emoji_events,
@@ -50,12 +54,14 @@ class Sidebar extends StatelessWidget {
       'icon': Icons.login,
       'route': AppRoutes.login,
       'isDivider': true,
+      'showWhenAuthenticated': false,
     },
     {
       'title': 'Register',
       'icon': Icons.person_add,
       'route': AppRoutes.registration,
       'isDivider': false,
+      'showWhenAuthenticated': false,
     },
     {
       'title': 'Support',
@@ -78,83 +84,94 @@ class Sidebar extends StatelessWidget {
     final textColor = theme?.get('text') ?? Colors.black;
     final backgroundColor = theme?.get('background') ?? Colors.white;
 
-    return Drawer(
-      backgroundColor: backgroundColor,
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: primaryColor,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _appName,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        final isAuthenticated = state.status == AuthStatus.authenticated;
+
+        return Drawer(
+          backgroundColor: backgroundColor,
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: primaryColor,
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  _appSubtitle,
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 16,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _appName,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      _appSubtitle,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              ..._navigationItems
+                  .where((item) =>
+                      !item.containsKey('showWhenAuthenticated') ||
+                      item['showWhenAuthenticated'] == isAuthenticated)
+                  .map((item) {
+                    final List<Widget> widgets = [];
+
+                    if (item['isDivider'] == true) {
+                      widgets.add(Divider(color: textColor.withOpacity(0.2)));
+                    }
+
+                    widgets.add(
+                      ListTile(
+                        leading: Icon(
+                          item['icon'] as IconData,
+                          color: textColor,
+                        ),
+                        title: Text(
+                          item['title'] as String,
+                          style: TextStyle(color: textColor),
+                        ),
+                        onTap: () {
+                          Navigator.pushReplacementNamed(
+                              context, item['route'] as String);
+                        },
+                      ),
+                    );
+
+                    return widgets;
+                  })
+                  .expand((widgets) => widgets)
+                  .toList(),
+              if (isAuthenticated) ...[
+                Divider(color: textColor.withOpacity(0.2)),
+                ListTile(
+                  leading: Icon(
+                    Icons.logout,
+                    color: textColor,
                   ),
+                  title: Text(
+                    'Logout',
+                    style: TextStyle(color: textColor),
+                  ),
+                  onTap: () {
+                    context.read<AuthBloc>().add(LogoutUser());
+                    Navigator.pushReplacementNamed(context, AppRoutes.login);
+                  },
                 ),
               ],
-            ),
+            ],
           ),
-          ..._navigationItems
-              .map((item) {
-                final List<Widget> widgets = [];
-
-                if (item['isDivider'] == true) {
-                  widgets.add(Divider(color: textColor.withOpacity(0.2)));
-                }
-
-                widgets.add(
-                  ListTile(
-                    leading: Icon(
-                      item['icon'] as IconData,
-                      color: textColor,
-                    ),
-                    title: Text(
-                      item['title'] as String,
-                      style: TextStyle(color: textColor),
-                    ),
-                    onTap: () {
-                      Navigator.pushReplacementNamed(
-                          context, item['route'] as String);
-                    },
-                  ),
-                );
-
-                return widgets;
-              })
-              .expand((widgets) => widgets)
-              .toList(),
-          Divider(color: textColor.withOpacity(0.2)),
-          ListTile(
-            leading: Icon(
-              Icons.logout,
-              color: textColor,
-            ),
-            title: Text(
-              'Logout',
-              style: TextStyle(color: textColor),
-            ),
-            onTap: () {
-              // TODO: Implement logout
-              Navigator.pushReplacementNamed(context, AppRoutes.login);
-            },
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

@@ -1,25 +1,32 @@
-// auth_bloc.dart
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phynd_app/data/services/user_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:phynd_app/core/utils/storage_service.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final UserService _userService;
+  final StorageService _storage = StorageService();
 
   AuthBloc({required UserService userService})
       : _userService = userService,
         super(AuthState()) {
     on<GetUserDetails>(_onGetUserDetails);
-    on<LogoutUser>(_onUserLogout);
+    on<LogoutUser>(_onLogoutUser);
+    _storage.init();
   }
 
   Future<void> _onGetUserDetails(
       GetUserDetails event, Emitter<AuthState> emit) async {
     try {
       emit(state.copyWith(status: AuthStatus.loading));
+
+      final token = await _storage.get('auth_token');
+      print(token);
+      if (token == null) {
+        emit(state.copyWith(status: AuthStatus.unauthenticated));
+        return;
+      }
 
       final profile = await _userService.getUserMyDetails();
 
@@ -28,7 +35,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(state.copyWith(
         status: AuthStatus.authenticated,
         profile: profile,
-        isPublisher: profile.user.is_publisher,
+        isPublisher: profile.isPublisher ?? false,
       ));
     } catch (e) {
       emit(state.copyWith(
@@ -38,11 +45,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  Future<void> _onUserLogout(LogoutUser event, Emitter<AuthState> emit) async {
+  Future<void> _onLogoutUser(LogoutUser event, Emitter<AuthState> emit) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-
-      await prefs.clear();
+      await _storage.clear();
 
       emit(state.copyWith(
         status: AuthStatus.unauthenticated,

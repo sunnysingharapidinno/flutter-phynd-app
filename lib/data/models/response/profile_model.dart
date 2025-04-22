@@ -1,16 +1,32 @@
-import 'package:equatable/equatable.dart';
-
-class CompanyDetails extends Equatable {
-  final String? name;
-  final String? address;
+class CompanyDetails {
+  final String? id;
+  final String? companyName;
+  final String? companyMetaphone;
   final String? website;
-  final String? description;
+  final String? about;
+  final String? suffix;
+  final String? createdAt;
+  final String? modifiedAt;
+  final String? createdBy;
+  final String? image;
+  final bool? isIndividual;
+  final String? orgType;
+  final String? parentId;
 
   const CompanyDetails({
-    this.name,
-    this.address,
+    this.id,
+    this.companyName,
+    this.companyMetaphone,
     this.website,
-    this.description,
+    this.about,
+    this.suffix,
+    this.createdAt,
+    this.modifiedAt,
+    this.createdBy,
+    this.image,
+    this.isIndividual,
+    this.orgType,
+    this.parentId,
   });
 
   factory CompanyDetails.fromJson(Map<String, dynamic>? json) {
@@ -244,13 +260,73 @@ class SocialProfile extends Equatable {
       ];
 }
 
-class Profile extends Equatable {
-  final UserProfile user;
-  final SocialProfile social;
+class Profile {
+  final String? id;
+  final String? firstName;
+  final String? lastName;
+  final String? email;
+  final String? displayName;
+  final String? timezone;
+  final int? timezoneOffset;
+  final String? timezoneLocale;
+  final bool? isVerified;
+  final bool? isDisabled;
+  final bool? isAuthorized;
+  final bool? isPublisher;
+  final bool? isPublisherApproved;
+  final bool? isOrganization;
+  final bool? isSecured;
+  final bool? isKbaEnabled;
+  final bool? isUserBlocked;
+  final bool? isUserBan;
+  final bool? isPublisherBlocked;
+  final String? userBanReason;
+  final String? userBlockedReason;
+  final String? publisherBlockedReason;
+  final String? loggedInAs;
+  final bool? tooltip;
+  final String? joinedAsUserOn;
+  final String? joinedAsPublisherOn;
+  final bool? companyDetailAdded;
+  final bool? appliedForPublisher;
+  final String? publisherRequestStatus;
+  final List<String>? roles;
+  final CompanyDetails? companyDetails;
+  final Social? social;
 
   const Profile({
-    required this.user,
-    required this.social,
+    this.id,
+    this.firstName,
+    this.lastName,
+    this.email,
+    this.displayName,
+    this.timezone,
+    this.timezoneOffset,
+    this.timezoneLocale,
+    this.isVerified,
+    this.isDisabled,
+    this.isAuthorized,
+    this.isPublisher,
+    this.isPublisherApproved,
+    this.isOrganization,
+    this.isSecured,
+    this.isKbaEnabled,
+    this.isUserBlocked,
+    this.isUserBan,
+    this.isPublisherBlocked,
+    this.userBanReason,
+    this.userBlockedReason,
+    this.publisherBlockedReason,
+    this.loggedInAs,
+    this.tooltip,
+    this.joinedAsUserOn,
+    this.joinedAsPublisherOn,
+    this.companyDetailAdded,
+    this.appliedForPublisher,
+    this.publisherRequestStatus,
+    this.roles,
+    this.companyDetails,
+    this.social,
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) {
@@ -259,7 +335,4 @@ class Profile extends Equatable {
       social: SocialProfile.fromJson(json['social'] as Map<String, dynamic>),
     );
   }
-
-  @override
-  List<Object?> get props => [user, social];
 }

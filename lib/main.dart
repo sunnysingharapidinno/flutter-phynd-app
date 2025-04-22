@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/config/env.dart';
 import 'package:phynd_app/data/services/user_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:phynd_app/core/utils/storage_service.dart';
 import 'app.dart';
 
 Future<void> main() async {
@@ -12,15 +12,13 @@ Future<void> main() async {
     // Load environment variables
     await Env.load();
 
-    // Initialize SharedPreferences with error handling
-    SharedPreferences? prefs;
-    try {
-      prefs = await SharedPreferences.getInstance();
-    } catch (e) {
-      print('Warning: Failed to initialize SharedPreferences: $e');
-    }
+    // Initialize storage
+    final storage = StorageService();
+    await storage.init();
 
+    // Initialize user service
     final userService = UserService();
+
     runApp(MyApp(userService: userService));
   } catch (e) {
     print('Fatal error during initialization: $e');
