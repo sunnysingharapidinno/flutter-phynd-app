@@ -9,6 +9,7 @@ import 'package:phynd_app/presentation/screens/registration_page.dart';
 import 'package:phynd_app/presentation/screens/search_page.dart';
 import 'package:phynd_app/presentation/screens/support_page.dart';
 import 'package:phynd_app/presentation/screens/terms_and_conditions_page.dart';
+import 'package:phynd_app/presentation/screens/video_page.dart';
 
 class AppRoutes {
   static const String home = '/';
@@ -21,6 +22,7 @@ class AppRoutes {
   static const String quest = '/quest';
   static const String support = '/support';
   static const String termsAndConditions = '/terms-and-conditions';
+  static const String video = '/video';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;
@@ -49,6 +51,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const QuestPage());
       case support:
         return MaterialPageRoute(builder: (_) => const SupportPage());
+      case video:
+        return MaterialPageRoute(builder: (_) => const VideoPage());
       case termsAndConditions:
         return MaterialPageRoute(
             builder: (_) => const TermsAndConditionsPage());
