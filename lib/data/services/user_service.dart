@@ -121,4 +121,27 @@ class UserService {
       rethrow;
     }
   }
+
+  Future<Profile> getUserById({required String userId}) async {
+    try {
+      final response =
+          await api.get(ServerAPIEndpoints.getUserDetails + userId);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print('Data: $data');
+        var profile = Profile.fromJson(data);
+        return profile;
+      } else if (response.statusCode == 401) {
+        // Clear the token if unauthorized
+        await clearAuthToken();
+        throw Exception('Unauthorized: Please login again');
+      } else {
+        throw Exception('Failed to fetch user details: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching user details: $e');
+      rethrow;
+    }
+  }
 }

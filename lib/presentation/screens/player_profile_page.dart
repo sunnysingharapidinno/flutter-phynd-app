@@ -1,272 +1,146 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
+import 'package:phynd_app/data/services/user_service.dart';
+import 'package:phynd_app/data/models/response/profile_model.dart';
 import 'package:phynd_app/presentation/layouts/base_layout.dart';
+import 'package:phynd_app/presentation/widgets/profile/profile_header.dart';
+import 'package:phynd_app/presentation/widgets/profile/stat_counter.dart';
+import 'package:phynd_app/presentation/widgets/profile/game_card.dart';
 
-class PlayerProfilePage extends StatelessWidget {
+class PlayerProfilePage extends StatefulWidget {
   const PlayerProfilePage({super.key});
 
   @override
+  State<PlayerProfilePage> createState() => _PlayerProfilePageState();
+}
+
+class _PlayerProfilePageState extends State<PlayerProfilePage> {
+  final UserService _userService = UserService();
+  Profile? _userProfile;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserDetails('f1b11158-fd52-45db-b74b-ea62d6a9c3ea');
+  }
+
+  Future<void> _getUserDetails(String userId) async {
+    try {
+      final profile = await _userService.getUserById(userId: userId);
+      setState(() {
+        _userProfile = profile;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      // Handle error
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final String displayName = _userProfile != null
+        ? "${_userProfile!.user.first_name} ${_userProfile!.user.last_name}"
+        : "User";
+
+    print('User Profile: ${_userProfile?.user}');
+
     return BaseLayout(
       title: 'Player Profile',
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Profile Header
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Theme.of(context)
-                          .extension<AppTheme>()!
-                          .get('primary'),
-                      child: const Icon(
-                        Icons.person,
-                        size: 40,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Player Name',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context)
-                                  .extension<AppTheme>()!
-                                  .get('text'),
+      child: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Profile Header with Banner
+                ProfileHeader(
+                  username: displayName,
+                  isOnline: true,
+                  avatar:
+                      _userProfile?.user.dp_url ?? 'assets/images/avatar.png',
+                  bannerImage: 'assets/images/profile_banner.png',
+                ),
+
+                // Stats Row
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: const [
+                      StatCounter(label: 'Followers', value: '0'),
+                      StatCounter(label: 'Following', value: '0'),
+                      StatCounter(label: 'PHYND Coins', value: '22'),
+                      StatCounter(label: 'Badges', value: '0'),
+                      StatCounter(label: 'Clips', value: '0'),
+                    ],
+                  ),
+                ),
+
+                // Favorite Games Section
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Favorite Games',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context)
+                                .extension<AppTheme>()!
+                                .get('text'),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: const [
+                                GameCard(
+                                  number: 1,
+                                  name: 'Grit',
+                                  image: 'assets/images/games/grit.png',
+                                ),
+                                SizedBox(width: 12),
+                                GameCard(
+                                  number: 2,
+                                  name: 'Brawl Stars',
+                                  image: 'assets/images/games/brawl_stars.png',
+                                ),
+                                SizedBox(width: 12),
+                                GameCard(
+                                  number: 3,
+                                  name: 'Fortnite',
+                                  image: 'assets/images/games/fortnite.png',
+                                ),
+                                SizedBox(width: 12),
+                                GameCard(
+                                  number: 4,
+                                  name: 'Neon Racers',
+                                  image: 'assets/images/games/neon_racers.png',
+                                ),
+                                SizedBox(width: 12),
+                                GameCard(
+                                  number: 5,
+                                  name: 'Mario Kart',
+                                  image: 'assets/images/games/mario_kart.png',
+                                ),
+                              ],
                             ),
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'player@example.com',
-                            style: TextStyle(
-                              color: Theme.of(context)
-                                  .extension<AppTheme>()!
-                                  .get('text'),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              _buildStatItem(
-                                context,
-                                'Level',
-                                '25',
-                                Icons.star,
-                              ),
-                              const SizedBox(width: 16),
-                              _buildStatItem(
-                                context,
-                                'XP',
-                                '12.5K',
-                                Icons.emoji_events,
-                              ),
-                              const SizedBox(width: 16),
-                              _buildStatItem(
-                                context,
-                                'Games',
-                                '15',
-                                Icons.games,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
-            const SizedBox(height: 24),
-            // Recent Activity
-            _buildSection(
-              context,
-              'Recent Activity',
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: 5,
-                itemBuilder: (context, index) => _buildActivityItem(
-                  context,
-                  'Game ${index + 1}',
-                  'Completed level ${index + 1}',
-                  '${(index + 1) * 100} XP',
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            // Achievements
-            _buildSection(
-              context,
-              'Achievements',
-              GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1.5,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                ),
-                itemCount: 4,
-                itemBuilder: (context, index) => _buildAchievementCard(
-                  context,
-                  'Achievement ${index + 1}',
-                  'Description of achievement ${index + 1}',
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSection(
-    BuildContext context,
-    String title,
-    Widget content,
-  ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).extension<AppTheme>()!.get('text'),
-          ),
-        ),
-        const SizedBox(height: 16),
-        content,
-      ],
-    );
-  }
-
-  Widget _buildStatItem(
-    BuildContext context,
-    String label,
-    String value,
-    IconData icon,
-  ) {
-    return Column(
-      children: [
-        Icon(
-          icon,
-          color: Theme.of(context).extension<AppTheme>()!.get('primary'),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).extension<AppTheme>()!.get('text'),
-          ),
-        ),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: Theme.of(context).extension<AppTheme>()!.get('text'),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildActivityItem(
-    BuildContext context,
-    String title,
-    String description,
-    String xp,
-  ) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: ListTile(
-        leading: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: Theme.of(context).extension<AppTheme>()!.get('primary'),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: const Icon(
-            Icons.games,
-            color: Colors.white,
-          ),
-        ),
-        title: Text(
-          title,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).extension<AppTheme>()!.get('text'),
-          ),
-        ),
-        subtitle: Text(
-          description,
-          style: TextStyle(
-            color: Theme.of(context).extension<AppTheme>()!.get('text'),
-          ),
-        ),
-        trailing: Text(
-          xp,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).extension<AppTheme>()!.get('primary'),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAchievementCard(
-    BuildContext context,
-    String title,
-    String description,
-  ) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.emoji_events,
-              size: 32,
-              color: Theme.of(context).extension<AppTheme>()!.get('primary'),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).extension<AppTheme>()!.get('text'),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              description,
-              style: TextStyle(
-                fontSize: 12,
-                color: Theme.of(context).extension<AppTheme>()!.get('text'),
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
