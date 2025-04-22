@@ -1,140 +1,193 @@
-import 'package:equatable/equatable.dart';
-
-class CompanyDetails extends Equatable {
-  final String? name;
-  final String? address;
+class CompanyDetails {
+  final String? id;
+  final String? companyName;
+  final String? companyMetaphone;
   final String? website;
-  final String? description;
+  final String? about;
+  final String? suffix;
+  final String? createdAt;
+  final String? modifiedAt;
+  final String? createdBy;
+  final String? image;
+  final bool? isIndividual;
+  final String? orgType;
+  final String? parentId;
 
   const CompanyDetails({
-    this.name,
-    this.address,
+    this.id,
+    this.companyName,
+    this.companyMetaphone,
     this.website,
-    this.description,
+    this.about,
+    this.suffix,
+    this.createdAt,
+    this.modifiedAt,
+    this.createdBy,
+    this.image,
+    this.isIndividual,
+    this.orgType,
+    this.parentId,
   });
 
-  @override
-  List<Object?> get props => [name, address, website, description];
+  factory CompanyDetails.fromJson(Map<String, dynamic> json) {
+    return CompanyDetails(
+      id: json['id'],
+      companyName: json['company_name'],
+      companyMetaphone: json['company_metaphone'],
+      website: json['website'],
+      about: json['about'],
+      suffix: json['suffix'],
+      createdAt: json['created_at'],
+      modifiedAt: json['modified_at'],
+      createdBy: json['created_by'],
+      image: json['image'],
+      isIndividual: json['is_individual'],
+      orgType: json['org_type'],
+      parentId: json['parent_id'],
+    );
+  }
 }
 
-class UserProfile extends Equatable {
-  final String id;
-  final String first_name;
-  final String last_name;
-  final String email;
-  final String? dp_url;
-  final bool is_admin;
-  final bool is_publisher;
-  final bool is_publisher_blocked;
-  final bool is_user_baned;
-  final bool is_user_blocked;
-  final String? publisher_blocked_reason;
-  final String? user_ban_reason;
-  final String? user_blocked_reason;
-  final List<String> roles;
-
-  const UserProfile({
-    required this.id,
-    required this.first_name,
-    required this.last_name,
-    required this.email,
-    this.dp_url,
-    required this.is_admin,
-    required this.is_publisher,
-    required this.is_publisher_blocked,
-    required this.is_user_baned,
-    required this.is_user_blocked,
-    this.publisher_blocked_reason,
-    this.user_ban_reason,
-    this.user_blocked_reason,
-    required this.roles,
-  });
-
-  @override
-  List<Object?> get props => [
-        id,
-        first_name,
-        last_name,
-        email,
-        dp_url,
-        is_admin,
-        is_publisher,
-        is_publisher_blocked,
-        is_user_baned,
-        is_user_blocked,
-        publisher_blocked_reason,
-        user_ban_reason,
-        user_blocked_reason,
-        roles,
-      ];
-}
-
-class SocialProfile extends Equatable {
-  final String? facebook;
-  final String? twitter;
-  final String? instagram;
-  final String? linkedin;
-  final String? youtube;
+class Social {
+  final String? userId;
+  final String? instagramProfile;
+  final String? discordProfile;
+  final String? twitterProfile;
   final String? website;
+  final String? youtube;
+  final String? google;
+  final String? meta;
 
-  const SocialProfile({
-    this.facebook,
-    this.twitter,
-    this.instagram,
-    this.linkedin,
-    this.youtube,
+  const Social({
+    this.userId,
+    this.instagramProfile,
+    this.discordProfile,
+    this.twitterProfile,
     this.website,
+    this.youtube,
+    this.google,
+    this.meta,
   });
 
-  @override
-  List<Object?> get props => [
-        facebook,
-        twitter,
-        instagram,
-        linkedin,
-        youtube,
-        website,
-      ];
+  factory Social.fromJson(Map<String, dynamic> json) {
+    return Social(
+      userId: json['user_id'],
+      instagramProfile: json['instagram_profile'],
+      discordProfile: json['discord_profile'],
+      twitterProfile: json['twitter_profile'],
+      website: json['website'],
+      youtube: json['youtube'],
+      google: json['google'],
+      meta: json['meta'],
+    );
+  }
 }
 
-class Profile extends Equatable {
-  final UserProfile user;
-  final SocialProfile social;
+class Profile {
+  final String? id;
+  final String? firstName;
+  final String? lastName;
+  final String? email;
+  final String? displayName;
+  final String? timezone;
+  final int? timezoneOffset;
+  final String? timezoneLocale;
+  final bool? isVerified;
+  final bool? isDisabled;
+  final bool? isAuthorized;
+  final bool? isPublisher;
+  final bool? isPublisherApproved;
+  final bool? isOrganization;
+  final bool? isSecured;
+  final bool? isKbaEnabled;
+  final bool? isUserBlocked;
+  final bool? isUserBan;
+  final bool? isPublisherBlocked;
+  final String? userBanReason;
+  final String? userBlockedReason;
+  final String? publisherBlockedReason;
+  final String? loggedInAs;
+  final bool? tooltip;
+  final String? joinedAsUserOn;
+  final String? joinedAsPublisherOn;
+  final bool? companyDetailAdded;
+  final bool? appliedForPublisher;
+  final String? publisherRequestStatus;
+  final List<String>? roles;
+  final CompanyDetails? companyDetails;
+  final Social? social;
 
   const Profile({
-    required this.user,
-    required this.social,
+    this.id,
+    this.firstName,
+    this.lastName,
+    this.email,
+    this.displayName,
+    this.timezone,
+    this.timezoneOffset,
+    this.timezoneLocale,
+    this.isVerified,
+    this.isDisabled,
+    this.isAuthorized,
+    this.isPublisher,
+    this.isPublisherApproved,
+    this.isOrganization,
+    this.isSecured,
+    this.isKbaEnabled,
+    this.isUserBlocked,
+    this.isUserBan,
+    this.isPublisherBlocked,
+    this.userBanReason,
+    this.userBlockedReason,
+    this.publisherBlockedReason,
+    this.loggedInAs,
+    this.tooltip,
+    this.joinedAsUserOn,
+    this.joinedAsPublisherOn,
+    this.companyDetailAdded,
+    this.appliedForPublisher,
+    this.publisherRequestStatus,
+    this.roles,
+    this.companyDetails,
+    this.social,
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) {
     return Profile(
-      user: UserProfile(
-        id: json['id'] as String,
-        first_name: json['first_name'] as String,
-        last_name: json['last_name'] as String,
-        email: json['email'] as String,
-        dp_url: json['dp_url'] as String?,
-        is_admin: json['is_admin'] as bool,
-        is_publisher: json['is_publisher'] as bool,
-        is_publisher_blocked: json['is_publisher_blocked'] as bool,
-        is_user_baned: json['is_user_baned'] as bool,
-        is_user_blocked: json['is_user_blocked'] as bool,
-        publisher_blocked_reason: json['publisher_blocked_reason'] as String?,
-        user_ban_reason: json['user_ban_reason'] as String?,
-        user_blocked_reason: json['user_blocked_reason'] as String?,
-        roles: (json['roles'] as List).map((e) => e as String).toList(),
-      ),
-      social: SocialProfile(
-        facebook: json['facebook'] as String?,
-        twitter: json['twitter'] as String?,
-        instagram: json['instagram'] as String?,
-        linkedin: json['linkedin'] as String?,
-        youtube: json['youtube'] as String?,
-        website: json['website'] as String?,
-      ),
+      id: json['id'],
+      firstName: json['first_name'],
+      lastName: json['last_name'],
+      email: json['email'],
+      displayName: json['display_name'],
+      timezone: json['timezone'],
+      timezoneOffset: json['timezone_offset'],
+      timezoneLocale: json['timezone_locale'],
+      isVerified: json['is_verified'],
+      isDisabled: json['is_disabled'],
+      isAuthorized: json['is_authorized'],
+      isPublisher: json['is_publisher'],
+      isPublisherApproved: json['is_publisher_approved'],
+      isOrganization: json['isOrganization'],
+      isSecured: json['is_secured'],
+      isKbaEnabled: json['is_kba_enabled'],
+      isUserBlocked: json['is_user_blocked'],
+      isUserBan: json['is_user_ban'],
+      isPublisherBlocked: json['is_publisher_blocked'],
+      userBanReason: json['user_ban_reason'],
+      userBlockedReason: json['user_blocked_reason'],
+      publisherBlockedReason: json['publisher_blocked_reason'],
+      loggedInAs: json['logged_in_as'],
+      tooltip: json['tooltip'],
+      joinedAsUserOn: json['joined_as_user_on'],
+      joinedAsPublisherOn: json['joined_as_publisher_on'],
+      companyDetailAdded: json['company_detail_added'],
+      appliedForPublisher: json['applied_for_publisher'],
+      publisherRequestStatus: json['publisher_request_status'],
+      roles: (json['roles'] as List?)?.map((e) => e.toString()).toList(),
+      companyDetails: json['company_details'] != null
+          ? CompanyDetails.fromJson(json['company_details'])
+          : null,
+      social: json['social'] != null ? Social.fromJson(json['social']) : null,
     );
   }
-
-  @override
-  List<Object?> get props => [user, social];
 }

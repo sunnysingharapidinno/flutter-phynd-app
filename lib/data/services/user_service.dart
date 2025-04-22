@@ -1,48 +1,31 @@
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:phynd_app/core/constants/base_server_endpoints.dart';
 import 'package:phynd_app/core/enums/api_env.dart';
 import 'package:phynd_app/core/utils/api_service.dart';
+import 'package:phynd_app/core/utils/storage_service.dart';
 import 'package:phynd_app/data/models/response/profile_model.dart';
 
 class UserService {
   final String baseURL = ApiBaseUrl.flutterAppUserBaseUrl.url;
   late final ApiService api;
   static const String _tokenKey = 'auth_token';
-  SharedPreferences? _prefs;
+  final StorageService _storage = StorageService();
 
   UserService() {
     api = ApiService(baseUrl: baseURL);
-    _initPrefs();
-  }
-
-  Future<void> _initPrefs() async {
-    try {
-      _prefs = await SharedPreferences.getInstance();
-    } catch (e) {
-      print('Warning: Failed to initialize SharedPreferences: $e');
-    }
+    _storage.init();
   }
 
   Future<String?> _getAuthToken() async {
-    if (_prefs == null) {
-      await _initPrefs();
-    }
-    return _prefs?.getString(_tokenKey);
+    return await _storage.get(_tokenKey);
   }
 
   Future<void> setAuthToken(String token) async {
-    if (_prefs == null) {
-      await _initPrefs();
-    }
-    await _prefs?.setString(_tokenKey, token);
+    await _storage.set(_tokenKey, token);
   }
 
   Future<void> clearAuthToken() async {
-    if (_prefs == null) {
-      await _initPrefs();
-    }
-    await _prefs?.remove(_tokenKey);
+    await _storage.remove(_tokenKey);
   }
 
   Future<Map<String, dynamic>> loginUser({

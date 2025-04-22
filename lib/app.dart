@@ -14,18 +14,43 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) {
-        final bloc = AuthBloc(userService: userService);
-        bloc.add(GetUserDetails());
-        return bloc;
-      },
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Phynd App',
-        theme: lightTheme,
-        onGenerateRoute: AppRoutes.generateRoute,
-        initialRoute: AppRoutes.home,
-      ),
+      create: (context) => AuthBloc(userService: userService),
+      child: const AppInitializer(),
+    );
+  }
+}
+
+class AppInitializer extends StatefulWidget {
+  const AppInitializer({super.key});
+
+  @override
+  State<AppInitializer> createState() => _AppInitializerState();
+}
+
+class _AppInitializerState extends State<AppInitializer> {
+  @override
+  void initState() {
+    super.initState();
+    _checkAuth();
+  }
+
+  Future<void> _checkAuth() async {
+    try {
+      final authBloc = context.read<AuthBloc>();
+      authBloc.add(GetUserDetails());
+    } catch (e) {
+      print('Auth check error: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Phynd App',
+      theme: lightTheme,
+      onGenerateRoute: AppRoutes.generateRoute,
+      initialRoute: AppRoutes.home,
     );
   }
 }

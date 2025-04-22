@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:phynd_app/core/routing/app_routes.dart';
 import 'package:phynd_app/data/services/user_service.dart';
 import 'package:phynd_app/presentation/bloc/auth/auth_bloc.dart';
 import 'package:phynd_app/presentation/bloc/auth/auth_event.dart';
 import 'package:phynd_app/presentation/bloc/auth/auth_state.dart';
 import 'package:phynd_app/presentation/layouts/base_layout.dart';
 import 'package:phynd_app/presentation/widgets/forms/login_form.dart';
+import 'package:phynd_app/core/utils/storage_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,7 +18,14 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final UserService _userService = UserService();
+  final StorageService _storage = StorageService();
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _storage.init();
+  }
 
   Future<void> _handleLogin(
       BuildContext context, String email, String password) async {
@@ -32,6 +41,12 @@ class _LoginPageState extends State<LoginPage> {
       authBloc.add(
         GetUserDetails(),
       );
+
+      // Navigate to home page after successful login
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, AppRoutes.home);
+      }
+
       setState(() {
         _isLoading = false;
       });
