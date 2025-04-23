@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phynd_app/core/routing/app_routes.dart';
-import 'package:phynd_app/core/theme/light_theme.dart';
+import 'package:phynd_app/core/theme/dark_theme.dart';
 import 'package:phynd_app/data/services/user_service.dart';
 import 'package:phynd_app/presentation/bloc/auth/auth_bloc.dart';
 import 'package:phynd_app/presentation/bloc/auth/auth_event.dart';
@@ -48,7 +48,7 @@ class _AppInitializerState extends State<AppInitializer> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Phynd App',
-      theme: lightTheme,
+      theme: darkTheme,
       onGenerateRoute: AppRoutes.generateRoute,
       initialRoute: AppRoutes.home,
     );

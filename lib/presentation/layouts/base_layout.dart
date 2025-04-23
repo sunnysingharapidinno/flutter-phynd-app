@@ -31,7 +31,7 @@ class _BaseLayoutState extends State<BaseLayout> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).extension<AppTheme>();
-    final backgroundColor = theme?.get('background') ?? Colors.white;
+    final backgroundColor = theme?.get('bgColor');
 
     return Scaffold(
       key: _scaffoldKey,

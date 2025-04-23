@@ -5,6 +5,12 @@ import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/presentation/layouts/base_layout.dart';
 import 'package:phynd_app/presentation/widgets/image/image.dart';
 import 'package:phynd_app/presentation/widgets/loader/circular_load.dart';
+import 'package:phynd_app/presentation/widgets/banners/game_banner.dart';
+import 'package:phynd_app/presentation/widgets/cards/screenshot_card.dart';
+import 'package:phynd_app/presentation/widgets/cards/gameplay_clip_card.dart';
+import 'package:phynd_app/presentation/widgets/cards/ad_card.dart';
+import 'package:phynd_app/presentation/widgets/cards/game_promo_card.dart';
+import 'package:phynd_app/presentation/widgets/cards/tournament_card.dart';
 
 class GamePage extends StatefulWidget {
   final String gameSlug;
@@ -54,7 +60,6 @@ class _GamePageState extends State<GamePage> {
     return BaseLayout(
       title: 'Game',
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
         child: _isLoading
             ? Center(
                 child: CircularLoad(),
@@ -62,110 +67,387 @@ class _GamePageState extends State<GamePage> {
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Game Header
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        children: [
-                          GameImageThumbnail(
-                              imageUrl: _gameDetails
-                                  ?.gameScreenshots.firstOrNull?.url),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  _gameDetails!.gameTitle,
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
+                  // Banner Section - No Padding
+                  GameBanner(
+                    imageUrl:
+                        'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    gameTitle: 'CALL OF DUTY',
+                    gameSubtitle: 'MODERN WARFARE III',
+                    badgeText: 'Featured',
+                    rating: 4.5,
+                    playerCount: 254300,
+                    gameGenre: 'FPS, Action, Multiplayer',
+                    releaseDate: 'Nov 10, 2023',
+                    platforms: const ['PC', 'Xbox', 'PlayStation'],
+                    onPlayTap: () {
+                      // Handle play now tap
+                    },
+                  ),
+                  // Action Buttons Row
+                  Container(
+                    color:
+                        Theme.of(context).extension<AppTheme>()!.get('bgColor'),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Left side buttons
+                        Row(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Theme.of(context)
+                                    .extension<AppTheme>()!
+                                    .get('primary'),
+                                foregroundColor: Theme.of(context)
+                                    .extension<AppTheme>()!
+                                    .get('textOnPrimary'),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: Text('Play Now'),
+                            ),
+                            SizedBox(width: 12),
+                            OutlinedButton(
+                              onPressed: () {},
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Theme.of(context)
+                                    .extension<AppTheme>()!
+                                    .get('text'),
+                                side: BorderSide(
                                     color: Theme.of(context)
                                         .extension<AppTheme>()!
-                                        .get('text'),
-                                  ),
+                                        .get('text')
+                                        .withOpacity(0.3)),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  _gameDetails?.publisherDisplayName ?? "--",
-                                  style: TextStyle(
+                              ),
+                              child: Text('Start Free Trial'),
+                            ),
+                            SizedBox(width: 12),
+                            OutlinedButton(
+                              onPressed: () {},
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Theme.of(context)
+                                    .extension<AppTheme>()!
+                                    .get('text'),
+                                side: BorderSide(
                                     color: Theme.of(context)
                                         .extension<AppTheme>()!
-                                        .get('text'),
-                                  ),
+                                        .get('text')
+                                        .withOpacity(0.3)),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                                const SizedBox(height: 8),
-                                Row(
+                              ),
+                              child: Text('Follow Game'),
+                            ),
+                          ],
+                        ),
+                        // Right side icon buttons
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(Icons.bookmark_border),
+                              color: Theme.of(context)
+                                  .extension<AppTheme>()!
+                                  .get('text'),
+                              style: IconButton.styleFrom(
+                                backgroundColor: Theme.of(context)
+                                    .extension<AppTheme>()!
+                                    .get('cardBg'),
+                                shape: CircleBorder(),
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(Icons.favorite_border),
+                              color: Theme.of(context)
+                                  .extension<AppTheme>()!
+                                  .get('text'),
+                              style: IconButton.styleFrom(
+                                backgroundColor: Theme.of(context)
+                                    .extension<AppTheme>()!
+                                    .get('cardBg'),
+                                shape: CircleBorder(),
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(Icons.share),
+                              color: Theme.of(context)
+                                  .extension<AppTheme>()!
+                                  .get('text'),
+                              style: IconButton.styleFrom(
+                                backgroundColor: Theme.of(context)
+                                    .extension<AppTheme>()!
+                                    .get('cardBg'),
+                                shape: CircleBorder(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Other Sections with Padding
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Screenshots Section
+                        _buildSection(
+                          context,
+                          'Screenshots',
+                          SizedBox(
+                            height: 180,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: 4,
+                              itemBuilder: (context, index) {
+                                return ScreenshotCard(
+                                  imageUrl:
+                                      'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                                  onTap: () {
+                                    // Optional additional handling when screenshot is tapped
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        // Description Section with Grid
+                        _buildSection(
+                          context,
+                          'Description',
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    _buildStatItem(
-                                      context,
-                                      'Rating',
-                                      '4.8',
-                                      Icons.star,
-                                    ),
-                                    const SizedBox(width: 16),
-                                    _buildStatItem(
-                                      context,
-                                      'Downloads',
-                                      '1.2M',
-                                      Icons.download,
-                                    ),
-                                    const SizedBox(width: 16),
-                                    _buildStatItem(
-                                      context,
-                                      'Size',
-                                      '100MB',
-                                      Icons.storage,
+                                    Text(
+                                        'This is where the description of the game will render, including info about the type of game, the objective of the game, and any other details we want to include here. The description will be aggregated from the actual game.'),
+                                    const SizedBox(height: 16),
+                                    Text('Game Categories:'),
+                                    const SizedBox(height: 8),
+                                    Wrap(
+                                      spacing: 8.0,
+                                      runSpacing: 4.0,
+                                      children: [
+                                        Chip(label: Text('Action')),
+                                        Chip(label: Text('Adventure')),
+                                        Chip(label: Text('Racing')),
+                                      ],
                                     ),
                                   ],
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Container(
+                                  padding: const EdgeInsets.all(16.0),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .extension<AppTheme>()!
+                                        .get('primary'),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      _buildGridItem(
+                                          'Game Rating', '4/5 Stars'),
+                                      _buildGridItem(
+                                          'Release Date', '11/2/2023'),
+                                      _buildGridItem('Developer', 'Dev Name'),
+                                      _buildGridItem('Publisher', 'Pub Name'),
+                                      _buildGridItem(
+                                          'Platforms', 'Platforms Icons'),
+                                      _buildGridItem('Controller Options',
+                                          'Controller Icons'),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        // Categories Section
+                        _buildSection(
+                            context, 'Categories', Text('Categories Section')),
+                        const SizedBox(height: 24),
+                        // Gameplay Previews Section
+                        _buildSection(
+                          context,
+                          'Gameplay Previews',
+                          SizedBox(
+                            height: 160,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: 4,
+                              itemBuilder: (context, index) {
+                                return GameplayClipCard(
+                                  imageUrl:
+                                      'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                                  timeSincePosted: '${2 + index} Hrs Ago',
+                                  duration: '8:14',
+                                  onTap: () {
+                                    // Handle gameplay clip tap
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        // Events and Offers Section
+                        _buildSection(
+                            context,
+                            'Events and Offers',
+                            SizedBox(
+                              height: 200,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: TournamentCard(
+                                      imageUrl:
+                                          'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                                      onRegisterTap: () {},
+                                      onBookmarkTap: () {},
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: TournamentCard(
+                                      imageUrl:
+                                          'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                                      tournamentTitle: 'CHAMPIONSHIP',
+                                      sponsorNames: const [
+                                        'XBOX',
+                                        'EA',
+                                        'PlayStation'
+                                      ],
+                                      onRegisterTap: () {},
+                                      onBookmarkTap: () {},
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )),
+                        const SizedBox(height: 24),
+                        // Recent Clips and Streams Section
+                        _buildSection(
+                          context,
+                          'Recent Clips and Streams',
+                          SizedBox(
+                            height: 160,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                // Ad card
+                                AdCard(
+                                  onWatchTap: () {
+                                    // Handle watch ad tap
+                                  },
+                                  onShopTap: () {
+                                    // Handle shop now tap
+                                  },
+                                ),
+                                // Game clips
+                                for (int i = 0; i < 3; i++)
+                                  GameplayClipCard(
+                                    imageUrl:
+                                        'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                                    timeSincePosted: '${i + 1}d ago',
+                                    duration: '${5 + i}:${10 + i * 5}',
+                                    onTap: () {
+                                      // Handle recent clip tap
+                                    },
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        // More From This Publisher Section
+                        _buildSection(
+                          context,
+                          'More From This Publisher',
+                          SizedBox(
+                            height: 200,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                // Game 1
+                                GamePromoCard(
+                                  imageUrl:
+                                      'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                                  gameTitle: 'Crash Bandicoot 4',
+                                  badgeText: 'Free Trial',
+                                  rating: 5.0,
+                                  onTap: () {
+                                    // Handle game tap
+                                  },
+                                ),
+
+                                // Game 2
+                                GamePromoCard(
+                                  imageUrl:
+                                      'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                                  gameTitle: 'Crash Team Racing',
+                                  rating: 4.5,
+                                  badgeText: 'Trending',
+                                  onTap: () {
+                                    // Handle game tap
+                                  },
+                                ),
+
+                                // Game 3
+                                GamePromoCard(
+                                  imageUrl:
+                                      'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                                  gameTitle: 'Crash Bandicoot N. Sane Trilogy',
+                                  rating: 4.8,
+                                  badgeText: 'Trending',
+                                  onTap: () {
+                                    // Handle game tap
+                                  },
+                                ),
+
+                                // Game 4
+                                GamePromoCard(
+                                  imageUrl:
+                                      'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                                  gameTitle: 'Spyro Reignited Trilogy',
+                                  rating: 4.7,
+                                  badgeText: 'PHYND Exclusive',
+                                  onTap: () {
+                                    // Handle game tap
+                                  },
                                 ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  // Game Description
-                  _buildSection(
-                    context,
-                    'Description',
-                    _gameDetails!.shortBio,
-                  ),
-                  const SizedBox(height: 24),
-                  // Screenshots
-                  _buildSection(
-                    context,
-                    'Screenshots',
-                    SizedBox(
-                      height: 200,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: _gameDetails?.gameScreenshots.length ??
-                            0, // Ensure it uses dynamic length
-                        itemBuilder: (context, index) {
-                          final screenshot =
-                              _gameDetails?.gameScreenshots[index];
-                          return Container(
-                            width: 300,
-                            margin: const EdgeInsets.only(right: 8),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .extension<AppTheme>()!
-                                  .get('primary'),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: GameImageThumbnail(
-                              imageUrl: screenshot
-                                  ?.url, // Use the URL of the screenshot
-                              size: 300, // You can adjust the size here
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          );
-                        },
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -232,6 +514,30 @@ class _GamePageState extends State<GamePage> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildGridItem(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).extension<AppTheme>()!.get('text'),
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              color: Theme.of(context).extension<AppTheme>()!.get('text'),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
