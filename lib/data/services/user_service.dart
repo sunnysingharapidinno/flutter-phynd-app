@@ -164,7 +164,12 @@ class UserService {
     int? page,
     int? limit,
   }) async {
+<<<<<<< HEAD
     final token = await _getAuthToken();
+=======
+    const String tokenKey =
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJ3ZWIzYXV0aCIsInN1YiI6ImRlYjQ5YjljLTAxZGUtNGE3Mi05Yjg4LTk4N2I5ZTU0NzRkZiIsImlhdCI6MTc0NTQwOTUxMCwiZXhwIjoxNzQ1NDk1OTEwLCJuYmYiOjE3NDU0MDk1MTAsInJvbGVzIjpbIlBMQVlFUiJdLCJ3YWxsZXRzIjpbXSwic2lkIjoiZTMwYjZjYzQtOTA3OS00Njg4LTg1NTMtYzU4YjUxMGM4MzcwIn0.YZGgloXKvasE5IUrC3Z1SRKeo_B_wsZukPseQiF0obaet_L2AK2znLRaXFkJaoIk0r3iEEq8BKQlZm2ftQC7QSdHU6B0_twyu0xb2t9z4gsI9GL0IfLj3H6SmNwBg-AeoU24r1fusAJGhU2inG9CHY-c1UGo2kzAZE4eIYB0JZwt8JBobapgK0-NgMXuCsADQSNM0_0_CYCCa9jm4_zTPgVuEbe1bWOfjvv4auZKSkH0kTYvlgKFfW-0uoHOfdVQKkwwlYa6WnDJNBzK4N4pGwf6CrryqIQ5MzIpjpq8mWRcOal_MRDoDFAU5cdguwXQq8lsXWvWS7Bcbo4JqJeVgg';
+>>>>>>> c8194e3 (user profile design integration)
 
     try {
       final Map<String, dynamic> requestBody = {
@@ -178,7 +183,11 @@ class UserService {
         ServerAPIEndpoints.getUserQuests,
         body: requestBody,
         headers: {
+<<<<<<< HEAD
           'Authorization': 'Bearer $token',
+=======
+          'Authorization': 'Bearer $tokenKey',
+>>>>>>> c8194e3 (user profile design integration)
           'Content-Type': 'application/json',
         },
       );
