@@ -149,4 +149,5 @@ class ServerAPIEndpoints {
   static const String analyticsTrackingEvent = 'api/v1/track/event';
   static const String postReport = 'api/v1/issue-report';
   static const String gameOverView = 'api/v1/game-overview';
+  static const String getUserQuests = 'api/v1/user/quests/status/me';
 }

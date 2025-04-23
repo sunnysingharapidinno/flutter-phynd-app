@@ -16,6 +16,12 @@ class UserService {
     _initPrefs();
   }
 
+  // Constructor for quest service
+  UserService.forQuest() {
+    api = ApiService(baseUrl: ApiBaseUrl.flutterAppQuestBaseUrl.url);
+    _initPrefs();
+  }
+
   Future<void> _initPrefs() async {
     try {
       _prefs = await SharedPreferences.getInstance();
@@ -158,6 +164,61 @@ class UserService {
       }
     } catch (e) {
       print('Error fetching user details: $e');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> getUserQuests({
+    List<String>? questStatus,
+    int? page,
+    int? limit,
+  }) async {
+    const String tokenKey =
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJ3ZWIzYXV0aCIsInN1YiI6ImRlYjQ5YjljLTAxZGUtNGE3Mi05Yjg4LTk4N2I5ZTU0NzRkZiIsImlhdCI6MTc0NTQwOTUxMCwiZXhwIjoxNzQ1NDk1OTEwLCJuYmYiOjE3NDU0MDk1MTAsInJvbGVzIjpbIlBMQVlFUiJdLCJ3YWxsZXRzIjpbXSwic2lkIjoiZTMwYjZjYzQtOTA3OS00Njg4LTg1NTMtYzU4YjUxMGM4MzcwIn0.YZGgloXKvasE5IUrC3Z1SRKeo_B_wsZukPseQiF0obaet_L2AK2znLRaXFkJaoIk0r3iEEq8BKQlZm2ftQC7QSdHU6B0_twyu0xb2t9z4gsI9GL0IfLj3H6SmNwBg-AeoU24r1fusAJGhU2inG9CHY-c1UGo2kzAZE4eIYB0JZwt8JBobapgK0-NgMXuCsADQSNM0_0_CYCCa9jm4_zTPgVuEbe1bWOfjvv4auZKSkH0kTYvlgKFfW-0uoHOfdVQKkwwlYa6WnDJNBzK4N4pGwf6CrryqIQ5MzIpjpq8mWRcOal_MRDoDFAU5cdguwXQq8lsXWvWS7Bcbo4JqJeVgg';
+
+    try {
+      final Map<String, dynamic> requestBody = {
+        'quest_status': questStatus,
+        'page': page,
+        'limit': limit,
+      };
+
+      // Add query parameters to the URL for better debugging
+      final response = await api.post(
+        ServerAPIEndpoints.getUserQuests,
+        body: requestBody,
+        headers: {
+          'Authorization': 'Bearer $tokenKey',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.body.isEmpty) {
+        throw Exception('Empty response from server');
+      }
+
+      final statusCode = response.statusCode;
+      Map<String, dynamic> data;
+
+      try {
+        data = jsonDecode(response.body);
+      } catch (e) {
+        throw Exception('Invalid response format: ${response.body}');
+      }
+
+      if (statusCode == 200) {
+        print('data: $data');
+        return data;
+      } else if (statusCode == 401) {
+        // Clear the token if unauthorized
+        await clearAuthToken();
+        throw Exception('Unauthorized: Please login again');
+      } else {
+        throw Exception(data['message'] ??
+            'Quest fetch failed with status code: $statusCode');
+      }
+    } catch (e) {
+      print('Error fetching quests: $e');
       rethrow;
     }
   }

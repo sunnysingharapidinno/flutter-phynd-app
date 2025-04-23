@@ -4,8 +4,8 @@ import 'package:phynd_app/data/services/user_service.dart';
 import 'package:phynd_app/data/models/response/profile_model.dart';
 import 'package:phynd_app/presentation/layouts/base_layout.dart';
 import 'package:phynd_app/presentation/widgets/profile/profile_header.dart';
-import 'package:phynd_app/presentation/widgets/profile/stat_counter.dart';
-import 'package:phynd_app/presentation/widgets/profile/game_card.dart';
+import 'package:phynd_app/presentation/widgets/profile/favorite_games.dart';
+import 'package:phynd_app/presentation/widgets/profile/quests_in_progress.dart';
 
 class PlayerProfilePage extends StatefulWidget {
   const PlayerProfilePage({super.key});
@@ -22,7 +22,7 @@ class _PlayerProfilePageState extends State<PlayerProfilePage> {
   @override
   void initState() {
     super.initState();
-    _getUserDetails('f1b11158-fd52-45db-b74b-ea62d6a9c3ea');
+    _getUserDetails("deb49b9c-01de-4a72-9b88-987b9e5474df");
   }
 
   Future<void> _getUserDetails(String userId) async {
@@ -46,8 +46,6 @@ class _PlayerProfilePageState extends State<PlayerProfilePage> {
         ? "${_userProfile!.user.first_name} ${_userProfile!.user.last_name}"
         : "User";
 
-    print('User Profile: ${_userProfile?.user}');
-
     return BaseLayout(
       title: 'Player Profile',
       child: _isLoading
@@ -57,90 +55,90 @@ class _PlayerProfilePageState extends State<PlayerProfilePage> {
               children: [
                 // Profile Header with Banner
                 ProfileHeader(
-                  username: displayName,
-                  isOnline: true,
-                  avatar:
-                      _userProfile?.user.dp_url ?? 'assets/images/avatar.png',
-                  bannerImage: 'assets/images/profile_banner.png',
-                ),
+                    username: displayName,
+                    isOnline: true,
+                    avatar:
+                        _userProfile?.user.dp_url ?? 'assets/images/avatar.png',
+                    bannerImage: _userProfile?.user?.cover_image_url ??
+                        'assets/images/profile_banner.png',
+                    currentlyPlaying: 'Marvel Rivals'),
 
                 // Stats Row
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                Container(
+                  color: Colors.black,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: const [
-                      StatCounter(label: 'Followers', value: '0'),
-                      StatCounter(label: 'Following', value: '0'),
-                      StatCounter(label: 'PHYND Coins', value: '22'),
-                      StatCounter(label: 'Badges', value: '0'),
-                      StatCounter(label: 'Clips', value: '0'),
+                    children: [
+                      _buildStat('0', 'Followers'),
+                      _buildDivider(),
+                      _buildStat('0', 'Following'),
+                      _buildDivider(),
+                      _buildStat('11', 'PHYND Coins'),
+                      _buildDivider(),
+                      _buildStat('0', 'Badges'),
+                      _buildDivider(),
+                      _buildStat('0', 'Clips'),
                     ],
                   ),
                 ),
 
-                // Favorite Games Section
+                // Scrollable content
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                  child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Favorite Games',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context)
-                                .extension<AppTheme>()!
-                                .get('text'),
+                        // Favorite Games Section
+                        const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: SizedBox(
+                            height: 300,
+                            child: FavoriteGames(),
                           ),
                         ),
-                        const SizedBox(height: 16),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: const [
-                                GameCard(
-                                  number: 1,
-                                  name: 'Grit',
-                                  image: 'assets/images/games/grit.png',
-                                ),
-                                SizedBox(width: 12),
-                                GameCard(
-                                  number: 2,
-                                  name: 'Brawl Stars',
-                                  image: 'assets/images/games/brawl_stars.png',
-                                ),
-                                SizedBox(width: 12),
-                                GameCard(
-                                  number: 3,
-                                  name: 'Fortnite',
-                                  image: 'assets/images/games/fortnite.png',
-                                ),
-                                SizedBox(width: 12),
-                                GameCard(
-                                  number: 4,
-                                  name: 'Neon Racers',
-                                  image: 'assets/images/games/neon_racers.png',
-                                ),
-                                SizedBox(width: 12),
-                                GameCard(
-                                  number: 5,
-                                  name: 'Mario Kart',
-                                  image: 'assets/images/games/mario_kart.png',
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+
+                        // Quests in Progress Section
+                        const QuestsInProgress(),
                       ],
                     ),
                   ),
                 ),
               ],
             ),
+    );
+  }
+
+  Widget _buildStat(String value, String label) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDivider() {
+    return Container(
+      height: 24,
+      width: 1,
+      color: Colors.deepPurple,
     );
   }
 }
