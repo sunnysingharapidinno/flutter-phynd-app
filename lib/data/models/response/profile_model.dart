@@ -196,6 +196,7 @@ class UserProfile extends Equatable {
         publisher_request_status,
         roles,
         is_publisher_ban,
+        isPublisher,
       ];
 }
 
@@ -261,6 +262,8 @@ class Profile extends Equatable {
       social: SocialProfile.fromJson(json['social'] as Map<String, dynamic>),
     );
   }
+
+  bool? get isPublisher => user.isPublisher;
 
   @override
   List<Object?> get props => [user, social];
