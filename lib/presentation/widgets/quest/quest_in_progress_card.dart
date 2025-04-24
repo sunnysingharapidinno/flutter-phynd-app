@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class QuestCard extends StatelessWidget {
+class QuestInProgressCard extends StatelessWidget {
   final String imageUrl;
   final String title;
   final String gameName;
@@ -8,7 +8,7 @@ class QuestCard extends StatelessWidget {
   final int totalMissions;
   final Color cardColor;
 
-  const QuestCard({
+  const QuestInProgressCard({
     super.key,
     required this.imageUrl,
     required this.title,
