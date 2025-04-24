@@ -28,7 +28,7 @@ class _QuestListViewState extends State<QuestListView> {
         _error = null;
       });
 
-      final quests = await _questService.getUserQuestsModel(
+      final quests = await _questService.getUserQuests(
         page: 1,
         limit: 10,
       );

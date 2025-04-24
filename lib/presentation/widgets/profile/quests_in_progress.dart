@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/data/services/quest_service.dart';
 import 'package:phynd_app/data/services/user_service.dart';
-import 'package:phynd_app/presentation/widgets/profile/quest_card.dart';
+import 'package:phynd_app/presentation/widgets/quest/quest_in_progress_card.dart';
 
 class QuestsInProgress extends StatefulWidget {
   const QuestsInProgress({super.key});
@@ -30,13 +30,9 @@ class _QuestsInProgressState extends State<QuestsInProgress> {
         limit: 12,
       );
 
-      print('result: $result');
-
       setState(() {
-        if (result['data'] != null && result['data'] is List) {
-          _quests = List<Map<String, dynamic>>.from(result['data']);
-          print('_quests: $_quests');
-        }
+        // result is already a List<QuestModel> from getUserQuests
+        _quests = result.map((questModel) => questModel.toJson()).toList();
         _isLoading = false;
       });
     } catch (e) {
@@ -105,7 +101,7 @@ class _QuestsInProgressState extends State<QuestsInProgress> {
                         itemCount: _quests.length,
                         itemBuilder: (context, index) {
                           final quest = _quests[index];
-                          return QuestCard(
+                          return QuestInProgressCard(
                             imageUrl: quest['image'] ??
                                 'https://xstrela-alpha.s3.amazonaws.com/images/quest_default.jpg',
                             title: quest['name'] ?? 'Unknown Quest',
