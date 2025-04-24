@@ -54,6 +54,54 @@ class GameScreenshot {
   }
 }
 
+class Platform {
+  final String? imageUrl;
+  final String? name;
+
+  Platform({
+    this.imageUrl,
+    this.name,
+  });
+
+  factory Platform.fromJson(Map<String, dynamic> json) {
+    return Platform(
+      imageUrl: json['image_url'],
+      name: json['name'],
+    );
+  }
+
+  Map<String, String?> toMap() {
+    return {
+      'image_url': imageUrl,
+      'name': name,
+    };
+  }
+}
+
+class Controller {
+  final String? imageUrl;
+  final String? name;
+
+  Controller({
+    this.imageUrl,
+    this.name,
+  });
+
+  factory Controller.fromJson(Map<String, dynamic> json) {
+    return Controller(
+      imageUrl: json['image_url'],
+      name: json['name'],
+    );
+  }
+
+  Map<String, String?> toMap() {
+    return {
+      'image_url': imageUrl,
+      'name': name,
+    };
+  }
+}
+
 class GameDetails {
   final String gameSlug;
   final String gameTitle;
@@ -82,8 +130,8 @@ class GameDetails {
   final String? telegramLink;
   final List<String> languageSupported;
   final List<String> modes;
-  final List<Map<String, String?>> platforms;
-  final List<Map<String, String?>> controllers;
+  final List<Platform> platforms;
+  final List<Controller> controllers;
   final List<String?> browserSupport;
   final List<String?> tags;
   final String? storageRequirements;
@@ -91,76 +139,90 @@ class GameDetails {
   final String? processorRequirements;
   final String? osRequirements;
   final List<GameOverview> gameMedia;
+  final List<GameScreenshot> gameScreenshots;
   final List<String>? gamePlayModes;
   final bool? inAppPurchases;
-  final List<GameScreenshot> gameScreenshots;
   final bool? isGameFeatured;
   final bool? isFromVerifiedPublisher;
-  final bool? iframable;
   final List<String>? gameFranchise;
-  final String? publisherDisplayName;
-  final String publisherDisplayNameSlug;
+  final bool? iframable;
   final String? publisherId;
+  final String? publisherDisplayName;
+  final String? publisherType;
+  final String? parentCompanyId;
+  final String? parentCompanyName;
+  final String? parentCompanyDisplayName;
+  final String? parentCompanyType;
+  final String? esrbRatingImgUrl;
+  final String? pegiRatingImgUrl;
+  final String? rainwayGameId;
 
   GameDetails({
     required this.gameSlug,
     required this.gameTitle,
     required this.shortBio,
     required this.developers,
-    required this.isBrowserBasedGame,
-    required this.downloadUrl,
-    required this.launcherUrl,
+    this.isBrowserBasedGame,
+    this.downloadUrl,
+    this.launcherUrl,
     required this.releaseDate,
-    required this.publisherDisplayNameSlug,
-    required this.startDate,
-    required this.endDate,
-    required this.isBlockchainSupported,
-    required this.blockchainPlatform,
+    this.startDate,
+    this.endDate,
+    this.isBlockchainSupported,
+    this.blockchainPlatform,
     required this.genre,
     required this.subGenre,
-    required this.adSupported,
-    required this.contentRating,
-    required this.ageRestricted,
-    required this.cost,
-    required this.rentalDuration,
-    required this.syndicated,
-    required this.websiteUrl,
-    required this.twitterLink,
-    required this.discordLink,
-    required this.whitePaperLink,
-    required this.telegramLink,
+    this.adSupported,
+    this.contentRating,
+    this.ageRestricted,
+    this.cost,
+    this.rentalDuration,
+    this.syndicated,
+    this.websiteUrl,
+    this.twitterLink,
+    this.discordLink,
+    this.whitePaperLink,
+    this.telegramLink,
     required this.languageSupported,
     required this.modes,
     required this.platforms,
     required this.controllers,
     required this.browserSupport,
     required this.tags,
-    required this.storageRequirements,
-    required this.ramRequirements,
-    required this.processorRequirements,
-    required this.osRequirements,
+    this.storageRequirements,
+    this.ramRequirements,
+    this.processorRequirements,
+    this.osRequirements,
     required this.gameMedia,
-    required this.gamePlayModes,
-    required this.inAppPurchases,
     required this.gameScreenshots,
-    required this.isGameFeatured,
-    required this.isFromVerifiedPublisher,
-    required this.iframable,
-    required this.gameFranchise,
-    required this.publisherDisplayName,
-    required this.publisherId,
+    this.gamePlayModes,
+    this.inAppPurchases,
+    this.isGameFeatured,
+    this.isFromVerifiedPublisher,
+    this.gameFranchise,
+    this.iframable,
+    this.publisherId,
+    this.publisherDisplayName,
+    this.publisherType,
+    this.parentCompanyId,
+    this.parentCompanyName,
+    this.parentCompanyDisplayName,
+    this.parentCompanyType,
+    this.esrbRatingImgUrl,
+    this.pegiRatingImgUrl,
+    this.rainwayGameId,
   });
 
   factory GameDetails.fromJson(Map<String, dynamic> json) {
     return GameDetails(
-      gameSlug: json['game_slug'],
-      gameTitle: json['game_title'],
-      shortBio: json['short_bio'],
+      gameSlug: json['game_slug'] ?? '',
+      gameTitle: json['game_title'] ?? '',
+      shortBio: json['short_bio'] ?? '',
       developers: List<String>.from(json['developers'] ?? []),
       isBrowserBasedGame: json['is_browser_based_game'],
       downloadUrl: json['download_url'],
       launcherUrl: json['launcher_url'],
-      releaseDate: json['release_date'],
+      releaseDate: json['release_date'] ?? 0,
       startDate: json['start_date'],
       endDate: json['end_date'],
       isBlockchainSupported: json['is_blockchain_supported'],
@@ -170,7 +232,7 @@ class GameDetails {
       adSupported: json['ad_supported'],
       contentRating: json['content_rating'],
       ageRestricted: json['age_restricted'],
-      cost: json['cost'],
+      cost: json['cost']?.toString(),
       rentalDuration: json['rental_duration'],
       syndicated: json['syndicated'],
       websiteUrl: json['website_url'],
@@ -180,43 +242,44 @@ class GameDetails {
       telegramLink: json['telegram_link'],
       languageSupported: List<String>.from(json['language_supported'] ?? []),
       modes: List<String>.from(json['modes'] ?? []),
-      platforms: List<Map<String, String?>>.from(
-        (json['platforms'] as List? ?? []).map((p) => {
-              'image_url': p['image_url'] as String?,
-              'name': p['name'] as String?,
-            }),
-      ),
-      controllers: List<Map<String, String?>>.from(
-        (json['controllers'] as List? ?? []).map((p) => {
-              'image_url': p['image_url'] as String?,
-              'name': p['name'] as String?,
-            }),
-      ),
+      platforms: (json['platforms'] as List? ?? [])
+          .map((p) => Platform.fromJson(p))
+          .toList(),
+      controllers: (json['controllers'] as List? ?? [])
+          .map((c) => Controller.fromJson(c))
+          .toList(),
       browserSupport: List<String?>.from(json['browser_support'] ?? []),
       tags: List<String?>.from(json['tags'] ?? []),
       storageRequirements: json['storage_requirements'],
       ramRequirements: json['ram_requirements'],
       processorRequirements: json['processor_requirements'],
       osRequirements: json['os_requirements'],
-      gameMedia: List<GameOverview>.from(
-        (json['game_media'] ?? []).map((x) => GameOverview.fromJson(x)),
-      ),
+      gameMedia: (json['game_media'] as List? ?? [])
+          .map((x) => GameOverview.fromJson(x))
+          .toList(),
+      gameScreenshots: (json['game_screenshots'] as List? ?? [])
+          .map((x) => GameScreenshot.fromJson(x))
+          .toList(),
       gamePlayModes: json['game_play_modes'] != null
           ? List<String>.from(json['game_play_modes'])
           : null,
       inAppPurchases: json['in_app_purchases'],
-      gameScreenshots: List<GameScreenshot>.from(
-        (json['game_screenshots'] ?? []).map((x) => GameScreenshot.fromJson(x)),
-      ),
       isGameFeatured: json['is_game_featured'],
       isFromVerifiedPublisher: json['is_from_verified_publisher'],
       iframable: json['iframable'],
       gameFranchise: json['game_franchise'] != null
           ? List<String>.from(json['game_franchise'])
           : null,
-      publisherDisplayName: json['publisher_display_name'],
-      publisherDisplayNameSlug: json['publisher_display_name_slug'],
       publisherId: json['publisher_id'],
+      publisherDisplayName: json['publisher_display_name'],
+      publisherType: json['publisher_type'],
+      parentCompanyId: json['parent_company_id'],
+      parentCompanyName: json['parent_company_name'],
+      parentCompanyDisplayName: json['parent_company_display_name'],
+      parentCompanyType: json['parent_company_type'],
+      esrbRatingImgUrl: json['esrb_rating_img_url'],
+      pegiRatingImgUrl: json['pegi_rating_img_url'],
+      rainwayGameId: json['rainway_game_id'],
     );
   }
 }

@@ -3,23 +3,29 @@ import 'package:phynd_app/core/theme/app_colors.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 
 final lightThemeColors = {
-  'background': AppColors.white,
+  'bgColor': AppColors.platinum,
   'text': AppColors.black,
-  'primary': AppColors.amethyst,
-  'secondary': AppColors.blueMagentaViolet,
-  'accent': AppColors.purple,
-  'error': AppColors.red,
-  'success': AppColors.green,
-  'warning': AppColors.yellow,
-  'info': AppColors.blue,
+  'textSecondary': AppColors.textSecondaryLight,
+  'primary': AppColors.primaryPurple,
+  'secondary': AppColors.secondaryTeal,
+  'tagBg': AppColors.translucentLavender,
+  'cardBg': AppColors.cardLight,
+  'accent': AppColors.accentGold,
+  'textOnPrimary': AppColors.textOnPrimaryLight,
+  'overlay': AppColors.overlayLight,
+  'dividerColor': AppColors.dividerColorLight,
+  'borderColor': AppColors.borderColorLight,
+  'clipCardBg': AppColors.clipCardBg,
+  'clipCardOverlay': AppColors.clipCardOverlay,
+  'clipGradientStart': AppColors.clipCardGradientStart,
+  'clipGradientEnd': AppColors.clipCardGradientEnd,
+  'iconInactive': AppColors.iconInactive,
+  'pillBg': AppColors.pillBackground,
+  'clipTextPrimary': AppColors.clipTextPrimary,
+  'clipTextSecondary': AppColors.clipTextSecondary,
+  'verifiedBadgeClip': AppColors.verifiedBadgeClip,
+  'darkBlueOverlay': AppColors.darkBlueOverlay,
 };
 
-final ThemeData lightTheme = ThemeData(
-  extensions: [AppTheme(lightThemeColors)],
-  colorScheme: ColorScheme.light(
-    primary: AppColors.amethyst,
-    secondary: AppColors.blueMagentaViolet,
-    error: AppColors.red,
-  ),
-  useMaterial3: true,
-);
+final ThemeData lightTheme =
+    ThemeData(extensions: [AppTheme(lightThemeColors)]);
