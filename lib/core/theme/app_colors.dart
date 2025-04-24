@@ -65,9 +65,35 @@ class AppColors {
   static const Color iconInactive =
       Color(0xFFE0E0E0); // Very light gray for icons
   static const Color pillBackground = Color(0xCC000000); // 80% black for pills
+  static const Color clipBadge =
+      Color(0xFFE91E63); // Pink badge background for clip time
   static const Color clipTextPrimary = Color(0xFFFFFFFF); // Pure white
   static const Color clipTextSecondary =
       Color(0xFFE0E0E0); // Light gray for secondary text
   static const Color verifiedBadgeClip =
       Color(0xFF00B0FF); // Brighter blue for verified badge
+
+  // Game play card colors
+  static const Color gameCardTagColor =
+      Color(0xFF4CAF50); // Green for "FREE" tag
+  static const Color gameCardRatingColor =
+      Color(0xFFFFC107); // Amber for star ratings
+  static const Color gameCardEsrbBg =
+      Color(0xFFFFFFFF); // White for ESRB background
+  static const Color gameCardEsrbText =
+      Color(0xFF000000); // Black for ESRB text
+  static const Color gameCardEsrbBorder =
+      Color(0xFF000000); // Black for ESRB border
+
+  // Free play card colors
+  static const Color freePlayBadgeBg =
+      Color(0xCC000000); // Semi-transparent black for badge
+  static const Color freePlayFreeTagBg =
+      Color(0xFF4CAF50); // Green for FREE tag
+  static const Color freePlayGradientStart =
+      Color(0xCC000000); // 80% black for bottom gradient
+  static const Color freePlayGradientEnd =
+      Color(0x00000000); // Transparent for top gradient
+  static const Color freePlayStarColor =
+      Color(0xFFFFC107); // Amber for star ratings
 }
