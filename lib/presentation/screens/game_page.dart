@@ -3,7 +3,6 @@ import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/data/models/response/game_model.dart';
 import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/presentation/layouts/base_layout.dart';
-import 'package:phynd_app/presentation/widgets/image/image.dart';
 import 'package:phynd_app/presentation/widgets/loader/circular_load.dart';
 import 'package:phynd_app/presentation/widgets/banners/game_banner.dart';
 import 'package:phynd_app/presentation/widgets/cards/screenshot_card.dart';
@@ -57,6 +56,7 @@ class _GamePageState extends State<GamePage> {
 
   @override
   Widget build(BuildContext context) {
+    print("${_gameDetails?.gameTitle} _gameDetails");
     return BaseLayout(
       title: 'Game',
       child: SingleChildScrollView(
@@ -239,24 +239,47 @@ class _GamePageState extends State<GamePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                        'This is where the description of the game will render, including info about the type of game, the objective of the game, and any other details we want to include here. The description will be aggregated from the actual game.'),
-                                    const SizedBox(height: 16),
-                                    Text('Game Categories:'),
-                                    const SizedBox(height: 8),
-                                    Wrap(
-                                      spacing: 8.0,
-                                      runSpacing: 4.0,
-                                      children: [
-                                        Chip(label: Text('Action')),
-                                        Chip(label: Text('Adventure')),
-                                        Chip(label: Text('Racing')),
-                                      ],
-                                    ),
-                                  ],
+                                child: Container(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        _gameDetails?.shortBio ??
+                                            'This is where the description of the game will render, including info about the type of game, the objective of the game, and any other details we want to include here. The description will be aggregated from the actual game.',
+                                        style: TextStyle(
+                                          color: Theme.of(context)
+                                              .extension<AppTheme>()!
+                                              .get('text'),
+                                          fontSize: 14,
+                                          height: 1.5,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      Text(
+                                        'Game Categories:',
+                                        style: TextStyle(
+                                          color: Theme.of(context)
+                                              .extension<AppTheme>()!
+                                              .get('text'),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Wrap(
+                                        spacing: 8.0,
+                                        runSpacing: 8.0,
+                                        children: [
+                                          _buildCategoryChip(context, 'Action'),
+                                          _buildCategoryChip(
+                                              context, 'Adventure'),
+                                          _buildCategoryChip(context, 'Racing'),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 16),
@@ -266,22 +289,62 @@ class _GamePageState extends State<GamePage> {
                                   decoration: BoxDecoration(
                                     color: Theme.of(context)
                                         .extension<AppTheme>()!
-                                        .get('primary'),
+                                        .get('cardBg'),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      _buildGridItem(
-                                          'Game Rating', '4/5 Stars'),
-                                      _buildGridItem(
-                                          'Release Date', '11/2/2023'),
-                                      _buildGridItem('Developer', 'Dev Name'),
-                                      _buildGridItem('Publisher', 'Pub Name'),
-                                      _buildGridItem(
-                                          'Platforms', 'Platforms Icons'),
-                                      _buildGridItem('Controller Options',
+                                      Text(
+                                        'Game Details',
+                                        style: TextStyle(
+                                          color: Theme.of(context)
+                                              .extension<AppTheme>()!
+                                              .get('text'),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 12),
+                                      _buildGameInfoItem(
+                                          context, 'Game Rating', '4/5 Stars'),
+                                      Divider(
+                                          color: Theme.of(context)
+                                              .extension<AppTheme>()!
+                                              .get('textSecondary')
+                                              .withOpacity(0.2)),
+                                      _buildGameInfoItem(
+                                          context, 'Release Date', '11/2/2023'),
+                                      Divider(
+                                          color: Theme.of(context)
+                                              .extension<AppTheme>()!
+                                              .get('textSecondary')
+                                              .withOpacity(0.2)),
+                                      _buildGameInfoItem(
+                                          context, 'Developer', 'Dev Name'),
+                                      Divider(
+                                          color: Theme.of(context)
+                                              .extension<AppTheme>()!
+                                              .get('textSecondary')
+                                              .withOpacity(0.2)),
+                                      _buildGameInfoItem(
+                                          context, 'Publisher', 'Pub Name'),
+                                      Divider(
+                                          color: Theme.of(context)
+                                              .extension<AppTheme>()!
+                                              .get('textSecondary')
+                                              .withOpacity(0.2)),
+                                      _buildGameInfoItem(context, 'Platforms',
+                                          'Platforms Icons'),
+                                      Divider(
+                                          color: Theme.of(context)
+                                              .extension<AppTheme>()!
+                                              .get('textSecondary')
+                                              .withOpacity(0.2)),
+                                      _buildGameInfoItem(
+                                          context,
+                                          'Controller Options',
                                           'Controller Icons'),
                                     ],
                                   ),
@@ -291,10 +354,7 @@ class _GamePageState extends State<GamePage> {
                           ),
                         ),
                         const SizedBox(height: 24),
-                        // Categories Section
-                        _buildSection(
-                            context, 'Categories', Text('Categories Section')),
-                        const SizedBox(height: 24),
+
                         // Gameplay Previews Section
                         _buildSection(
                           context,
@@ -539,5 +599,58 @@ class _GamePageState extends State<GamePage> {
         ],
       ),
     );
+  }
+
+  Widget _buildCategoryChip(BuildContext context, String label) {
+    final theme = Theme.of(context).extension<AppTheme>()!;
+    return Chip(
+      label: Text(
+        label,
+        style: TextStyle(
+          color: theme.get('textOnPrimary'),
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      backgroundColor: theme.get('primary'),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    );
+  }
+
+  Widget _buildGameInfoItem(BuildContext context, String label, String value) {
+    final theme = Theme.of(context).extension<AppTheme>()!;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              color: theme.get('text'),
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              value,
+              style: TextStyle(
+                color: theme.get('textSecondary'),
+                fontSize: 14,
+              ),
+              textAlign: TextAlign.right,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatDate(int timestamp) {
+    final date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+    return '${date.month}/${date.day}/${date.year}';
   }
 }

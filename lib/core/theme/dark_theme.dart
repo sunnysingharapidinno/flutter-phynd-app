@@ -3,15 +3,18 @@ import 'package:phynd_app/core/theme/app_colors.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 
 final darkThemeColors = {
-  'bgColor': AppColors.charcoalBlue,
+  'bgColor': AppColors.darkBackground,
   'text': AppColors.white,
   'textSecondary': AppColors.textSecondaryDark,
-  'primary': AppColors.amethyst,
+  'primary': AppColors.primaryPurple,
+  'secondary': AppColors.secondaryTeal,
   'tagBg': AppColors.translucentLavender,
-  'cardBg': AppColors.cardDark,
+  'cardBg': AppColors.darkCardBg,
   'accent': AppColors.accentGold,
   'textOnPrimary': AppColors.textOnPrimaryDark,
   'overlay': AppColors.overlayDark,
+  'dividerColor': AppColors.dividerColorDark,
+  'borderColor': AppColors.borderColorDark,
   'clipCardBg': AppColors.clipCardBg,
   'clipCardOverlay': AppColors.clipCardOverlay,
   'clipGradientStart': AppColors.clipCardGradientStart,

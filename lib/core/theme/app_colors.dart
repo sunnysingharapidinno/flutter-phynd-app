@@ -17,6 +17,20 @@ class AppColors {
   static const Color platinum = Color(0xFFE0E0E0);
   static const Color translucentLavender = Color(0xCDF4F3FC);
 
+  // Dark theme colors
+  static const Color darkBackground = Color(0xFF121212);
+  static const Color darkCardBg = Color(0xFF1E1E1E);
+
+  // Primary and secondary colors
+  static const Color primaryPurple = Color(0xFF6200EE);
+  static const Color secondaryTeal = Color(0xFF03DAC6);
+
+  // Divider colors
+  static Color dividerColorDark = Colors.grey.withOpacity(0.3);
+  static Color borderColorDark = Colors.grey.withOpacity(0.2);
+  static Color dividerColorLight = Colors.grey.withOpacity(0.2);
+  static Color borderColorLight = Colors.grey.withOpacity(0.1);
+
   // Card colors
   static const Color cardLight = Color(0xFFF5F5F5);
   static const Color cardDark = Color(0xFF2A2A2A);
