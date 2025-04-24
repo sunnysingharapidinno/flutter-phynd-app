@@ -82,7 +82,13 @@ class _QuestListViewState extends State<QuestListView> {
         itemCount: _quests.length,
         itemBuilder: (context, index) {
           final quest = _quests[index];
-          return QuestInProgressCard(quest: quest);
+          return QuestInProgressCard(
+            imageUrl: quest.image,
+            title: quest.name,
+            gameName: quest.gameName,
+            completedMissions: quest.missionCompleted ?? 0,
+            totalMissions: quest.totalMissions ?? 1,
+          );
         },
       ),
     );

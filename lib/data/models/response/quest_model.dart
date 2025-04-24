@@ -26,6 +26,7 @@ class QuestModel {
   final List<Game> game;
   final int phyndCoins;
   final int phyndCoinsBonus;
+  final String gameName;
 
   QuestModel({
     required this.questId,
@@ -55,6 +56,7 @@ class QuestModel {
     required this.game,
     required this.phyndCoins,
     required this.phyndCoinsBonus,
+    required this.gameName,
   });
 
   factory QuestModel.fromJson(Map<String, dynamic> json) {
@@ -90,6 +92,7 @@ class QuestModel {
           [],
       phyndCoins: json['phynd_coins'] ?? 0,
       phyndCoinsBonus: json['phynd_coins_bonus'] ?? 0,
+      gameName: json['game_name'] ?? '',
     );
   }
 
