@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
+import 'package:phynd_app/data/services/quest_service.dart';
 import 'package:phynd_app/data/services/user_service.dart';
 import 'package:phynd_app/presentation/widgets/profile/quest_card.dart';
 
@@ -11,7 +12,7 @@ class QuestsInProgress extends StatefulWidget {
 }
 
 class _QuestsInProgressState extends State<QuestsInProgress> {
-  final UserService _userService = UserService.forQuest();
+  final QuestService _questService = QuestService();
   List<Map<String, dynamic>> _quests = [];
   bool _isLoading = true;
 
@@ -23,7 +24,7 @@ class _QuestsInProgressState extends State<QuestsInProgress> {
 
   Future<void> _fetchQuests() async {
     try {
-      final result = await _userService.getUserQuests(
+      final result = await _questService.getUserQuests(
         questStatus: ['ACTIVE'],
         page: 1,
         limit: 12,
