@@ -3,6 +3,7 @@ import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/data/services/user_service.dart';
 import 'package:phynd_app/data/models/response/profile_model.dart';
 import 'package:phynd_app/presentation/layouts/base_layout.dart';
+import 'package:phynd_app/presentation/widgets/profile/achievements_section.dart';
 import 'package:phynd_app/presentation/widgets/profile/profile_header.dart';
 import 'package:phynd_app/presentation/widgets/profile/favorite_games.dart';
 import 'package:phynd_app/presentation/widgets/profile/quests_in_progress.dart';
@@ -98,6 +99,9 @@ class _PlayerProfilePageState extends State<PlayerProfilePage> {
                             child: FavoriteGames(),
                           ),
                         ),
+
+                        // Achievements Section
+                        const AchievementsSection(),
 
                         // Quests in Progress Section
                         const QuestsInProgress(),
