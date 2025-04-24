@@ -7,6 +7,7 @@ import 'package:phynd_app/presentation/widgets/profile/achievements_section.dart
 import 'package:phynd_app/presentation/widgets/profile/profile_header.dart';
 import 'package:phynd_app/presentation/widgets/profile/favorite_games.dart';
 import 'package:phynd_app/presentation/widgets/profile/quests_in_progress.dart';
+import 'package:phynd_app/presentation/widgets/profile/recently_uploaded_clips.dart';
 
 class PlayerProfilePage extends StatefulWidget {
   const PlayerProfilePage({super.key});
@@ -100,6 +101,8 @@ class _PlayerProfilePageState extends State<PlayerProfilePage> {
                           ),
                         ),
 
+                        // Recently Uploaded Clips Section
+                        const RecentlyUploadedClips(),
                         // Achievements Section
                         const AchievementsSection(),
 
