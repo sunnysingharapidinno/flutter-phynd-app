@@ -15,6 +15,7 @@ import 'package:phynd_app/presentation/widgets/cards/game_activity_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/play_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/free_play_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/shorts_card.dart';
+import 'package:phynd_app/presentation/widgets/cards/game_trials_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -542,8 +543,124 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildFreeTrialsSection(BuildContext context) {
-    // Keep section empty for now
-    return SizedBox.shrink();
+    // Sample data for free trial games
+    final trialGames = [
+      {
+        'imageUrl':
+            'https://cdn.akamai.steamstatic.com/steam/apps/1973710/header.jpg',
+        'title': 'Heroes of Mavia',
+        'rating': 4.0,
+        'trialDuration': '1',
+        'price': '4.99',
+        'coinPrice': 12,
+        'friendAvatars': [
+          'https://i.imgur.com/VvvURHZ.jpeg',
+          'https://i.imgur.com/kxNSgIY.jpeg',
+          'https://i.imgur.com/iNKFLtW.jpeg',
+          'https://i.imgur.com/D7PVWoL.jpeg',
+        ],
+        'friendsPlayingCount': 34,
+        'onlineCount': 8,
+        'esrbRating': {
+          'Fantasy': 'Violence',
+          'Mild': 'Blood',
+        },
+      },
+      {
+        'imageUrl':
+            'https://cdn.akamai.steamstatic.com/steam/apps/1172470/header.jpg',
+        'title': 'Sea of Stars',
+        'rating': 4.5,
+        'trialDuration': '2',
+        'price': '9.99',
+        'coinPrice': 24,
+        'friendAvatars': [
+          'https://i.imgur.com/VvvURHZ.jpeg',
+          'https://i.imgur.com/kxNSgIY.jpeg',
+          'https://i.imgur.com/iNKFLtW.jpeg',
+        ],
+        'friendsPlayingCount': 56,
+        'onlineCount': 15,
+        'esrbRating': {
+          'Fantasy': 'Violence',
+          'Mild': 'Language',
+        },
+      },
+      {
+        'imageUrl':
+            'https://cdn.akamai.steamstatic.com/steam/apps/1966720/header.jpg',
+        'title': 'Palworld',
+        'rating': 4.8,
+        'trialDuration': '3',
+        'price': '14.99',
+        'coinPrice': 36,
+        'friendAvatars': [
+          'https://i.imgur.com/VvvURHZ.jpeg',
+          'https://i.imgur.com/kxNSgIY.jpeg',
+          'https://i.imgur.com/iNKFLtW.jpeg',
+          'https://i.imgur.com/D7PVWoL.jpeg',
+          'https://i.imgur.com/bm5LDrA.jpeg',
+        ],
+        'friendsPlayingCount': 89,
+        'onlineCount': 42,
+        'esrbRating': {
+          'Fantasy': 'Violence',
+          'Mild': 'Blood',
+          'Online': 'Interactions',
+        },
+      },
+      {
+        'imageUrl':
+            'https://cdn.akamai.steamstatic.com/steam/apps/1938090/header.jpg',
+        'title': 'Helldivers 2',
+        'rating': 4.7,
+        'trialDuration': '4',
+        'price': '19.99',
+        'coinPrice': 48,
+        'friendAvatars': [
+          'https://i.imgur.com/VvvURHZ.jpeg',
+          'https://i.imgur.com/kxNSgIY.jpeg',
+          'https://i.imgur.com/iNKFLtW.jpeg',
+          'https://i.imgur.com/D7PVWoL.jpeg',
+        ],
+        'friendsPlayingCount': 67,
+        'onlineCount': 23,
+        'esrbRating': {
+          'Intense': 'Violence',
+          'Strong': 'Language',
+          'Online': 'Interactions',
+        },
+      },
+    ];
+
+    return SizedBox(
+      height: 314,
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        scrollDirection: Axis.horizontal,
+        itemCount: trialGames.length,
+        itemBuilder: (context, index) {
+          final game = trialGames[index];
+          return Padding(
+            padding:
+                EdgeInsets.only(right: index < trialGames.length - 1 ? 16 : 0),
+            child: GameTrialsCard(
+              imageUrl: game['imageUrl'] as String,
+              title: game['title'] as String,
+              rating: game['rating'] as double,
+              trialDuration: game['trialDuration'] as String,
+              price: game['price'] as String,
+              coinPrice: game['coinPrice'] as int,
+              friendAvatars: (game['friendAvatars'] as List).cast<String>(),
+              friendsPlayingCount: game['friendsPlayingCount'] as int,
+              onlineCount: game['onlineCount'] as int,
+              esrbRating: (game['esrbRating'] as Map).cast<String, String>(),
+              initiallyFocused: index == 0, // First card will be expanded
+            ),
+          );
+        },
+      ),
+    );
   }
 
   Widget _buildLivestreamingSection(BuildContext context) {

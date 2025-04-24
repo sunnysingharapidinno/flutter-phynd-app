@@ -96,4 +96,24 @@ class AppColors {
       Color(0x00000000); // Transparent for top gradient
   static const Color freePlayStarColor =
       Color(0xFFFFC107); // Amber for star ratings
+
+  // Game Trial Card colors
+  static const Color trialCardBorderColor =
+      Color(0xFF2D2F3E); // Border for trial card
+  static const Color trialCardBackground =
+      Color(0xFF1A1C25); // Dark background for trial card
+  static const Color trialCardHighlight =
+      Color(0xFF3A3E52); // Highlighted elements in trial card
+  static const Color trialBadgeColor =
+      Color(0xFF3E4C8A); // Blue for "Free Trial" badge
+  static const Color trialBadgeTextColor =
+      Color(0xFFFFFFFF); // White text for badges
+  static const Color trialPriceColor = Color(0xFF43B581); // Green for price
+  static const Color trialCoinColor = Color(0xFFFFC857); // Gold color for coins
+  static const Color trialFriendsColor =
+      Color(0xFF8A8D96); // Gray for friends text
+  static const Color trialEsrbBackgroundColor =
+      Color(0xFFFFFFFF); // White for ESRB background
+  static const Color trialEsrbTextColor =
+      Color(0xFF000000); // Black for ESRB text
 }
