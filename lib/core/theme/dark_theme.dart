@@ -25,6 +25,18 @@ final darkThemeColors = {
   'clipTextPrimary': AppColors.clipTextPrimary,
   'clipTextSecondary': AppColors.clipTextSecondary,
   'verifiedBadgeClip': AppColors.verifiedBadgeClip,
+
+  // Game Trial Card theme colors
+  'trialCardBorder': AppColors.trialCardBorderColor,
+  'trialCardBg': AppColors.trialCardBackground,
+  'trialCardHighlight': AppColors.trialCardHighlight,
+  'trialBadge': AppColors.trialBadgeColor,
+  'trialBadgeText': AppColors.trialBadgeTextColor,
+  'trialPrice': AppColors.trialPriceColor,
+  'trialCoin': AppColors.trialCoinColor,
+  'trialFriends': AppColors.trialFriendsColor,
+  'trialEsrbBg': AppColors.trialEsrbBackgroundColor,
+  'trialEsrbText': AppColors.trialEsrbTextColor,
 };
 
 final ThemeData darkTheme = ThemeData(extensions: [AppTheme(darkThemeColors)]);

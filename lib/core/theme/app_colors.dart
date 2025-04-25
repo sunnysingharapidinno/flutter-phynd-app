@@ -65,9 +65,55 @@ class AppColors {
   static const Color iconInactive =
       Color(0xFFE0E0E0); // Very light gray for icons
   static const Color pillBackground = Color(0xCC000000); // 80% black for pills
+  static const Color clipBadge =
+      Color(0xFFE91E63); // Pink badge background for clip time
   static const Color clipTextPrimary = Color(0xFFFFFFFF); // Pure white
   static const Color clipTextSecondary =
       Color(0xFFE0E0E0); // Light gray for secondary text
   static const Color verifiedBadgeClip =
       Color(0xFF00B0FF); // Brighter blue for verified badge
+
+  // Game play card colors
+  static const Color gameCardTagColor =
+      Color(0xFF4CAF50); // Green for "FREE" tag
+  static const Color gameCardRatingColor =
+      Color(0xFFFFC107); // Amber for star ratings
+  static const Color gameCardEsrbBg =
+      Color(0xFFFFFFFF); // White for ESRB background
+  static const Color gameCardEsrbText =
+      Color(0xFF000000); // Black for ESRB text
+  static const Color gameCardEsrbBorder =
+      Color(0xFF000000); // Black for ESRB border
+
+  // Free play card colors
+  static const Color freePlayBadgeBg =
+      Color(0xCC000000); // Semi-transparent black for badge
+  static const Color freePlayFreeTagBg =
+      Color(0xFF4CAF50); // Green for FREE tag
+  static const Color freePlayGradientStart =
+      Color(0xCC000000); // 80% black for bottom gradient
+  static const Color freePlayGradientEnd =
+      Color(0x00000000); // Transparent for top gradient
+  static const Color freePlayStarColor =
+      Color(0xFFFFC107); // Amber for star ratings
+
+  // Game Trial Card colors
+  static const Color trialCardBorderColor =
+      Color(0xFF2D2F3E); // Border for trial card
+  static const Color trialCardBackground =
+      Color(0xFF1A1C25); // Dark background for trial card
+  static const Color trialCardHighlight =
+      Color(0xFF3A3E52); // Highlighted elements in trial card
+  static const Color trialBadgeColor =
+      Color(0xFF3E4C8A); // Blue for "Free Trial" badge
+  static const Color trialBadgeTextColor =
+      Color(0xFFFFFFFF); // White text for badges
+  static const Color trialPriceColor = Color(0xFF43B581); // Green for price
+  static const Color trialCoinColor = Color(0xFFFFC857); // Gold color for coins
+  static const Color trialFriendsColor =
+      Color(0xFF8A8D96); // Gray for friends text
+  static const Color trialEsrbBackgroundColor =
+      Color(0xFFFFFFFF); // White for ESRB background
+  static const Color trialEsrbTextColor =
+      Color(0xFF000000); // Black for ESRB text
 }
