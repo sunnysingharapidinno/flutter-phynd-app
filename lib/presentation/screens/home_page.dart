@@ -115,60 +115,43 @@ class _HomePageState extends State<HomePage> {
                   );
                 }),
 
+            PrimaryButton(
+                text: "View Video",
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    AppRoutes.video,
+                  );
+                }),
+
             // Featured Game Banner
             _buildFeaturedGameSection(context),
 
             // Latest Activity Section
-            _buildSectionHeader(context, 'Latest Activity'),
             _buildLatestActivitySection(context),
 
             // Continue Playing Section
-            _buildSectionHeader(context, 'Continue Playing'),
             _buildContinuePlayingSection(context),
 
             // Clips from Friends Section
-            _buildSectionHeader(context, 'Clips from Friends'),
             _buildClipsFromFriendsSection(context),
 
             // Free to Play Section
-            _buildSectionHeader(context, 'Free to Play'),
             _buildFreeToPlaySection(context),
 
             // Free Trials Section
-            _buildSectionHeader(context, 'Free Trials'),
             _buildFreeTrialsSection(context),
 
             // Livestreaming Now Section
-            _buildSectionHeader(context, 'Livestreaming Now'),
             _buildLivestreamingSection(context),
 
             // Shorts Section
-            _buildSectionHeader(context, 'Shorts'),
             _buildShortsSection(context),
 
             // Bottom padding
             const SizedBox(height: 24),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildSectionHeader(BuildContext context, String title) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).extension<AppTheme>()!.get('text'),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -285,37 +268,26 @@ class _HomePageState extends State<HomePage> {
       },
     ];
 
-    // ensure height fully fits the activity card to prevent overflow
-    const double _activityCardHeight = 290;
-    return SizedBox(
-      height: _activityCardHeight,
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        scrollDirection: Axis.horizontal,
-        itemCount: activityData.length,
-        itemBuilder: (context, index) {
-          final data = activityData[index];
-          return Padding(
-            padding: EdgeInsets.only(
-              right: index < activityData.length - 1 ? 16 : 0,
-            ),
-            child: GameActivityCard(
-              thumbnailUrl: data['thumbnailUrl'] as String,
-              timeAgo: data['timeAgo'] as String,
-              gameTitle: data['gameTitle'] as String,
-              duration: data['duration'] as String,
-              userName: data['userName'] as String,
-              isVerified: data['isVerified'] as bool,
-              clipTitle: data['clipTitle'] as String,
-              friendsWatchedCount: data['friendsWatchedCount'] as int,
-              friendAvatars: (data['friendAvatars'] as List).cast<String>(),
-              onTap: () {
-                // Handle tap
-              },
-            ),
-          );
-        },
-      ),
+    return HomeSection<Map<String, Object>>(
+      heading: 'Latest Activity',
+      height: 290,
+      items: activityData,
+      cardBuilder: (context, data) {
+        return GameActivityCard(
+          thumbnailUrl: data['thumbnailUrl'] as String,
+          timeAgo: data['timeAgo'] as String,
+          gameTitle: data['gameTitle'] as String,
+          duration: data['duration'] as String,
+          userName: data['userName'] as String,
+          isVerified: data['isVerified'] as bool,
+          clipTitle: data['clipTitle'] as String,
+          friendsWatchedCount: data['friendsWatchedCount'] as int,
+          friendAvatars: (data['friendAvatars'] as List).cast<String>(),
+          onTap: () {
+            // Handle tap
+          },
+        );
+      },
     );
   }
 
@@ -354,34 +326,25 @@ class _HomePageState extends State<HomePage> {
       },
     ];
 
-    return SizedBox(
+    return HomeSection<Map<String, Object>>(
+      heading: 'Continue Playing',
       height: 220,
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        scrollDirection: Axis.horizontal,
-        itemCount: continuePlayingGames.length,
-        itemBuilder: (context, index) {
-          final game = continuePlayingGames[index];
-          return Padding(
-            padding: EdgeInsets.only(
-              right: index < continuePlayingGames.length - 1 ? 16 : 0,
-            ),
-            child: PlayCard(
-              imageUrl: game['imageUrl'] as String,
-              title: game['title'] as String,
-              rating: game['rating'] as double,
-              isFree: game['isFree'] as bool,
-              isMultiplayer: game['isMultiplayer'] as bool,
-              isSinglePlayer: game['isSinglePlayer'] as bool,
-              esrbRating: game['esrbRating'] as String,
-              width: 300,
-              onTap: () {
-                // Handle navigation to game details
-              },
-            ),
-          );
-        },
-      ),
+      items: continuePlayingGames,
+      cardBuilder: (context, game) {
+        return PlayCard(
+          imageUrl: game['imageUrl'] as String,
+          title: game['title'] as String,
+          rating: game['rating'] as double,
+          isFree: game['isFree'] as bool,
+          isMultiplayer: game['isMultiplayer'] as bool,
+          isSinglePlayer: game['isSinglePlayer'] as bool,
+          esrbRating: game['esrbRating'] as String,
+          width: 300,
+          onTap: () {
+            // Handle navigation to game details
+          },
+        );
+      },
     );
   }
 
@@ -441,35 +404,26 @@ class _HomePageState extends State<HomePage> {
       },
     ];
 
-    return SizedBox(
+    return HomeSection<Map<String, Object>>(
+      heading: 'Clips from Friends',
       height: 290,
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        scrollDirection: Axis.horizontal,
-        itemCount: clipsData.length,
-        itemBuilder: (context, index) {
-          final data = clipsData[index];
-          return Padding(
-            padding: EdgeInsets.only(
-              right: index < clipsData.length - 1 ? 16 : 0,
-            ),
-            child: GameActivityCard(
-              thumbnailUrl: data['thumbnailUrl'] as String,
-              timeAgo: data['timeAgo'] as String,
-              gameTitle: data['gameTitle'] as String,
-              duration: data['duration'] as String,
-              userName: data['userName'] as String,
-              isVerified: data['isVerified'] as bool,
-              clipTitle: data['clipTitle'] as String,
-              friendsWatchedCount: data['friendsWatchedCount'] as int,
-              friendAvatars: (data['friendAvatars'] as List).cast<String>(),
-              onTap: () {
-                // Handle clip tap
-              },
-            ),
-          );
-        },
-      ),
+      items: clipsData,
+      cardBuilder: (context, data) {
+        return GameActivityCard(
+          thumbnailUrl: data['thumbnailUrl'] as String,
+          timeAgo: data['timeAgo'] as String,
+          gameTitle: data['gameTitle'] as String,
+          duration: data['duration'] as String,
+          userName: data['userName'] as String,
+          isVerified: data['isVerified'] as bool,
+          clipTitle: data['clipTitle'] as String,
+          friendsWatchedCount: data['friendsWatchedCount'] as int,
+          friendAvatars: (data['friendAvatars'] as List).cast<String>(),
+          onTap: () {
+            // Handle clip tap
+          },
+        );
+      },
     );
   }
 
@@ -511,34 +465,25 @@ class _HomePageState extends State<HomePage> {
       },
     ];
 
-    return SizedBox(
+    return HomeSection<Map<String, Object>>(
+      heading: 'Free to Play',
       height: 220,
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        scrollDirection: Axis.horizontal,
-        itemCount: freeGames.length,
-        itemBuilder: (context, index) {
-          final game = freeGames[index];
-          return Padding(
-            padding: EdgeInsets.only(
-              right: index < freeGames.length - 1 ? 16 : 0,
-            ),
-            child: FreePlayCard(
-              imageUrl: game['imageUrl'] as String,
-              title: game['title'] as String,
-              rating: game['rating'] as double,
-              isFree: game['isFree'] as bool,
-              isExclusive: game['isExclusive'] as bool,
-              isMultiplayer: game['isMultiplayer'] as bool,
-              isSinglePlayer: game['isSinglePlayer'] as bool,
-              esrbRating: game['esrbRating'] as String,
-              onTap: () {
-                // Handle game selection
-              },
-            ),
-          );
-        },
-      ),
+      items: freeGames,
+      cardBuilder: (context, game) {
+        return FreePlayCard(
+          imageUrl: game['imageUrl'] as String,
+          title: game['title'] as String,
+          rating: game['rating'] as double,
+          isFree: game['isFree'] as bool,
+          isExclusive: game['isExclusive'] as bool,
+          isMultiplayer: game['isMultiplayer'] as bool,
+          isSinglePlayer: game['isSinglePlayer'] as bool,
+          esrbRating: game['esrbRating'] as String,
+          onTap: () {
+            // Handle game selection
+          },
+        );
+      },
     );
   }
 
@@ -633,33 +578,26 @@ class _HomePageState extends State<HomePage> {
       },
     ];
 
-    return SizedBox(
+    return HomeSection<Map<String, Object>>(
+      heading: 'Free Trials',
       height: 314,
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        scrollDirection: Axis.horizontal,
-        itemCount: trialGames.length,
-        itemBuilder: (context, index) {
-          final game = trialGames[index];
-          return Padding(
-            padding:
-                EdgeInsets.only(right: index < trialGames.length - 1 ? 16 : 0),
-            child: GameTrialsCard(
-              imageUrl: game['imageUrl'] as String,
-              title: game['title'] as String,
-              rating: game['rating'] as double,
-              trialDuration: game['trialDuration'] as String,
-              price: game['price'] as String,
-              coinPrice: game['coinPrice'] as int,
-              friendAvatars: (game['friendAvatars'] as List).cast<String>(),
-              friendsPlayingCount: game['friendsPlayingCount'] as int,
-              onlineCount: game['onlineCount'] as int,
-              esrbRating: (game['esrbRating'] as Map).cast<String, String>(),
-              initiallyFocused: index == 0, // First card will be expanded
-            ),
-          );
-        },
-      ),
+      items: trialGames,
+      cardBuilder: (context, game) {
+        final index = trialGames.indexOf(game);
+        return GameTrialsCard(
+          imageUrl: game['imageUrl'] as String,
+          title: game['title'] as String,
+          rating: game['rating'] as double,
+          trialDuration: game['trialDuration'] as String,
+          price: game['price'] as String,
+          coinPrice: game['coinPrice'] as int,
+          friendAvatars: (game['friendAvatars'] as List).cast<String>(),
+          friendsPlayingCount: game['friendsPlayingCount'] as int,
+          onlineCount: game['onlineCount'] as int,
+          esrbRating: (game['esrbRating'] as Map).cast<String, String>(),
+          initiallyFocused: index == 0,
+        );
+      },
     );
   }
 
@@ -719,35 +657,26 @@ class _HomePageState extends State<HomePage> {
       },
     ];
 
-    return SizedBox(
+    return HomeSection<Map<String, Object>>(
+      heading: 'Livestreaming Now',
       height: 290,
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        scrollDirection: Axis.horizontal,
-        itemCount: livestreamData.length,
-        itemBuilder: (context, index) {
-          final data = livestreamData[index];
-          return Padding(
-            padding: EdgeInsets.only(
-              right: index < livestreamData.length - 1 ? 16 : 0,
-            ),
-            child: GameActivityCard(
-              thumbnailUrl: data['thumbnailUrl'] as String,
-              timeAgo: data['timeAgo'] as String,
-              gameTitle: data['gameTitle'] as String,
-              duration: data['duration'] as String,
-              userName: data['userName'] as String,
-              isVerified: data['isVerified'] as bool,
-              clipTitle: data['clipTitle'] as String,
-              friendsWatchedCount: data['friendsWatchedCount'] as int,
-              friendAvatars: (data['friendAvatars'] as List).cast<String>(),
-              onTap: () {
-                // Handle livestream tap
-              },
-            ),
-          );
-        },
-      ),
+      items: livestreamData,
+      cardBuilder: (context, data) {
+        return GameActivityCard(
+          thumbnailUrl: data['thumbnailUrl'] as String,
+          timeAgo: data['timeAgo'] as String,
+          gameTitle: data['gameTitle'] as String,
+          duration: data['duration'] as String,
+          userName: data['userName'] as String,
+          isVerified: data['isVerified'] as bool,
+          clipTitle: data['clipTitle'] as String,
+          friendsWatchedCount: data['friendsWatchedCount'] as int,
+          friendAvatars: (data['friendAvatars'] as List).cast<String>(),
+          onTap: () {
+            // Handle livestream tap
+          },
+        );
+      },
     );
   }
 
@@ -777,30 +706,21 @@ class _HomePageState extends State<HomePage> {
       },
     ];
 
-    return SizedBox(
+    return HomeSection<Map<String, Object>>(
+      heading: 'Shorts',
       height: 340,
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        scrollDirection: Axis.horizontal,
-        itemCount: shortsData.length,
-        itemBuilder: (context, index) {
-          final data = shortsData[index];
-          return Padding(
-            padding: EdgeInsets.only(
-              right: index < shortsData.length - 1 ? 16 : 0,
-            ),
-            child: ShortsCard(
-              thumbnailUrl: data['thumbnailUrl'] as String,
-              userName: data['userName'] as String,
-              title: data['title'] as String,
-              isVerified: data['isVerified'] as bool,
-              onTap: () {
-                // Handle short tap
-              },
-            ),
-          );
-        },
-      ),
+      items: shortsData,
+      cardBuilder: (context, data) {
+        return ShortsCard(
+          thumbnailUrl: data['thumbnailUrl'] as String,
+          userName: data['userName'] as String,
+          title: data['title'] as String,
+          isVerified: data['isVerified'] as bool,
+          onTap: () {
+            // Handle short tap
+          },
+        );
+      },
     );
   }
 }

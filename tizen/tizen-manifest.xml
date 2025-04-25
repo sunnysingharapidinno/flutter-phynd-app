@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.example.phynd_app" version="1.0.0" api-version="6.0" xmlns="http://tizen.org/ns/packages">
-    <profile name="common"/>
+<manifest package="com.example.phynd_app" version="1.0.0" api-version="6.0"
+    xmlns="http://tizen.org/ns/packages">
+    <profile name="tv"/>
     <ui-application appid="com.example.phynd_app" exec="Runner.dll" type="dotnet" multiple="false" nodisplay="false" taskmanage="true">
         <label>phynd_app</label>
         <icon>ic_launcher.png</icon>
@@ -8,4 +9,10 @@
         <metadata key="http://tizen.org/metadata/prefer_nuget_cache" value="true"/>
     </ui-application>
     <feature name="http://tizen.org/feature/screen.size.all"/>
+
+    <privileges>
+        <privilege>http://tizen.org/privilege/mediastorage</privilege>
+        <privilege>http://tizen.org/privilege/externalstorage</privilege>
+        <privilege>http://tizen.org/privilege/internet</privilege>
+    </privileges>
 </manifest>
