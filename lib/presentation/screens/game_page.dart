@@ -366,13 +366,15 @@ class _GamePageState extends State<GamePage> {
                               itemCount: 4,
                               itemBuilder: (context, index) {
                                 return GameplayClipCard(
-                                  imageUrl:
+                                  thumbnailUrl:
                                       'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                                  timeSincePosted: '${2 + index} Hrs Ago',
+                                  timeAgo: '${2 + index} Hrs Ago',
                                   duration: '8:14',
-                                  onTap: () {
-                                    // Handle gameplay clip tap
-                                  },
+                                  username: 'John Doe',
+                                  userAvatarUrl:
+                                      'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                                  isVerified: true,
+                                  clipTitle: 'Gameplay Clip ${index + 1}',
                                 );
                               },
                             ),
@@ -434,13 +436,15 @@ class _GamePageState extends State<GamePage> {
                                 // Game clips
                                 for (int i = 0; i < 3; i++)
                                   GameplayClipCard(
-                                    imageUrl:
+                                    thumbnailUrl:
                                         'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                                    timeSincePosted: '${i + 1}d ago',
+                                    timeAgo: '${i + 1}d ago',
                                     duration: '${5 + i}:${10 + i * 5}',
-                                    onTap: () {
-                                      // Handle recent clip tap
-                                    },
+                                    username: 'John Doe',
+                                    userAvatarUrl:
+                                        'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                                    isVerified: true,
+                                    clipTitle: 'Gameplay Clip ${i + 1}',
                                   ),
                               ],
                             ),

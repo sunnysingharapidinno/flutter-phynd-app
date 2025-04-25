@@ -11,23 +11,14 @@ class UserService {
   late final ApiService api;
   static const String _tokenKey = 'auth_token';
   final StorageService _storage = StorageService();
-  late SharedPreferences _prefs;
 
   UserService() {
     api = ApiService(baseUrl: baseURL);
     _initPrefs();
   }
 
-  // Constructor for quest service
-  UserService.forQuest() {
-    api = ApiService(baseUrl: ApiBaseUrl.flutterAppQuestBaseUrl.url);
-    _initPrefs();
-  }
-
   Future<void> _initPrefs() async {
-    try {
-      _prefs = await SharedPreferences.getInstance();
-    } catch (e) {
+    try {} catch (e) {
       print('Warning: Failed to initialize SharedPreferences: $e');
     }
   }
@@ -157,60 +148,6 @@ class UserService {
       }
     } catch (e) {
       print('Error fetching user details: $e');
-      rethrow;
-    }
-  }
-
-  Future<Map<String, dynamic>> getUserQuests({
-    List<String>? questStatus,
-    int? page,
-    int? limit,
-  }) async {
-    final token = await _getAuthToken();
-
-    try {
-      final Map<String, dynamic> requestBody = {
-        'quest_status': questStatus,
-        'page': page,
-        'limit': limit,
-      };
-
-      // Add query parameters to the URL for better debugging
-      final response = await api.post(
-        ServerAPIEndpoints.getUserQuests,
-        body: requestBody,
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
-
-      if (response.body.isEmpty) {
-        throw Exception('Empty response from server');
-      }
-
-      final statusCode = response.statusCode;
-      Map<String, dynamic> data;
-
-      try {
-        data = jsonDecode(response.body);
-      } catch (e) {
-        throw Exception('Invalid response format: ${response.body}');
-      }
-
-      if (statusCode == 200) {
-        print('data: $data');
-        return data;
-      } else if (statusCode == 401) {
-        // Clear the token if unauthorized
-        await clearAuthToken();
-        throw Exception('Unauthorized: Please login again');
-      } else {
-        throw Exception(data['message'] ??
-            'Quest fetch failed with status code: $statusCode');
-      }
-    } catch (e) {
-      print('Error fetching quests: $e');
       rethrow;
     }
   }

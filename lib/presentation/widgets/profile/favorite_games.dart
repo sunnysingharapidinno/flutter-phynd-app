@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/presentation/widgets/profile/game_card.dart';
+import 'package:phynd_app/presentation/widgets/common/section_heading.dart';
 
 class FavoriteGames extends StatelessWidget {
   const FavoriteGames({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context).extension<AppTheme>();
+    final textColor = theme?.get('text') ?? Colors.white;
+    final primaryColor = theme?.get('primary') ?? Colors.deepPurple;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Favorite Games',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).extension<AppTheme>()!.get('text'),
-          ),
+        SectionHeading(
+          title: 'Favorite Games',
+          textColor: textColor,
+          accentColor: primaryColor,
+          showSeeAll: false,
         ),
         const SizedBox(height: 16),
         Expanded(
