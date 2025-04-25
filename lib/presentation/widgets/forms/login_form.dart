@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:phynd_app/presentation/styles/app_typography.dart';
 import 'package:phynd_app/presentation/widgets/input_fields/password_input_field.dart';
 import 'package:phynd_app/presentation/widgets/input_fields/text_input_field.dart';
 import 'package:phynd_app/presentation/widgets/buttons/primary_button.dart';
@@ -96,13 +97,9 @@ class _LoginFormState extends State<LoginForm> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
+              AppTypography.heading5(
                 'LOG IN TO PHYND',
-                style: TextStyle(
-                  color: theme.get('text'),
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+                context: context,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
@@ -173,12 +170,10 @@ class _LoginFormState extends State<LoginForm> {
                   onPressed: () {
                     // TODO: Implement forgot password
                   },
-                  child: Text(
+                  child: AppTypography.normalTextBold(
                     'Forgot password?',
-                    style: TextStyle(
-                      color: theme.get('text'),
-                      decoration: TextDecoration.underline,
-                    ),
+                    context: context,
+                    decoration: 'underline',
                   ),
                 ),
               ),
@@ -192,20 +187,19 @@ class _LoginFormState extends State<LoginForm> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  AppTypography.normalTextBold(
                     "Don't have an account? ",
-                    style: TextStyle(color: theme.get('text')),
+                    context: context,
                   ),
                   TextButton(
                     onPressed: () {
                       // TODO: Navigate to sign up
                     },
-                    child: Text(
+                    child: AppTypography.normalTextBold(
                       'Sign up for free',
-                      style: TextStyle(
-                        color: theme.get('primary'),
-                        decoration: TextDecoration.underline,
-                      ),
+                      context: context,
+                      color: theme.get('primary'),
+                      decoration: 'underline',
                     ),
                   ),
                 ],
@@ -222,12 +216,10 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
+                    child: AppTypography.normalTextBold(
                       'OR',
-                      style: TextStyle(
-                        color: theme.get('textSecondary'),
-                        fontWeight: FontWeight.w500,
-                      ),
+                      context: context,
+                      color: theme.get('textSecondary'),
                     ),
                   ),
                   Expanded(

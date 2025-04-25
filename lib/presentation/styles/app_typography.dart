@@ -6,8 +6,6 @@ class AppTypography {
     String text, {
     Color? color,
     FontWeight? fontWeight,
-    double? opacity,
-    String? maxWidth,
     TextAlign? textAlign,
     TextOverflow? overflow,
     String? decoration,
@@ -44,8 +42,6 @@ class AppTypography {
     String text, {
     Color? color,
     FontWeight? fontWeight,
-    double? opacity,
-    String? maxWidth,
     TextAlign? textAlign,
     TextOverflow? overflow,
     String? decoration,
@@ -82,8 +78,6 @@ class AppTypography {
     String text, {
     Color? color,
     FontWeight? fontWeight,
-    double? opacity,
-    String? maxWidth,
     TextAlign? textAlign,
     TextOverflow? overflow,
     String? decoration,
@@ -120,14 +114,21 @@ class AppTypography {
     String text, {
     Color? color,
     FontWeight? fontWeight,
-    double? opacity,
-    String? maxWidth,
     TextAlign? textAlign,
     TextOverflow? overflow,
     String? decoration,
     TextStyle? style,
     int? maxLines,
+    BuildContext? context,
   }) {
+    Color textColor;
+    if (context != null) {
+      final appTheme = Theme.of(context).extension<AppTheme>()!;
+      textColor = color ?? appTheme.get('text');
+    } else {
+      textColor = color ?? Colors.black;
+    }
+
     return Text(
       text,
       style: const TextStyle(
@@ -135,7 +136,7 @@ class AppTypography {
         height: 36 / 32,
         fontWeight: FontWeight.w600,
       ).merge(style).copyWith(
-            color: color,
+            color: textColor,
             fontWeight: fontWeight,
             decoration: _getTextDecoration(decoration),
           ),
@@ -149,14 +150,21 @@ class AppTypography {
     String text, {
     Color? color,
     FontWeight? fontWeight,
-    double? opacity,
-    String? maxWidth,
     TextAlign? textAlign,
     TextOverflow? overflow,
     String? decoration,
     TextStyle? style,
     int? maxLines,
+    BuildContext? context,
   }) {
+    Color textColor;
+    if (context != null) {
+      final appTheme = Theme.of(context).extension<AppTheme>()!;
+      textColor = color ?? appTheme.get('text');
+    } else {
+      textColor = color ?? Colors.black;
+    }
+
     return Text(
       text,
       style: const TextStyle(
@@ -164,7 +172,7 @@ class AppTypography {
         height: 27 / 24,
         fontWeight: FontWeight.w600,
       ).merge(style).copyWith(
-            color: color,
+            color: textColor,
             fontWeight: fontWeight,
             decoration: _getTextDecoration(decoration),
           ),
@@ -178,14 +186,21 @@ class AppTypography {
     String text, {
     Color? color,
     FontWeight? fontWeight,
-    double? opacity,
-    String? maxWidth,
     TextAlign? textAlign,
     TextOverflow? overflow,
     String? decoration,
     TextStyle? style,
     int? maxLines,
+    BuildContext? context,
   }) {
+    Color textColor;
+    if (context != null) {
+      final appTheme = Theme.of(context).extension<AppTheme>()!;
+      textColor = color ?? appTheme.get('text');
+    } else {
+      textColor = color ?? Colors.black;
+    }
+
     return Text(
       text,
       style: const TextStyle(
@@ -193,7 +208,7 @@ class AppTypography {
         height: 28 / 32,
         fontWeight: FontWeight.normal,
       ).merge(style).copyWith(
-            color: color,
+            color: textColor,
             fontWeight: fontWeight,
             decoration: _getTextDecoration(decoration),
           ),
@@ -207,14 +222,21 @@ class AppTypography {
     String text, {
     Color? color,
     FontWeight? fontWeight,
-    double? opacity,
-    String? maxWidth,
     TextAlign? textAlign,
     TextOverflow? overflow,
     String? decoration,
     TextStyle? style,
     int? maxLines,
+    BuildContext? context,
   }) {
+    Color textColor;
+    if (context != null) {
+      final appTheme = Theme.of(context).extension<AppTheme>()!;
+      textColor = color ?? appTheme.get('text');
+    } else {
+      textColor = color ?? Colors.black;
+    }
+
     return Text(
       text,
       style: const TextStyle(
@@ -222,7 +244,7 @@ class AppTypography {
         height: 1,
         fontWeight: FontWeight.normal,
       ).merge(style).copyWith(
-            color: color,
+            color: textColor,
             fontWeight: fontWeight,
             decoration: _getTextDecoration(decoration),
           ),
@@ -236,14 +258,21 @@ class AppTypography {
     String text, {
     Color? color,
     FontWeight? fontWeight,
-    double? opacity,
-    String? maxWidth,
     TextAlign? textAlign,
     TextOverflow? overflow,
     String? decoration,
     TextStyle? style,
     int? maxLines,
+    BuildContext? context,
   }) {
+    Color textColor;
+    if (context != null) {
+      final appTheme = Theme.of(context).extension<AppTheme>()!;
+      textColor = color ?? appTheme.get('text');
+    } else {
+      textColor = color ?? Colors.black;
+    }
+
     return Text(
       text,
       style: const TextStyle(
@@ -251,7 +280,7 @@ class AppTypography {
         height: 28 / 20,
         fontWeight: FontWeight.bold,
       ).merge(style).copyWith(
-            color: color,
+            color: textColor,
             fontWeight: fontWeight,
             decoration: _getTextDecoration(decoration),
           ),
@@ -265,21 +294,28 @@ class AppTypography {
     String text, {
     Color? color,
     FontWeight? fontWeight,
-    double? opacity,
-    String? maxWidth,
     TextAlign? textAlign,
     TextOverflow? overflow,
     String? decoration,
     TextStyle? style,
     int? maxLines,
+    BuildContext? context,
   }) {
+    Color textColor;
+    if (context != null) {
+      final appTheme = Theme.of(context).extension<AppTheme>()!;
+      textColor = color ?? appTheme.get('text');
+    } else {
+      textColor = color ?? Colors.black;
+    }
+
     return Text(
       text,
       style: const TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.bold,
       ).merge(style).copyWith(
-            color: color,
+            color: textColor,
             fontWeight: fontWeight,
             decoration: _getTextDecoration(decoration),
           ),
@@ -293,8 +329,6 @@ class AppTypography {
     String text, {
     Color? color,
     FontWeight? fontWeight,
-    double? opacity,
-    String? maxWidth,
     TextAlign? textAlign,
     TextOverflow? overflow,
     String? decoration,
@@ -331,14 +365,21 @@ class AppTypography {
     String text, {
     Color? color,
     FontWeight? fontWeight,
-    double? opacity,
-    String? maxWidth,
     TextAlign? textAlign,
     TextOverflow? overflow,
     String? decoration,
     TextStyle? style,
     int? maxLines,
+    BuildContext? context,
   }) {
+    Color textColor;
+    if (context != null) {
+      final appTheme = Theme.of(context).extension<AppTheme>()!;
+      textColor = color ?? appTheme.get('text');
+    } else {
+      textColor = color ?? Colors.black;
+    }
+
     return Text(
       text,
       style: const TextStyle(
@@ -346,7 +387,7 @@ class AppTypography {
         height: 20 / 14,
         fontWeight: FontWeight.bold,
       ).merge(style).copyWith(
-            color: color,
+            color: textColor,
             fontWeight: fontWeight,
             decoration: _getTextDecoration(decoration),
           ),
@@ -360,14 +401,21 @@ class AppTypography {
     String text, {
     Color? color,
     FontWeight? fontWeight,
-    double? opacity,
-    String? maxWidth,
     TextAlign? textAlign,
     TextOverflow? overflow,
     String? decoration,
     TextStyle? style,
     int? maxLines,
+    BuildContext? context,
   }) {
+    Color textColor;
+    if (context != null) {
+      final appTheme = Theme.of(context).extension<AppTheme>()!;
+      textColor = color ?? appTheme.get('text');
+    } else {
+      textColor = color ?? Colors.black;
+    }
+
     return Text(
       text,
       style: const TextStyle(
@@ -375,7 +423,7 @@ class AppTypography {
         height: 17 / 12,
         fontWeight: FontWeight.bold,
       ).merge(style).copyWith(
-            color: color,
+            color: textColor,
             fontWeight: fontWeight,
             decoration: _getTextDecoration(decoration),
           ),
@@ -389,14 +437,21 @@ class AppTypography {
     String text, {
     Color? color,
     FontWeight? fontWeight,
-    double? opacity,
-    String? maxWidth,
     TextAlign? textAlign,
     TextOverflow? overflow,
     String? decoration,
     TextStyle? style,
     int? maxLines,
+    BuildContext? context,
   }) {
+    Color textColor;
+    if (context != null) {
+      final appTheme = Theme.of(context).extension<AppTheme>()!;
+      textColor = color ?? appTheme.get('text');
+    } else {
+      textColor = color ?? Colors.black;
+    }
+
     return Text(
       text,
       style: const TextStyle(
@@ -404,7 +459,7 @@ class AppTypography {
         height: 14 / 10,
         fontWeight: FontWeight.bold,
       ).merge(style).copyWith(
-            color: color,
+            color: textColor,
             fontWeight: fontWeight,
             decoration: _getTextDecoration(decoration),
           ),
