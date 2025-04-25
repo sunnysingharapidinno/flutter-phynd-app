@@ -11,6 +11,8 @@ class TextInputField extends StatelessWidget {
   final int? maxLines;
   final bool enabled;
   final void Function(String)? onChanged;
+  final TextStyle? style;
+  final InputDecoration? decoration;
 
   const TextInputField({
     super.key,
@@ -24,6 +26,8 @@ class TextInputField extends StatelessWidget {
     this.maxLines = 1,
     this.enabled = true,
     this.onChanged,
+    this.style,
+    this.decoration,
   });
 
   @override
@@ -31,17 +35,22 @@ class TextInputField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       focusNode: focusNode,
-      decoration: InputDecoration(
-        labelText: label,
-        border: const OutlineInputBorder(),
-        suffixIcon: suffixIcon,
-      ),
+      decoration: decoration?.copyWith(
+            labelText: label,
+            suffixIcon: suffixIcon,
+          ) ??
+          InputDecoration(
+            labelText: label,
+            border: const OutlineInputBorder(),
+            suffixIcon: suffixIcon,
+          ),
       validator: validator,
       keyboardType: keyboardType,
       obscureText: obscureText,
       maxLines: maxLines,
       enabled: enabled,
       onChanged: onChanged,
+      style: style,
     );
   }
 }
