@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import 'package:phynd_app/presentation/widgets/common/section_heading.dart';
 
 class AchievementsSection extends StatelessWidget {
   const AchievementsSection({super.key});
@@ -10,15 +11,13 @@ class AchievementsSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
-            child: Text(
-              'PHYND Achievements',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+            child: SectionHeading(
+              title: 'PHYND Achievements',
+              textColor: Colors.white,
+              accentColor: Colors.deepPurple,
+              showSeeAll: false,
             ),
           ),
           SizedBox(
