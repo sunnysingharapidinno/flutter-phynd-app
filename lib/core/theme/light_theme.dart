@@ -25,6 +25,9 @@ final lightThemeColors = {
   'clipTextSecondary': AppColors.clipTextSecondary,
   'verifiedBadgeClip': AppColors.verifiedBadgeClip,
   'darkBlueOverlay': AppColors.darkBlueOverlay,
+  'trialAvatarBorder': AppColors.trialAvatarBorder,
+  'trialAvatarOverlay': AppColors.trialAvatarOverlay,
+  'trialAvatarText': AppColors.trialAvatarText,
 };
 
 final ThemeData lightTheme =

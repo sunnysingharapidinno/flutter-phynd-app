@@ -274,15 +274,10 @@ class _HomePageState extends State<HomePage> {
       items: activityData,
       cardBuilder: (context, data) {
         return GameActivityCard(
-          thumbnailUrl: data['thumbnailUrl'] as String,
-          timeAgo: data['timeAgo'] as String,
-          gameTitle: data['gameTitle'] as String,
-          duration: data['duration'] as String,
-          userName: data['userName'] as String,
-          isVerified: data['isVerified'] as bool,
-          clipTitle: data['clipTitle'] as String,
-          friendsWatchedCount: data['friendsWatchedCount'] as int,
-          friendAvatars: (data['friendAvatars'] as List).cast<String>(),
+          imageUrl: data['thumbnailUrl'] as String,
+          title: data['clipTitle'] as String,
+          username: data['userName'] as String,
+          timestamp: data['timeAgo'] as String,
           onTap: () {
             // Handle tap
           },
@@ -410,15 +405,10 @@ class _HomePageState extends State<HomePage> {
       items: clipsData,
       cardBuilder: (context, data) {
         return GameActivityCard(
-          thumbnailUrl: data['thumbnailUrl'] as String,
-          timeAgo: data['timeAgo'] as String,
-          gameTitle: data['gameTitle'] as String,
-          duration: data['duration'] as String,
-          userName: data['userName'] as String,
-          isVerified: data['isVerified'] as bool,
-          clipTitle: data['clipTitle'] as String,
-          friendsWatchedCount: data['friendsWatchedCount'] as int,
-          friendAvatars: (data['friendAvatars'] as List).cast<String>(),
+          imageUrl: data['thumbnailUrl'] as String,
+          title: data['clipTitle'] as String,
+          username: data['userName'] as String,
+          timestamp: data['timeAgo'] as String,
           onTap: () {
             // Handle clip tap
           },
@@ -590,7 +580,7 @@ class _HomePageState extends State<HomePage> {
           rating: game['rating'] as double,
           trialDuration: game['trialDuration'] as String,
           price: game['price'] as String,
-          coinPrice: game['coinPrice'] as int,
+          coinPrice: '${game['coinPrice']}',
           friendAvatars: (game['friendAvatars'] as List).cast<String>(),
           friendsPlayingCount: game['friendsPlayingCount'] as int,
           onlineCount: game['onlineCount'] as int,
@@ -663,15 +653,10 @@ class _HomePageState extends State<HomePage> {
       items: livestreamData,
       cardBuilder: (context, data) {
         return GameActivityCard(
-          thumbnailUrl: data['thumbnailUrl'] as String,
-          timeAgo: data['timeAgo'] as String,
-          gameTitle: data['gameTitle'] as String,
-          duration: data['duration'] as String,
-          userName: data['userName'] as String,
-          isVerified: data['isVerified'] as bool,
-          clipTitle: data['clipTitle'] as String,
-          friendsWatchedCount: data['friendsWatchedCount'] as int,
-          friendAvatars: (data['friendAvatars'] as List).cast<String>(),
+          imageUrl: data['thumbnailUrl'] as String,
+          title: data['clipTitle'] as String,
+          username: data['userName'] as String,
+          timestamp: data['timeAgo'] as String,
           onTap: () {
             // Handle livestream tap
           },
