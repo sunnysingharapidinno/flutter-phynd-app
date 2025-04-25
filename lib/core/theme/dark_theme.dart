@@ -37,6 +37,9 @@ final darkThemeColors = {
   'trialFriends': AppColors.trialFriendsColor,
   'trialEsrbBg': AppColors.trialEsrbBackgroundColor,
   'trialEsrbText': AppColors.trialEsrbTextColor,
+  'trialAvatarBorder': AppColors.trialAvatarBorder,
+  'trialAvatarOverlay': AppColors.trialAvatarOverlay,
+  'trialAvatarText': AppColors.trialAvatarText,
 };
 
 final ThemeData darkTheme = ThemeData(extensions: [AppTheme(darkThemeColors)]);

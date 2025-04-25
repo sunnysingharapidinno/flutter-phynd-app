@@ -116,4 +116,10 @@ class AppColors {
       Color(0xFFFFFFFF); // White for ESRB background
   static const Color trialEsrbTextColor =
       Color(0xFF000000); // Black for ESRB text
+
+  // Friend Avatar Colors
+  static const Color trialAvatarBorder = Colors.white;
+  static const Color trialAvatarOverlay =
+      Color(0x99000000); // black with 60% opacity
+  static const Color trialAvatarText = Colors.white;
 }

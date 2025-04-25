@@ -8,7 +8,7 @@ class GameTrialsCard extends StatefulWidget {
   final double rating;
   final String? trialDuration;
   final String? price;
-  final int? coinPrice;
+  final String? coinPrice;
   final List<String>? friendAvatars;
   final int? friendsPlayingCount;
   final int? onlineCount;
@@ -185,7 +185,7 @@ class _GameTrialsCardState extends State<GameTrialsCard>
                                 end: Alignment.bottomCenter,
                                 colors: [
                                   Colors.transparent,
-                                  Colors.black.withOpacity(0.7),
+                                  theme.get('cardOverlay'),
                                 ],
                               ),
                             ),
@@ -571,6 +571,7 @@ class _GameTrialsCardState extends State<GameTrialsCard>
   }
 
   Widget _buildFriendAvatars(List<String> avatars, int totalCount) {
+    final theme = Theme.of(context).extension<AppTheme>()!;
     return Container(
       width: 120, // Fixed width to prevent infinite constraints
       height: 24,
@@ -587,7 +588,7 @@ class _GameTrialsCardState extends State<GameTrialsCard>
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: Colors.white,
+                    color: theme.get('trialAvatarBorder'),
                     width: 1.5,
                   ),
                   image: DecorationImage(
@@ -608,17 +609,17 @@ class _GameTrialsCardState extends State<GameTrialsCard>
                 height: 24,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.black.withOpacity(0.6),
+                  color: theme.get('trialAvatarOverlay'),
                   border: Border.all(
-                    color: Colors.white,
+                    color: theme.get('trialAvatarBorder'),
                     width: 1.5,
                   ),
                 ),
                 child: Center(
                   child: Text(
                     '+${totalCount - 4}',
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: theme.get('trialAvatarText'),
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
                     ),
