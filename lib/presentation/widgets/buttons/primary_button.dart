@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
+import 'package:phynd_app/presentation/styles/app_typography.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String text;
@@ -66,7 +67,7 @@ class PrimaryButton extends StatelessWidget {
                     Icon(icon, size: 20, color: appTheme.get('text')),
                     const SizedBox(width: 8),
                   ],
-                  Text(text),
+                  AppTypography.normalTextBold(text, context: context),
                 ],
               ),
       ),

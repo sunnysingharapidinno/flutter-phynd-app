@@ -7,6 +7,8 @@ class PasswordInputField extends StatefulWidget {
   final String? Function(String?)? validator;
   final bool enabled;
   final void Function(String)? onChanged;
+  final TextStyle? style;
+  final InputDecoration? decoration;
 
   const PasswordInputField({
     super.key,
@@ -16,6 +18,8 @@ class PasswordInputField extends StatefulWidget {
     this.validator,
     this.enabled = true,
     this.onChanged,
+    this.style,
+    this.decoration,
   });
 
   @override
@@ -36,20 +40,30 @@ class _PasswordInputFieldState extends State<PasswordInputField> {
     return TextFormField(
       controller: widget.controller,
       focusNode: widget.focusNode,
-      decoration: InputDecoration(
-        labelText: widget.label,
-        border: const OutlineInputBorder(),
-        suffixIcon: IconButton(
-          icon: Icon(
-            _obscureText ? Icons.visibility_off : Icons.visibility,
+      decoration: widget.decoration?.copyWith(
+            labelText: widget.label,
+            suffixIcon: IconButton(
+              icon: Icon(
+                _obscureText ? Icons.visibility_off : Icons.visibility,
+              ),
+              onPressed: _togglePasswordVisibility,
+            ),
+          ) ??
+          InputDecoration(
+            labelText: widget.label,
+            border: const OutlineInputBorder(),
+            suffixIcon: IconButton(
+              icon: Icon(
+                _obscureText ? Icons.visibility_off : Icons.visibility,
+              ),
+              onPressed: _togglePasswordVisibility,
+            ),
           ),
-          onPressed: _togglePasswordVisibility,
-        ),
-      ),
       validator: widget.validator,
       obscureText: _obscureText,
       enabled: widget.enabled,
       onChanged: widget.onChanged,
+      style: widget.style,
     );
   }
 }
