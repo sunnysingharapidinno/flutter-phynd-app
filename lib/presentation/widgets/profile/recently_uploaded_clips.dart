@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/presentation/widgets/cards/gameplay_clip_card.dart';
+import 'package:phynd_app/presentation/widgets/common/section_heading.dart';
 
 class RecentlyUploadedClips extends StatelessWidget {
   const RecentlyUploadedClips({super.key});
@@ -86,29 +87,13 @@ class RecentlyUploadedClips extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Recently Uploaded Clips',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  // Navigate to all clips
-                },
-                child: const Text(
-                  'See All',
-                  style: TextStyle(
-                    color: Colors.deepPurple,
-                  ),
-                ),
-              ),
-            ],
+          SectionHeading(
+            title: 'Recently Uploaded Clips',
+            textColor: Colors.white,
+            accentColor: Colors.deepPurple,
+            onSeeAllPressed: () {
+              // Navigate to all clips
+            },
           ),
           const SizedBox(height: 12),
 

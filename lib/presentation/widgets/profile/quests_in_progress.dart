@@ -3,6 +3,7 @@ import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/data/services/quest_service.dart';
 import 'package:phynd_app/data/services/user_service.dart';
 import 'package:phynd_app/presentation/widgets/quest/quest_in_progress_card.dart';
+import 'package:phynd_app/presentation/widgets/common/section_heading.dart';
 
 class QuestsInProgress extends StatefulWidget {
   const QuestsInProgress({super.key});
@@ -47,6 +48,7 @@ class _QuestsInProgressState extends State<QuestsInProgress> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context).extension<AppTheme>();
     final textColor = theme?.get('text') ?? Colors.white;
+    final primaryColor = theme?.get('primary') ?? Colors.blue;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -57,29 +59,13 @@ class _QuestsInProgressState extends State<QuestsInProgress> {
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: Row(
-              children: [
-                const SizedBox(width: 8),
-                Text(
-                  'Quests in Progress',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: textColor,
-                  ),
-                ),
-                const Spacer(),
-                TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    'View All',
-                    style: TextStyle(
-                      color: theme?.get('primary') ?? Colors.blue,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
+            child: SectionHeading(
+              title: 'Quests in Progress',
+              textColor: textColor,
+              accentColor: primaryColor,
+              onSeeAllPressed: () {
+                // View all quests
+              },
             ),
           ),
           const SizedBox(height: 8),
