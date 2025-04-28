@@ -5,7 +5,17 @@ import 'package:phynd_app/presentation/widgets/common/section_heading.dart';
 import 'package:phynd_app/presentation/widgets/quest/quest_in_progress_card.dart';
 
 class SuggestedQuest extends StatefulWidget {
-  const SuggestedQuest({super.key});
+  final String title;
+  final bool? isTrending;
+  final bool? isFeatured;
+  final String? sortBy;
+  const SuggestedQuest({
+    super.key,
+    this.title = 'Suggested Quests',
+    this.isTrending,
+    this.isFeatured,
+    this.sortBy,
+  });
 
   @override
   State<SuggestedQuest> createState() => _SuggestedQuestState();
@@ -24,8 +34,10 @@ class _SuggestedQuestState extends State<SuggestedQuest> {
 
   Future<void> _fetchQuests() async {
     try {
-      final result = await _questService.getUserQuests(
-        sort_by: 'RECENTLY_CREATED',
+      final result = await _questService.getQuests(
+        sort_by: widget.sortBy ?? 'RECENTLY_CREATED',
+        is_featured: widget.isFeatured,
+        is_trending: widget.isTrending,
         page: 1,
         limit: 12,
       );
@@ -59,7 +71,7 @@ class _SuggestedQuestState extends State<SuggestedQuest> {
             padding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: SectionHeading(
-              title: 'Suggested Quests',
+              title: widget.title,
               textColor: textColor,
               accentColor: primaryColor,
               onSeeAllPressed: () {
