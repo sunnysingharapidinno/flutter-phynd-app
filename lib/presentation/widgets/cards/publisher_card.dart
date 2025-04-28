@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 
 class PublisherCard extends StatelessWidget {
-  final String logoUrl;
+  final String? logoUrl;
   final String name;
   final VoidCallback? onTap;
 
   const PublisherCard({
     Key? key,
-    required this.logoUrl,
+    this.logoUrl,
     required this.name,
     this.onTap,
   }) : super(key: key);
@@ -35,11 +35,25 @@ class PublisherCard extends StatelessWidget {
               height: 64,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                image: DecorationImage(
-                  image: NetworkImage(logoUrl),
-                  fit: BoxFit.cover,
-                ),
+                color: theme.get('surface'),
               ),
+              child: logoUrl != null && logoUrl!.isNotEmpty
+                  ? ClipOval(
+                      child: Image.network(
+                        logoUrl!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Icon(
+                          Icons.business,
+                          size: 32,
+                          color: theme.get('text'),
+                        ),
+                      ),
+                    )
+                  : Icon(
+                      Icons.business,
+                      size: 32,
+                      color: theme.get('text'),
+                    ),
             ),
             const SizedBox(height: 8),
             Text(

@@ -56,7 +56,7 @@ class TermsAndConditionsPage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              'Last updated: January 1, 2024',
+              'Last updated: January 1, 2025',
               style: TextStyle(
                 fontStyle: FontStyle.italic,
                 color: Theme.of(context).extension<AppTheme>()!.get('text'),

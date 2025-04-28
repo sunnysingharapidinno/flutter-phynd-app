@@ -510,48 +510,116 @@ class _GamePageState extends State<GamePage> {
                           context,
                           'Gameplay Previews',
                           SizedBox(
-                            height: 160,
-                            child: _gameDetails?.gameMedia.isEmpty == true
-                                ? Center(
-                                    child: Text(
-                                      'No gameplay previews available',
-                                      style: TextStyle(
-                                        color: Theme.of(context)
-                                            .extension<AppTheme>()!
-                                            .get('textSecondary'),
-                                      ),
-                                    ),
-                                  )
-                                : ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: _gameDetails?.gameMedia
-                                            .where((m) =>
-                                                m.mediaType ==
-                                                GameOvMediaType.video)
-                                            .length ??
-                                        0,
-                                    itemBuilder: (context, index) {
-                                      final media = _gameDetails!.gameMedia
-                                          .where((m) =>
-                                              m.mediaType ==
-                                              GameOvMediaType.video)
-                                          .toList()[index];
-                                      return GameplayClipCard(
-                                        thumbnailUrl: media.url,
-                                        timeAgo: 'New',
-                                        duration: '0:00',
-                                        username: _gameDetails!
-                                                .publisherDisplayName ??
-                                            'Publisher',
-                                        userAvatarUrl:
-                                            'https://via.placeholder.com/40x40',
-                                        isVerified: _gameDetails
-                                                ?.isFromVerifiedPublisher ??
-                                            false,
-                                        clipTitle: media.title,
-                                      );
-                                    },
-                                  ),
+                            height: 320,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                GameplayClipCard(
+                                  thumbnailUrl:
+                                      'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/game-page-tv-screen/game-page-tv-screen/gameplay-previews/gp1/gp1.jpg',
+                                  timeAgo: 'New',
+                                  duration: '0:00',
+                                  username:
+                                      _gameDetails!.publisherDisplayName ??
+                                          'Publisher',
+                                  userAvatarUrl:
+                                      'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/game-page-tv-screen/game-page-tv-screen/gameplay-previews/gp1/logo.png',
+                                  isVerified:
+                                      _gameDetails?.isFromVerifiedPublisher ??
+                                          false,
+                                  clipTitle:
+                                      'Yooka-Laylee Rave Reviews Trailer ',
+                                ),
+                                GameplayClipCard(
+                                  thumbnailUrl:
+                                      'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/game-page-tv-screen/gameplay-previews/updates-/tile-2.jpg',
+                                  timeAgo: 'New',
+                                  duration: '0:00',
+                                  username:
+                                      _gameDetails!.publisherDisplayName ??
+                                          'Publisher',
+                                  userAvatarUrl:
+                                      'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/game-page-tv-screen/game-page-tv-screen/gameplay-previews/gp1/logo.png',
+                                  isVerified:
+                                      _gameDetails?.isFromVerifiedPublisher ??
+                                          false,
+                                  clipTitle:
+                                      'Explore Exciting and Unique Levels',
+                                ),
+                                GameplayClipCard(
+                                  thumbnailUrl:
+                                      'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/game-page-tv-screen/gameplay-previews/updates-/tile-3.webp',
+                                  timeAgo: 'New',
+                                  duration: '0:00',
+                                  username:
+                                      _gameDetails!.publisherDisplayName ??
+                                          'Publisher',
+                                  userAvatarUrl:
+                                      'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/game-page-tv-screen/game-page-tv-screen/gameplay-previews/gp1/logo.png',
+                                  isVerified:
+                                      _gameDetails?.isFromVerifiedPublisher ??
+                                          false,
+                                  clipTitle:
+                                      'Yooka-Laylee Gameplay Walkthrough',
+                                ),
+                                GameplayClipCard(
+                                  thumbnailUrl:
+                                      'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/game-page-tv-screen/gameplay-previews/updates-/tile-4-(2).webp',
+                                  timeAgo: 'New',
+                                  duration: '0:00',
+                                  username:
+                                      _gameDetails!.publisherDisplayName ??
+                                          'Publisher',
+                                  userAvatarUrl:
+                                      'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/game-page-tv-screen/game-page-tv-screen/gameplay-previews/gp1/logo.png',
+                                  isVerified:
+                                      _gameDetails?.isFromVerifiedPublisher ??
+                                          false,
+                                  clipTitle: 'First Level Walkthrough',
+                                )
+                              ],
+                            ),
+                            // child: _gameDetails?.gameMedia.isEmpty == true
+                            //     ? Center(
+                            //         child: Text(
+                            //           'No gameplay previews available',
+                            //           style: TextStyle(
+                            //             color: Theme.of(context)
+                            //                 .extension<AppTheme>()!
+                            //                 .get('textSecondary'),
+                            //           ),
+                            //         ),
+                            //       )
+                            //     : ListView.builder(
+                            //         scrollDirection: Axis.horizontal,
+                            //         itemCount: _gameDetails?.gameMedia
+                            //                 .where((m) =>
+                            //                     m.mediaType ==
+                            //                     GameOvMediaType.video)
+                            //                 .length ??
+                            //             0,
+                            //         itemBuilder: (context, index) {
+                            //           final media = _gameDetails!.gameMedia
+                            //               .where((m) =>
+                            //                   m.mediaType ==
+                            //                   GameOvMediaType.video)
+                            //               .toList()[index];
+                            //           return GameplayClipCard(
+                            //             thumbnailUrl: media.url,
+                            //             timeAgo: 'New',
+                            //             duration: '0:00',
+                            //             username: _gameDetails!
+                            //                     .publisherDisplayName ??
+                            //                 'Publisher',
+                            //             userAvatarUrl:
+                            //                 'https://via.placeholder.com/40x40',
+                            //             isVerified: _gameDetails
+                            //                     ?.isFromVerifiedPublisher ??
+                            //                 false,
+                            //             clipTitle: media.title,
+                            //           );
+                            //         },
+                            //       ),
                           ),
                         ),
                         const SizedBox(height: 24),
@@ -566,7 +634,7 @@ class _GamePageState extends State<GamePage> {
                                   Expanded(
                                     child: TournamentCard(
                                       imageUrl:
-                                          'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                                          'https://xstrela-alpha.s3.amazonaws.com/images/TournamentBanner.jpeg',
                                       onRegisterTap: () {},
                                       onBookmarkTap: () {},
                                     ),
@@ -574,7 +642,7 @@ class _GamePageState extends State<GamePage> {
                                   Expanded(
                                     child: TournamentCard(
                                       imageUrl:
-                                          'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                                          'https://xstrela-alpha.s3.amazonaws.com/images/valorantBanner.jpeg',
                                       tournamentTitle: 'CHAMPIONSHIP',
                                       sponsorNames: const [
                                         'XBOX',
@@ -611,14 +679,15 @@ class _GamePageState extends State<GamePage> {
                                 for (int i = 0; i < 3; i++)
                                   GameplayClipCard(
                                     thumbnailUrl:
-                                        'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                                        'https://xstrela-alpha.s3.amazonaws.com/images/MarvelRivals.png',
                                     timeAgo: '${i + 1}d ago',
                                     duration: '${5 + i}:${10 + i * 5}',
                                     username: 'John Doe',
                                     userAvatarUrl:
                                         'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
                                     isVerified: true,
-                                    clipTitle: 'Gameplay Clip ${i + 1}',
+                                    clipTitle:
+                                        'Winning my first round in Season 6',
                                   ),
                               ],
                             ),
@@ -634,11 +703,19 @@ class _GamePageState extends State<GamePage> {
                             child: ListView(
                               scrollDirection: Axis.horizontal,
                               children: [
+                                AdCard(
+                                  onWatchTap: () {
+                                    // Handle watch ad tap
+                                  },
+                                  onShopTap: () {
+                                    // Handle shop now tap
+                                  },
+                                ),
                                 // Game 1
                                 GamePromoCard(
                                   imageUrl:
-                                      'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                                  gameTitle: 'Crash Bandicoot 4',
+                                      'https://xstrela-alpha.s3.amazonaws.com/images/BrawlStars.jpeg',
+                                  gameTitle: 'Brawl Star',
                                   badgeText: 'Free Trial',
                                   rating: 5.0,
                                   onTap: () {
@@ -649,8 +726,8 @@ class _GamePageState extends State<GamePage> {
                                 // Game 2
                                 GamePromoCard(
                                   imageUrl:
-                                      'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                                  gameTitle: 'Crash Team Racing',
+                                      'https://xstrela-alpha.s3.amazonaws.com/images/fortniteHeros.jpeg',
+                                  gameTitle: 'Fortnite',
                                   rating: 4.5,
                                   badgeText: 'Trending',
                                   onTap: () {
@@ -661,8 +738,8 @@ class _GamePageState extends State<GamePage> {
                                 // Game 3
                                 GamePromoCard(
                                   imageUrl:
-                                      'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                                  gameTitle: 'Crash Bandicoot N. Sane Trilogy',
+                                      'https://xstrela-alpha.s3.amazonaws.com/images/NeonCarsPoster.jpeg',
+                                  gameTitle: 'Neon Racers',
                                   rating: 4.8,
                                   badgeText: 'Trending',
                                   onTap: () {

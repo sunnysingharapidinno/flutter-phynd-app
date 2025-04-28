@@ -1,174 +1,371 @@
 import 'package:flutter/material.dart';
+import 'package:phynd_app/core/routing/app_routes.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/presentation/layouts/base_layout.dart';
-import 'package:phynd_app/presentation/widgets/cards/game_activity_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/game_trials_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/publisher_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/user_card.dart';
-import 'package:phynd_app/presentation/widgets/section/section.dart';
+import 'package:phynd_app/presentation/widgets/input_fields/search_input_field.dart';
+import 'package:phynd_app/data/services/algolia_service.dart';
+import 'package:phynd_app/core/enums/algolia_index.dart';
+import 'dart:async';
 
-class SearchPage extends StatelessWidget {
+class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
+
+  @override
+  State<SearchPage> createState() => _SearchPageState();
+}
+
+class _SearchPageState extends State<SearchPage> {
+  final AlgoliaService _algoliaService = AlgoliaService();
+  final TextEditingController _searchController = TextEditingController();
+  Timer? _debounce;
+
+  List<Map<String, dynamic>> _gameResults = [];
+  List<Map<String, dynamic>> _userResults = [];
+  List<Map<String, dynamic>> _publisherResults = [];
+
+  bool _isGamesLoading = false;
+  bool _isUsersLoading = false;
+  bool _isPublishersLoading = false;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      if (query.isNotEmpty) {
+        _performSearch(query);
+      } else {
+        _clearResults();
+      }
+    });
+  }
+
+  void _clearResults() {
+    setState(() {
+      _gameResults = [];
+      _userResults = [];
+      _publisherResults = [];
+    });
+  }
+
+  Future<void> _performSearch(String query) async {
+    setState(() {
+      _isGamesLoading = true;
+      _isUsersLoading = true;
+      _isPublishersLoading = true;
+    });
+
+    await Future.wait([
+      _searchGames(query),
+      _searchUsers(query),
+      _searchPublishers(query),
+    ]);
+  }
+
+  Future<void> _searchGames(String query) async {
+    try {
+      final results = await _algoliaService.search(
+        indexName: AlgoliaIndex.games,
+        query: query,
+      );
+      if (mounted) setState(() => _gameResults = results);
+    } catch (e) {
+      debugPrint('Game search error: $e');
+    } finally {
+      if (mounted) setState(() => _isGamesLoading = false);
+    }
+  }
+
+  Future<void> _searchUsers(String query) async {
+    try {
+      final results = await _algoliaService.search(
+        indexName: AlgoliaIndex.users,
+        query: query,
+      );
+      if (mounted) setState(() => _userResults = results);
+    } catch (e) {
+      debugPrint('User search error: $e');
+    } finally {
+      if (mounted) setState(() => _isUsersLoading = false);
+    }
+  }
+
+  Future<void> _searchPublishers(String query) async {
+    try {
+      final results = await _algoliaService.search(
+        indexName: AlgoliaIndex.publishers,
+        query: query,
+      );
+      if (mounted) setState(() => _publisherResults = results);
+    } catch (e) {
+      debugPrint('Publisher search error: $e');
+    } finally {
+      if (mounted) setState(() => _isPublishersLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).extension<AppTheme>()!;
-
     return BaseLayout(
       title: 'Search',
-      child: SafeArea(
-        child: Column(
-          children: [
-            // Search bar
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search games, friends, clips...',
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: theme.get('textSecondary'),
-                  ),
-                  filled: true,
-                  fillColor: theme.get('cardBg'),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: theme.get('borderColor')),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: theme.get('borderColor')),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: theme.get('primary')),
-                  ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: SearchInputField(
+              controller: _searchController,
+              onChanged: _onSearchChanged,
+              hintText: 'Phynd Anything...',
+              isLoading:
+                  _isGamesLoading || _isUsersLoading || _isPublishersLoading,
+            ),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (_isGamesLoading || _gameResults.isNotEmpty)
+                      _buildGamesSection(theme),
+                    if (_isUsersLoading || _userResults.isNotEmpty)
+                      _buildUsersSection(theme),
+                    if (_isPublishersLoading || _publisherResults.isNotEmpty)
+                      _buildPublishersSection(theme),
+                    if (!_isGamesLoading &&
+                        !_isUsersLoading &&
+                        !_isPublishersLoading &&
+                        _gameResults.isEmpty &&
+                        _userResults.isEmpty &&
+                        _publisherResults.isEmpty &&
+                        _searchController.text.isNotEmpty)
+                      _buildNoResultsMessage(theme),
+                  ],
                 ),
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
 
-            // Scrollable content
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    // Games section
-                    Section(
-                      title: 'Games',
-                      // showViewAll: true,
-                      child: SizedBox(
-                        height: 280,
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: 5,
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(width: 16),
-                          itemBuilder: (context, index) => GameTrialsCard(
-                            imageUrl: 'https://picsum.photos/200/300',
-                            title: 'Game ${index + 1}',
-                            rating: 4.5,
-                            trialDuration: '2 hours',
-                            price: '\$59.99',
-                            coinPrice: '5000',
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // Game Publishers section
-                    Section(
-                      title: 'Game Publishers',
-                      // showViewAll: true,
-                      child: SizedBox(
-                        height: 220,
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: 5,
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(width: 16),
-                          itemBuilder: (context, index) => PublisherCard(
-                            logoUrl: 'https://picsum.photos/200/200',
-                            name: 'Publisher ${index + 1}',
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // Friends Activity section
-                    Section(
-                      title: "Friends' Activity",
-                      // showViewAll: true,
-                      child: SizedBox(
-                        height: 280,
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: 5,
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(width: 16),
-                          itemBuilder: (context, index) => GameActivityCard(
-                            imageUrl: 'https://picsum.photos/200/300',
-                            title: 'Amazing Gameplay Moment',
-                            username: 'Player${index + 1}',
-                            timestamp: '${index + 1}h ago',
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // Users section
-                    Section(
-                      title: 'Users',
-                      // showViewAll: true,
-                      child: SizedBox(
-                        height: 220,
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: 5,
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(width: 16),
-                          itemBuilder: (context, index) => UserCard(
-                            avatarUrl: 'https://picsum.photos/200/200',
-                            username: 'User${index + 1}',
-                            isOnline: index % 2 == 0,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // Free Trials section
-                    Section(
-                      title: 'Free Trials',
-                      // showViewAll: true,
-                      child: SizedBox(
-                        height: 280,
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: 5,
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(width: 16),
-                          itemBuilder: (context, index) => GameTrialsCard(
-                            imageUrl: 'https://picsum.photos/200/300',
-                            title: 'Trial Game ${index + 1}',
-                            rating: 4.0 + (index * 0.2),
-                            trialDuration: '${index + 1} hours',
-                            price: 'Free',
-                            coinPrice: '${(index + 1) * 1000}',
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+  Widget _buildNoResultsMessage(AppTheme theme) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.search_off_rounded,
+              size: 64,
+              color: theme.get('textSecondary'),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'No results found',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: theme.get('text'),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Try adjusting your search terms',
+              style: TextStyle(
+                color: theme.get('textSecondary'),
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildGamesSection(AppTheme theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            'Games',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: theme.get('text'),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          height: 280,
+          child: _isGamesLoading
+              ? const Center(child: CircularProgressIndicator())
+              : ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: _gameResults.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 16),
+                  itemBuilder: (context, index) {
+                    final game = _gameResults[index];
+                    return GameTrialsCard(
+                      imageUrl: game['image'] ?? '',
+                      title: game['name'] ?? '',
+                      rating: (game['rating'] as num?)?.toDouble() ?? 4.5,
+                      trialDuration: '2 hours',
+                      price: '\$59.99',
+                      coinPrice: '5000',
+                      friendAvatars: const [],
+                      friendsPlayingCount: 0,
+                      onlineCount: 0,
+                      esrbRating: '',
+                      onTap: () {
+                        // Convert the game map to string and parse it properly
+                        final gameString = game.toString();
+                        final objectIdMatch = RegExp(r'objectID: ([^,}]+)')
+                            .firstMatch(gameString);
+                        final gameId = objectIdMatch?.group(1);
+
+                        print('Game ObjectID: $gameId');
+
+                        if (gameId != null && gameId.isNotEmpty) {
+                          Navigator.pushNamed(
+                            context,
+                            AppRoutes.game,
+                            arguments: gameId,
+                          );
+                        }
+                      },
+                    );
+                  },
+                ),
+        ),
+        const SizedBox(height: 24),
+      ],
+    );
+  }
+
+  Widget _buildUsersSection(AppTheme theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            'Users',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: theme.get('text'),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          height: 220,
+          child: _isUsersLoading
+              ? const Center(child: CircularProgressIndicator())
+              : ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: _userResults.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 16),
+                  itemBuilder: (context, index) {
+                    final user = _userResults[index];
+                    return UserCard(
+                      avatarUrl: user['avatar'],
+                      username: user['display_name'] ?? '',
+                      isOnline: user['isOnline'] as bool? ?? false,
+                      onTap: () {
+                        final userString = user.toString();
+                        final objectIdMatch = RegExp(r'objectID: ([^,}]+)')
+                            .firstMatch(userString);
+                        final userId = objectIdMatch?.group(1);
+
+                        print('User ObjectID: $userId');
+
+                        if (userId != null && userId.isNotEmpty) {
+                          Navigator.pushNamed(
+                            context,
+                            AppRoutes.playerProfile,
+                            arguments: userId,
+                          );
+                        }
+                      },
+                    );
+                  },
+                ),
+        ),
+        const SizedBox(height: 24),
+      ],
+    );
+  }
+
+  Widget _buildPublishersSection(AppTheme theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            'Publishers',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: theme.get('text'),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          height: 220,
+          child: _isPublishersLoading
+              ? const Center(child: CircularProgressIndicator())
+              : ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: _publisherResults.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 16),
+                  itemBuilder: (context, index) {
+                    final publisher = _publisherResults[index];
+                    return PublisherCard(
+                      logoUrl: publisher['logo'],
+                      name: publisher['name'] ?? '',
+                      onTap: () {
+                        final userString = publisher.toString();
+                        final objectIdMatch = RegExp(r'objectID: ([^,}]+)')
+                            .firstMatch(userString);
+                        final userId = objectIdMatch?.group(1);
+
+                        print('User ObjectID: $userId');
+
+                        if (userId != null && userId.isNotEmpty) {
+                          Navigator.pushNamed(
+                            context,
+                            AppRoutes.publisherProfile,
+                            arguments: userId,
+                          );
+                        }
+                      },
+                    );
+                  },
+                ),
+        ),
+        const SizedBox(height: 24),
+      ],
     );
   }
 }
