@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:phynd_app/core/utils/app_theme.dart';
-import 'package:phynd_app/presentation/widgets/common/section_heading.dart';
 import 'package:phynd_app/presentation/widgets/common/profile_avatar_stack.dart';
+import 'package:phynd_app/presentation/widgets/common/section_heading.dart';
 
 class EventsOffersSection extends StatelessWidget {
   final List<Map<String, dynamic>> eventsOffers;
