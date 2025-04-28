@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/data/models/response/game_model.dart';
+import 'package:phynd_app/data/models/payload/game_payload_model.dart';
 import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/presentation/layouts/base_layout.dart';
 import 'package:phynd_app/presentation/widgets/loader/circular_load.dart';
@@ -22,7 +23,9 @@ class GamePage extends StatefulWidget {
 
 class _GamePageState extends State<GamePage> {
   GameDetails? _gameDetails;
+  List<GameDetails>? _publisherGames;
   late bool _isLoading = false;
+  late bool _isPublisherGamesLoading = false;
   final GameService _gameService = GameService();
 
   @override
@@ -46,11 +49,111 @@ class _GamePageState extends State<GamePage> {
     try {
       final details =
           await _gameService.getGameDetails(gameSlug: widget.gameSlug);
-      setState(() => _gameDetails = details);
+
+      final screenshots = [
+        GameScreenshot(
+          url:
+              'https://xstrela-alpha.s3.amazonaws.com/images/MarvelRivalsPoster.jpeg',
+          title: 'RandomTitle',
+        ),
+        GameScreenshot(
+          url:
+              'https://xstrela-alpha.s3.amazonaws.com/images/MarvelRivals3.png',
+          title: 'RandomTitle',
+        ),
+        GameScreenshot(
+          url: 'https://xstrela-alpha.s3.amazonaws.com/images/MarioKarts.png',
+          title: 'RandomTitle',
+        ),
+        GameScreenshot(
+          url:
+              'https://xstrela-alpha.s3.amazonaws.com/images/HeroesOfMavia.jpeg',
+          title: 'RandomTitle',
+        ),
+      ];
+
+      final updatedDetails = GameDetails(
+        gameSlug: details.gameSlug,
+        gameTitle: details.gameTitle,
+        shortBio: details.shortBio,
+        developers: details.developers,
+        releaseDate: details.releaseDate,
+        genre: details.genre,
+        subGenre: details.subGenre,
+        languageSupported: details.languageSupported,
+        modes: details.modes,
+        platforms: details.platforms,
+        controllers: details.controllers,
+        browserSupport: details.browserSupport,
+        tags: details.tags,
+        gameMedia: details.gameMedia,
+        gameScreenshots: screenshots,
+        isBrowserBasedGame: details.isBrowserBasedGame,
+        downloadUrl: details.downloadUrl,
+        launcherUrl: details.launcherUrl,
+        startDate: details.startDate,
+        endDate: details.endDate,
+        isBlockchainSupported: details.isBlockchainSupported,
+        blockchainPlatform: details.blockchainPlatform,
+        adSupported: details.adSupported,
+        contentRating: details.contentRating,
+        ageRestricted: details.ageRestricted,
+        cost: details.cost,
+        rentalDuration: details.rentalDuration,
+        syndicated: details.syndicated,
+        websiteUrl: details.websiteUrl,
+        twitterLink: details.twitterLink,
+        discordLink: details.discordLink,
+        whitePaperLink: details.whitePaperLink,
+        telegramLink: details.telegramLink,
+        storageRequirements: details.storageRequirements,
+        ramRequirements: details.ramRequirements,
+        processorRequirements: details.processorRequirements,
+        osRequirements: details.osRequirements,
+        gamePlayModes: details.gamePlayModes,
+        inAppPurchases: details.inAppPurchases,
+        isGameFeatured: details.isGameFeatured,
+        isFromVerifiedPublisher: details.isFromVerifiedPublisher,
+        gameFranchise: details.gameFranchise,
+        iframable: details.iframable,
+        publisherId: details.publisherId,
+        publisherDisplayName: details.publisherDisplayName,
+        publisherType: details.publisherType,
+        parentCompanyId: details.parentCompanyId,
+        parentCompanyName: details.parentCompanyName,
+        parentCompanyDisplayName: details.parentCompanyDisplayName,
+        parentCompanyType: details.parentCompanyType,
+        esrbRatingImgUrl: details.esrbRatingImgUrl,
+        pegiRatingImgUrl: details.pegiRatingImgUrl,
+        rainwayGameId: details.rainwayGameId,
+      );
+
+      setState(() => _gameDetails = updatedDetails);
+      // if (details?.publisherId != null) {
+      //   _fetchPublisherGames(details!.publisherId!);
+      // }
     } catch (e) {
       print("Error fetching game details: $e");
     } finally {
       setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _fetchPublisherGames(String publisherId) async {
+    setState(() => _isPublisherGamesLoading = true);
+
+    try {
+      final filters = GamePayload(
+        publisherId: [publisherId],
+      );
+      final games = await _gameService.getMarketplaceGames(filters: filters);
+      setState(() => _publisherGames = games.data
+          .map((game) => GameDetails.fromJson(game.toJson()))
+          .toList());
+    } catch (e) {
+      print("Error fetching publisher games: $e");
+    } finally {
+      setState(() => _isPublisherGamesLoading = false);
     }
   }
 
@@ -70,15 +173,22 @@ class _GamePageState extends State<GamePage> {
                   // Banner Section - No Padding
                   GameBanner(
                     imageUrl:
-                        'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                    gameTitle: 'CALL OF DUTY',
-                    gameSubtitle: 'MODERN WARFARE III',
-                    badgeText: 'Featured',
-                    rating: 4.5,
-                    playerCount: 254300,
-                    gameGenre: 'FPS, Action, Multiplayer',
-                    releaseDate: 'Nov 10, 2023',
-                    platforms: const ['PC', 'Xbox', 'PlayStation'],
+                        'https://xstrela-alpha.s3.amazonaws.com/images/NeonCarsPoster.jpeg',
+                    gameTitle:
+                        _gameDetails?.gameTitle.toUpperCase() ?? 'GAME TITLE',
+                    gameSubtitle:
+                        _gameDetails?.publisherDisplayName?.toUpperCase() ?? '',
+                    badgeText: _gameDetails?.isGameFeatured == true
+                        ? 'Featured'
+                        : null,
+                    rating: 4.5, // TODO: Add rating to game model
+                    playerCount: 254300, // TODO: Add player count to game model
+                    gameGenre: _gameDetails?.genre.join(', ') ?? '',
+                    releaseDate: _formatDate(_gameDetails?.releaseDate ?? 0),
+                    platforms: _gameDetails?.platforms
+                            .map((p) => p.name ?? '')
+                            .toList() ??
+                        [],
                     onPlayTap: () {
                       // Handle play now tap
                     },
@@ -215,19 +325,33 @@ class _GamePageState extends State<GamePage> {
                           'Screenshots',
                           SizedBox(
                             height: 180,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: 4,
-                              itemBuilder: (context, index) {
-                                return ScreenshotCard(
-                                  imageUrl:
-                                      'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                                  onTap: () {
-                                    // Optional additional handling when screenshot is tapped
-                                  },
-                                );
-                              },
-                            ),
+                            child: _gameDetails?.gameScreenshots.isEmpty == true
+                                ? Center(
+                                    child: Text(
+                                      'No screenshots available',
+                                      style: TextStyle(
+                                        color: Theme.of(context)
+                                            .extension<AppTheme>()!
+                                            .get('textSecondary'),
+                                      ),
+                                    ),
+                                  )
+                                : ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount:
+                                        _gameDetails?.gameScreenshots.length ??
+                                            0,
+                                    itemBuilder: (context, index) {
+                                      final screenshot =
+                                          _gameDetails!.gameScreenshots[index];
+                                      return ScreenshotCard(
+                                        imageUrl: screenshot.url,
+                                        onTap: () {
+                                          // Optional additional handling when screenshot is tapped
+                                        },
+                                      );
+                                    },
+                                  ),
                           ),
                         ),
                         const SizedBox(height: 24),
@@ -247,7 +371,7 @@ class _GamePageState extends State<GamePage> {
                                     children: [
                                       Text(
                                         _gameDetails?.shortBio ??
-                                            'This is where the description of the game will render, including info about the type of game, the objective of the game, and any other details we want to include here. The description will be aggregated from the actual game.',
+                                            'Game description not available.',
                                         style: TextStyle(
                                           color: Theme.of(context)
                                               .extension<AppTheme>()!
@@ -272,10 +396,17 @@ class _GamePageState extends State<GamePage> {
                                         spacing: 8.0,
                                         runSpacing: 8.0,
                                         children: [
-                                          _buildCategoryChip(context, 'Action'),
-                                          _buildCategoryChip(
-                                              context, 'Adventure'),
-                                          _buildCategoryChip(context, 'Racing'),
+                                          ..._gameDetails?.genre.map(
+                                                (genre) => _buildCategoryChip(
+                                                    context, genre),
+                                              ) ??
+                                              [],
+                                          ..._gameDetails?.subGenre.map(
+                                                (subGenre) =>
+                                                    _buildCategoryChip(
+                                                        context, subGenre),
+                                              ) ??
+                                              [],
                                         ],
                                       ),
                                     ],
@@ -315,28 +446,43 @@ class _GamePageState extends State<GamePage> {
                                               .get('textSecondary')
                                               .withOpacity(0.2)),
                                       _buildGameInfoItem(
-                                          context, 'Release Date', '11/2/2023'),
+                                          context,
+                                          'Release Date',
+                                          _formatDate(
+                                              _gameDetails?.releaseDate ?? 0)),
                                       Divider(
                                           color: Theme.of(context)
                                               .extension<AppTheme>()!
                                               .get('textSecondary')
                                               .withOpacity(0.2)),
                                       _buildGameInfoItem(
-                                          context, 'Developer', 'Dev Name'),
+                                          context,
+                                          'Developer',
+                                          _gameDetails?.developers.join(', ') ??
+                                              'N/A'),
                                       Divider(
                                           color: Theme.of(context)
                                               .extension<AppTheme>()!
                                               .get('textSecondary')
                                               .withOpacity(0.2)),
                                       _buildGameInfoItem(
-                                          context, 'Publisher', 'Pub Name'),
+                                          context,
+                                          'Publisher',
+                                          _gameDetails?.publisherDisplayName ??
+                                              'N/A'),
                                       Divider(
                                           color: Theme.of(context)
                                               .extension<AppTheme>()!
                                               .get('textSecondary')
                                               .withOpacity(0.2)),
-                                      _buildGameInfoItem(context, 'Platforms',
-                                          'Platforms Icons'),
+                                      _buildGameInfoItem(
+                                          context,
+                                          'Platforms',
+                                          _gameDetails?.platforms
+                                                  .map((p) => p.name)
+                                                  .where((name) => name != null)
+                                                  .join(', ') ??
+                                              'N/A'),
                                       Divider(
                                           color: Theme.of(context)
                                               .extension<AppTheme>()!
@@ -345,7 +491,11 @@ class _GamePageState extends State<GamePage> {
                                       _buildGameInfoItem(
                                           context,
                                           'Controller Options',
-                                          'Controller Icons'),
+                                          _gameDetails?.controllers
+                                                  .map((c) => c.name)
+                                                  .where((name) => name != null)
+                                                  .join(', ') ??
+                                              'N/A'),
                                     ],
                                   ),
                                 ),
@@ -361,23 +511,47 @@ class _GamePageState extends State<GamePage> {
                           'Gameplay Previews',
                           SizedBox(
                             height: 160,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: 4,
-                              itemBuilder: (context, index) {
-                                return GameplayClipCard(
-                                  thumbnailUrl:
-                                      'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                                  timeAgo: '${2 + index} Hrs Ago',
-                                  duration: '8:14',
-                                  username: 'John Doe',
-                                  userAvatarUrl:
-                                      'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                                  isVerified: true,
-                                  clipTitle: 'Gameplay Clip ${index + 1}',
-                                );
-                              },
-                            ),
+                            child: _gameDetails?.gameMedia.isEmpty == true
+                                ? Center(
+                                    child: Text(
+                                      'No gameplay previews available',
+                                      style: TextStyle(
+                                        color: Theme.of(context)
+                                            .extension<AppTheme>()!
+                                            .get('textSecondary'),
+                                      ),
+                                    ),
+                                  )
+                                : ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: _gameDetails?.gameMedia
+                                            .where((m) =>
+                                                m.mediaType ==
+                                                GameOvMediaType.video)
+                                            .length ??
+                                        0,
+                                    itemBuilder: (context, index) {
+                                      final media = _gameDetails!.gameMedia
+                                          .where((m) =>
+                                              m.mediaType ==
+                                              GameOvMediaType.video)
+                                          .toList()[index];
+                                      return GameplayClipCard(
+                                        thumbnailUrl: media.url,
+                                        timeAgo: 'New',
+                                        duration: '0:00',
+                                        username: _gameDetails!
+                                                .publisherDisplayName ??
+                                            'Publisher',
+                                        userAvatarUrl:
+                                            'https://via.placeholder.com/40x40',
+                                        isVerified: _gameDetails
+                                                ?.isFromVerifiedPublisher ??
+                                            false,
+                                        clipTitle: media.title,
+                                      );
+                                    },
+                                  ),
                           ),
                         ),
                         const SizedBox(height: 24),
@@ -420,7 +594,7 @@ class _GamePageState extends State<GamePage> {
                           context,
                           'Recent Clips and Streams',
                           SizedBox(
-                            height: 160,
+                            height: 280,
                             child: ListView(
                               scrollDirection: Axis.horizontal,
                               children: [
@@ -654,7 +828,22 @@ class _GamePageState extends State<GamePage> {
   }
 
   String _formatDate(int timestamp) {
+    if (timestamp == 0) return 'TBA';
     final date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
-    return '${date.month}/${date.day}/${date.year}';
+    final months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
+    return '${months[date.month - 1]} ${date.day}, ${date.year}';
   }
 }

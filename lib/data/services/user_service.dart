@@ -4,7 +4,6 @@ import 'package:phynd_app/core/enums/api_env.dart';
 import 'package:phynd_app/core/utils/api_service.dart';
 import 'package:phynd_app/core/utils/storage_service.dart';
 import 'package:phynd_app/data/models/response/profile_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UserService {
   final String baseURL = ApiBaseUrl.flutterAppUserBaseUrl.url;

@@ -29,7 +29,7 @@ class GameService {
     }
   }
 
-  Future<({int count, List<Game> data})> getMarketplaceGames({
+  Future<({int count, List<GameItem> data})> getMarketplaceGames({
     int page = 1,
     int limit = AppConfig.pageLimit,
     GamePayload? filters,
@@ -51,7 +51,8 @@ class GameService {
         'publisher_id': mergedStudioIds.isNotEmpty ? mergedStudioIds : null,
         'featured_type': featuredTypes,
         'game_chain': [],
-        'network': "WEB3"
+        'network': "WEB3",
+        'external_category': "gaming"
         // 'network': filters?.network ?? 'web3',
       };
 
@@ -61,8 +62,8 @@ class GameService {
       );
 
       final data = json.decode(response.body);
-      final List<Game> games = (data['games'] as List)
-          .map((gameJson) => Game.fromJson(gameJson))
+      final List<GameItem> games = (data['games'] as List)
+          .map((gameJson) => GameItem.fromJson(gameJson))
           .toList();
 
       return (count: data['count'] as int, data: games);

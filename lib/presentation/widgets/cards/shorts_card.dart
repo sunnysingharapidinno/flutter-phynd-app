@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
-import 'package:phynd_app/core/theme/app_colors.dart';
 
 class ShortsCard extends StatelessWidget {
   final String thumbnailUrl;
