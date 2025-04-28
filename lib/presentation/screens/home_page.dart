@@ -167,14 +167,14 @@ class _HomePageState extends State<HomePage> {
             //       );
             //     }),
 
-            PrimaryButton(
-                text: "View Video",
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    AppRoutes.video,
-                  );
-                }),
+            // PrimaryButton(
+            //     text: "View Video",
+            //     onPressed: () {
+            //       Navigator.pushNamed(
+            //         context,
+            //         AppRoutes.video,
+            //       );
+            //     }),
 
             // Featured Game Banner
             _buildFeaturedGameSection(context),
