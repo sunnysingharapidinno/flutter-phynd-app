@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:phynd_app/core/theme/app_colors.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 
 class GameTrialsCard extends StatefulWidget {
@@ -15,7 +14,7 @@ class GameTrialsCard extends StatefulWidget {
   final List<PlatformIcon>? platforms;
   final List<ControllerIcon>? controllers;
   final VoidCallback? onTap;
-  final Map<String, String>? esrbRating;
+  final String? esrbRating;
   final bool initiallyFocused;
 
   const GameTrialsCard({

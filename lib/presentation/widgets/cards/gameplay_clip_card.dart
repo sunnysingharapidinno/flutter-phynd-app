@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:phynd_app/core/utils/app_theme.dart';
 
 class GameplayClipCard extends StatefulWidget {
   final String thumbnailUrl;
@@ -60,7 +59,7 @@ class _GameplayClipCardState extends State<GameplayClipCard> {
           focusNode: _focusNode,
           child: Container(
             width: 320,
-            margin: const EdgeInsets.only(right: 16, bottom: 16),
+            margin: const EdgeInsets.only(right: 16, bottom: 0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               color: Colors.black26,

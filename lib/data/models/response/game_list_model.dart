@@ -1,4 +1,4 @@
-class Game {
+class GameItem {
   final List<String>? category;
   final String? companyImage;
   final String? companyName;
@@ -24,7 +24,7 @@ class Game {
   final String slug;
   final String? summary;
 
-  Game({
+  GameItem({
     this.category,
     this.companyImage,
     this.companyName,
@@ -51,8 +51,8 @@ class Game {
     this.summary,
   });
 
-  factory Game.fromJson(Map<String, dynamic> json) {
-    return Game(
+  factory GameItem.fromJson(Map<String, dynamic> json) {
+    return GameItem(
       // Filter out null values in arrays
       category: json['category'] != null
           ? List<String>.from(

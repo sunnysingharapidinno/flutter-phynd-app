@@ -226,21 +226,16 @@ class FreePlayCard extends StatelessWidget {
                         // ESRB Rating
                         if (esrbRating != null)
                           Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: AppColors.gameCardEsrbBg,
-                              borderRadius: BorderRadius.circular(4),
-                              border: Border.all(
-                                color: AppColors.gameCardEsrbBorder,
-                                width: 1,
-                              ),
-                            ),
-                            child: Text(
+                            width: 33.219,
+                            height: 40,
+                            child: Image.network(
                               esrbRating!,
-                              style: const TextStyle(
-                                color: AppColors.gameCardEsrbText,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Icon(
+                                Icons.image_not_supported,
+                                color: theme.get('onSurface'),
+                                size: 16,
                               ),
                             ),
                           ),

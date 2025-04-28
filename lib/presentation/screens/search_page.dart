@@ -55,7 +55,7 @@ class SearchPage extends StatelessWidget {
                     // Games section
                     Section(
                       title: 'Games',
-                      showViewAll: true,
+                      // showViewAll: true,
                       child: SizedBox(
                         height: 280,
                         child: ListView.separated(
@@ -79,7 +79,7 @@ class SearchPage extends StatelessWidget {
                     // Game Publishers section
                     Section(
                       title: 'Game Publishers',
-                      showViewAll: true,
+                      // showViewAll: true,
                       child: SizedBox(
                         height: 220,
                         child: ListView.separated(
@@ -99,7 +99,7 @@ class SearchPage extends StatelessWidget {
                     // Friends Activity section
                     Section(
                       title: "Friends' Activity",
-                      showViewAll: true,
+                      // showViewAll: true,
                       child: SizedBox(
                         height: 280,
                         child: ListView.separated(
@@ -121,7 +121,7 @@ class SearchPage extends StatelessWidget {
                     // Users section
                     Section(
                       title: 'Users',
-                      showViewAll: true,
+                      // showViewAll: true,
                       child: SizedBox(
                         height: 220,
                         child: ListView.separated(
@@ -142,7 +142,7 @@ class SearchPage extends StatelessWidget {
                     // Free Trials section
                     Section(
                       title: 'Free Trials',
-                      showViewAll: true,
+                      // showViewAll: true,
                       child: SizedBox(
                         height: 280,
                         child: ListView.separated(
