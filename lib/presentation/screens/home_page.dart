@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/enums/marketplace.dart';
 import 'package:phynd_app/core/routing/app_routes.dart';
@@ -24,6 +26,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late PageController _featuredPageController;
+  Timer? _featuredTimer;
+  int _currentFeaturedIndex = 0;
+
   List<GameItem>? _featGamesList;
   late bool _isFeatGamesLoading = false;
 
@@ -41,10 +47,36 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _fetchFeatGameList();
+    _featuredPageController = PageController();
+    _fetchFeatGameList().then((_) {
+      _startFeaturedTimer();
+    });
     _fetchTrendGameList();
     _fetchNewGameList();
     // _fetchBrowseGameList();
+  }
+
+  void _startFeaturedTimer() {
+    _featuredTimer?.cancel();
+    _featuredTimer = Timer.periodic(const Duration(seconds: 7), (timer) {
+      if (_featGamesList != null &&
+          _featGamesList!.isNotEmpty &&
+          _featuredPageController.hasClients) {
+        int nextPage = (_currentFeaturedIndex + 1) % _featGamesList!.length;
+        _featuredPageController.animateToPage(
+          nextPage,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _featuredTimer?.cancel();
+    _featuredPageController.dispose();
+    super.dispose();
   }
 
   Future<void> _fetchFeatGameList() async {
@@ -311,40 +343,48 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildFeaturedGameSection(BuildContext context) {
     if (_isFeatGamesLoading) {
-      return Center(child: CircularLoad());
+      return const Center(child: CircularLoad());
     }
 
-    if (_featGamesList?.isNotEmpty == true) {
-      final featuredGame = _featGamesList!.first;
+    if (_featGamesList == null || _featGamesList!.isEmpty) {
       return GameBanner(
-        imageUrl: featuredGame.image ??
-            'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        gameTitle: featuredGame.name.toUpperCase(),
-        gameSubtitle: featuredGame.publisherDisplayName?.toUpperCase() ?? '',
+        gameTitle: 'CRASH BANDICOOT 4',
+        gameSubtitle: 'IT\'S ABOUT TIME',
         badgeText: 'Featured',
-        rating: 4.5,
-        playerCount: 254300,
-        gameGenre: featuredGame.category?.join(', ') ?? 'Action, Adventure',
-        releaseDate: featuredGame.firstReleaseDate != null
-            ? _formatDate(featuredGame.firstReleaseDate!)
-            : 'Nov 10, 2023',
-        platforms: featuredGame.platform ?? ['PC', 'Xbox', 'PlayStation'],
-        onPlayTap: () {
-          Navigator.pushNamed(
-            context,
-            AppRoutes.game,
-            arguments: featuredGame.slug,
-          );
-        },
+        onPlayTap: () {},
       );
     }
 
-    // Fallback banner if no featured games are available
-    return GameBanner(
-      gameTitle: 'CRASH BANDICOOT 4',
-      gameSubtitle: 'IT\'S ABOUT TIME',
-      badgeText: 'Featured',
-      onPlayTap: () {},
+    return SizedBox(
+      height: 500, // Adjust this height as needed
+      child: PageView.builder(
+        controller: _featuredPageController,
+        itemCount: _featGamesList!.length,
+        onPageChanged: (index) {
+          setState(() {
+            _currentFeaturedIndex = index;
+          });
+        },
+        itemBuilder: (context, index) {
+          final featuredGame = _featGamesList![index];
+          return GameBanner(
+            imageUrl:
+                featuredGame.image ?? 'https://via.placeholder.com/1920x1080',
+            gameTitle: featuredGame.name.toUpperCase(),
+            gameSubtitle:
+                featuredGame.publisherDisplayName?.toUpperCase() ?? '',
+            badgeText: 'Featured',
+            rating: 4.5,
+            playerCount: 254300,
+            gameGenre: featuredGame.category?.join(', ') ?? 'Action, Adventure',
+            releaseDate: featuredGame.firstReleaseDate != null
+                ? _formatDate(featuredGame.firstReleaseDate!)
+                : 'Nov 10, 2023',
+            platforms: featuredGame.platform ?? ['PC', 'Xbox', 'PlayStation'],
+            onPlayTap: () {},
+          );
+        },
+      ),
     );
   }
 
@@ -372,13 +412,13 @@ class _HomePageState extends State<HomePage> {
     final activityData = [
       {
         'thumbnailUrl':
-            'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/heros-home-screen/latest-activity/tile-3/tile-3.png',
         'timeAgo': '2 Hrs Ago',
-        'gameTitle': 'Marvel Rivals',
+        'gameTitle': 'SNK_Corp',
         'duration': '8:14',
         'userName': 'OutofOrbit',
         'isVerified': true,
-        'clipTitle': 'How to Use Doctor Strange Portals',
+        'clipTitle': 'Updates for Samurai Shodown',
         'friendsWatchedCount': 34,
         'friendAvatars': [
           'https://i.imgur.com/VvvURHZ.jpeg',
@@ -389,13 +429,14 @@ class _HomePageState extends State<HomePage> {
         ],
       },
       {
-        'thumbnailUrl': 'https://i.imgur.com/Nl7KAXw.jpeg',
+        'thumbnailUrl':
+            'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/heros-home-screen/latest-activity/tile-4/tile-4.jpg',
         'timeAgo': '5 Hrs Ago',
         'gameTitle': 'Fortnite',
         'duration': '3:45',
-        'userName': 'GamerPro',
+        'userName': 'NetEase_Games',
         'isVerified': false,
-        'clipTitle': 'Epic Victory Royale in Chapter 5',
+        'clipTitle': 'Early Access now!',
         'friendsWatchedCount': 18,
         'friendAvatars': [
           'https://i.imgur.com/VvvURHZ.jpeg',
@@ -404,13 +445,14 @@ class _HomePageState extends State<HomePage> {
         ],
       },
       {
-        'thumbnailUrl': 'https://i.imgur.com/aZRkRFf.jpeg',
+        'thumbnailUrl':
+            'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/heros-home-screen/latest-activity/tile-3/tile-3.png',
         'timeAgo': '1 Day Ago',
         'gameTitle': 'Call of Duty',
         'duration': '6:22',
-        'userName': 'FPSmaster',
+        'userName': 'SNK_Corp',
         'isVerified': true,
-        'clipTitle': 'Top 10 Warzone Plays This Week',
+        'clipTitle': 'Updates for Samurai Shodown',
         'friendsWatchedCount': 27,
         'friendAvatars': [
           'https://i.imgur.com/VvvURHZ.jpeg',
@@ -433,6 +475,10 @@ class _HomePageState extends State<HomePage> {
           timestamp: data['timeAgo'] as String,
           onTap: () {
             // Handle tap
+            Navigator.pushNamed(
+              context,
+              AppRoutes.video,
+            );
           },
         );
       },
@@ -444,13 +490,13 @@ class _HomePageState extends State<HomePage> {
     final clipsData = [
       {
         'thumbnailUrl':
-            'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/home-screen/clips-from-friends/tile-2/fortnite-image-1.jpg',
         'timeAgo': '3 Hrs Ago',
         'gameTitle': 'Apex Legends',
         'duration': '5:22',
-        'userName': 'HuntMaster',
+        'userName': 'Fortnite',
         'isVerified': false,
-        'clipTitle': 'Clutch Win in Diamond Lobby',
+        'clipTitle': 'Winning my first round in Season 6',
         'friendsWatchedCount': 15,
         'friendAvatars': [
           'https://i.imgur.com/VvvURHZ.jpeg',
@@ -460,13 +506,13 @@ class _HomePageState extends State<HomePage> {
       },
       {
         'thumbnailUrl':
-            'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/home-screen/clips-from-friends/tile-3/rivals-image-1.webp',
         'timeAgo': '1 Day Ago',
-        'gameTitle': 'Rocket League',
+        'gameTitle': 'Crazy Spiderman Combos in Marvel Rivals',
         'duration': '2:47',
         'userName': 'SoccerKingZ',
         'isVerified': true,
-        'clipTitle': 'Aerial Goal Montage',
+        'clipTitle': 'Crazy Spiderman Combos in Marvel Rivals',
         'friendsWatchedCount': 28,
         'friendAvatars': [
           'https://i.imgur.com/VvvURHZ.jpeg',
@@ -477,13 +523,13 @@ class _HomePageState extends State<HomePage> {
       },
       {
         'thumbnailUrl':
-            'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/publisher-page-tv-screen/latest-updates/samurai-shodown/samurai-shodown.png',
         'timeAgo': '2 Days Ago',
-        'gameTitle': 'Minecraft',
+        'gameTitle': 'First Time Playing Samurai Shodown',
         'duration': '10:15',
         'userName': 'BuilderPro',
         'isVerified': false,
-        'clipTitle': 'My Survival Base Tour',
+        'clipTitle': 'First Time Playing Samurai Shodown',
         'friendsWatchedCount': 42,
         'friendAvatars': [
           'https://i.imgur.com/VvvURHZ.jpeg',
@@ -507,6 +553,10 @@ class _HomePageState extends State<HomePage> {
           timestamp: data['timeAgo'] as String,
           onTap: () {
             // Handle clip tap
+            Navigator.pushNamed(
+              context,
+              AppRoutes.video,
+            );
           },
         );
       },
@@ -518,13 +568,13 @@ class _HomePageState extends State<HomePage> {
     final livestreamData = [
       {
         'thumbnailUrl':
-            'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/home-screen/live-streaming-now/tile-2/rivals-image-2.jpg',
         'timeAgo': 'LIVE',
         'gameTitle': 'Valorant',
         'duration': '1:45:22',
         'userName': 'ShroudFan',
         'isVerified': true,
-        'clipTitle': 'Ranked Grind to Radiant',
+        'clipTitle': 'How to use Hulk in Marvel Rivals',
         'friendsWatchedCount': 87,
         'friendAvatars': [
           'https://i.imgur.com/VvvURHZ.jpeg',
@@ -536,13 +586,13 @@ class _HomePageState extends State<HomePage> {
       },
       {
         'thumbnailUrl':
-            'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/game-page-smart-tv-forgotten-playland/game-preview-module/tile-1/tile-1.png',
         'timeAgo': 'LIVE',
         'gameTitle': 'League of Legends',
         'duration': '2:15:07',
         'userName': 'MidLaner',
         'isVerified': false,
-        'clipTitle': 'Challenger Series - Team Practice',
+        'clipTitle': 'Tips & Tricks for Forgotten Playland',
         'friendsWatchedCount': 34,
         'friendAvatars': [
           'https://i.imgur.com/VvvURHZ.jpeg',
@@ -552,13 +602,30 @@ class _HomePageState extends State<HomePage> {
       },
       {
         'thumbnailUrl':
-            'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/home-screen/live-streaming-now/tile-4/fortnite-image-1.jpg',
         'timeAgo': 'LIVE',
         'gameTitle': 'Grand Theft Auto V',
         'duration': '4:37:18',
         'userName': 'RoleplayKing',
         'isVerified': true,
-        'clipTitle': 'NoPixel RP - Criminal Underground',
+        'clipTitle': 'Trying the New Fortnite Map',
+        'friendsWatchedCount': 56,
+        'friendAvatars': [
+          'https://i.imgur.com/VvvURHZ.jpeg',
+          'https://i.imgur.com/kxNSgIY.jpeg',
+          'https://i.imgur.com/iNKFLtW.jpeg',
+          'https://i.imgur.com/D7PVWoL.jpeg',
+        ],
+      },
+      {
+        'thumbnailUrl':
+            'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/home-screen/shorts/tiles/controllerking-avatar.jpg',
+        'timeAgo': 'LIVE',
+        'gameTitle': 'Grand Theft Auto V',
+        'duration': '4:37:18',
+        'userName': 'RoleplayKing',
+        'isVerified': true,
+        'clipTitle': 'My First Win in Fortnite Season 6',
         'friendsWatchedCount': 56,
         'friendAvatars': [
           'https://i.imgur.com/VvvURHZ.jpeg',
@@ -581,6 +648,10 @@ class _HomePageState extends State<HomePage> {
           timestamp: data['timeAgo'] as String,
           onTap: () {
             // Handle livestream tap
+            Navigator.pushNamed(
+              context,
+              AppRoutes.video,
+            );
           },
         );
       },
@@ -592,23 +663,37 @@ class _HomePageState extends State<HomePage> {
     final shortsData = [
       {
         'thumbnailUrl':
-            'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/home-screen/shorts/tiles/short-tile-2.jpg',
         'userName': 'MrGamer99',
-        'title': 'New Collabs Coming to Brawl Stars',
+        'title': 'Beating the Hardest Level in Chaos World',
         'isVerified': true,
       },
       {
         'thumbnailUrl':
-            'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/home-screen/shorts/tiles/short-tile-3.jpg',
         'userName': 'GameTips',
-        'title': '5 Tricks You Didn\'t Know About Minecraft',
+        'title': 'Where to find all Boss Battles in KnightCraft',
         'isVerified': false,
       },
       {
         'thumbnailUrl':
-            'https://images.unsplash.com/photo-1558981396-5fcf84bdf14d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/home-screen/shorts/tiles/short-tile-4.jpg',
         'userName': 'ProGamerTV',
-        'title': 'Hidden Easter Egg in Call of Duty! Must Watch',
+        'title': 'New Features Coming to Heroscape',
+        'isVerified': true,
+      },
+      {
+        'thumbnailUrl':
+            'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/home-screen/shorts/tiles/short-tile-5.jpg',
+        'userName': 'ProGamerTV',
+        'title': 'How to Pass Without Crashing in RaceTime',
+        'isVerified': true,
+      },
+      {
+        'thumbnailUrl':
+            'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/home-screen/shorts/tiles/short-tile-6.jpg',
+        'userName': 'ProGamerTV',
+        'title': 'New Halloween Map for Bubble Blaster',
         'isVerified': true,
       },
     ];
@@ -625,6 +710,10 @@ class _HomePageState extends State<HomePage> {
           isVerified: data['isVerified'] as bool,
           onTap: () {
             // Handle short tap
+            Navigator.pushNamed(
+              context,
+              AppRoutes.video,
+            );
           },
         );
       },

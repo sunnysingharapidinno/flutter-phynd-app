@@ -26,7 +26,7 @@ class HomeSection<T> extends StatelessWidget {
             heading,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: Theme.of(context).extension<AppTheme>()!.get('text'),
-                  fontSize: 48,
+                  fontSize: 26,
                   fontWeight: FontWeight.w600,
                   fontStyle: FontStyle.normal,
                 ),

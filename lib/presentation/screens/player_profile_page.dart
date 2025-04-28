@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phynd_app/data/services/user_service.dart';
 import 'package:phynd_app/data/models/response/profile_model.dart';
-import 'package:phynd_app/data/services/user_service.dart';
+import 'package:phynd_app/presentation/bloc/auth/auth_bloc.dart';
 import 'package:phynd_app/presentation/layouts/base_layout.dart';
 import 'package:phynd_app/presentation/widgets/profile/achievements_section.dart';
 import 'package:phynd_app/presentation/widgets/profile/favorite_games.dart';
@@ -10,7 +11,12 @@ import 'package:phynd_app/presentation/widgets/profile/quests_in_progress.dart';
 import 'package:phynd_app/presentation/widgets/profile/recently_uploaded_clips.dart';
 
 class PlayerProfilePage extends StatefulWidget {
-  const PlayerProfilePage({super.key});
+  final String? userId;
+
+  const PlayerProfilePage({
+    super.key,
+    required this.userId,
+  });
 
   @override
   State<PlayerProfilePage> createState() => _PlayerProfilePageState();
@@ -24,16 +30,25 @@ class _PlayerProfilePageState extends State<PlayerProfilePage> {
   @override
   void initState() {
     super.initState();
-    _getUserDetails("deb49b9c-01de-4a72-9b88-987b9e5474df");
+    _getUserDetails(widget.userId);
   }
 
-  Future<void> _getUserDetails(String userId) async {
+  Future<void> _getUserDetails(String? userId) async {
     try {
-      final profile = await _userService.getUserById(userId: userId);
-      setState(() {
-        _userProfile = profile;
-        _isLoading = false;
-      });
+      if (userId != null) {
+        final profile = await _userService.getUserById(userId: userId);
+        setState(() {
+          _userProfile = profile;
+          _isLoading = false;
+        });
+      } else {
+        // Get current user's profile from AuthBloc
+        final authState = context.read<AuthBloc>().state;
+        setState(() {
+          _userProfile = authState.profile;
+          _isLoading = false;
+        });
+      }
     } catch (e) {
       setState(() {
         _isLoading = false;

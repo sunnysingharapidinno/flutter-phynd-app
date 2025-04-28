@@ -29,4 +29,8 @@ class Env {
       dotenv.env['FLUTTER_APP_WEB_CAROUSEL_BASE_URL'] ?? '';
   static String get userWebSocketBaseUrl =>
       dotenv.env['FLUTTER_APP_USER_WEBSOCKET_BASE_URL'] ?? '';
+  static String get algoliaAppId =>
+      dotenv.env['FLUTTER_APP_ALGOLIA_APPLICATION_ID'] ?? '';
+  static String get algoliaApiKey =>
+      dotenv.env['FLUTTER_APP_ALGOLIA_API_KEY'] ?? '';
 }

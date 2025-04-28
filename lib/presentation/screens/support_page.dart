@@ -7,6 +7,12 @@ class SupportPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context).extension<AppTheme>();
+    final backgroundColor = theme?.get('bgColor');
+    final cardColor = theme?.get('cardBg');
+    final textColor = theme?.get('text');
+    final textSecondaryColor = theme?.get('textSecondary');
+
     return BaseLayout(
       title: 'Support',
       child: SingleChildScrollView(
@@ -25,21 +31,21 @@ class SupportPage extends StatelessWidget {
                     'Email Support',
                     'support@phyndapp.com',
                     Icons.email,
-                    Colors.blue,
+                    theme?.get('primary') ?? Colors.blue,
                   ),
                   _buildContactCard(
                     context,
                     'Live Chat',
                     'Available 24/7',
                     Icons.chat,
-                    Colors.green,
+                    theme?.get('secondary') ?? Colors.green,
                   ),
                   _buildContactCard(
                     context,
                     'Phone Support',
                     '+1 (555) 123-4567',
                     Icons.phone,
-                    Colors.purple,
+                    theme?.get('accent') ?? Colors.purple,
                   ),
                 ],
               ),
@@ -80,15 +86,18 @@ class SupportPage extends StatelessWidget {
     String title,
     Widget content,
   ) {
+    final theme = Theme.of(context).extension<AppTheme>();
+    final textColor = theme?.get('text');
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           title,
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Theme.of(context).extension<AppTheme>()!.get('text'),
+            color: textColor,
           ),
         ),
         const SizedBox(height: 16),
@@ -104,7 +113,13 @@ class SupportPage extends StatelessWidget {
     IconData icon,
     Color iconColor,
   ) {
+    final theme = Theme.of(context).extension<AppTheme>();
+    final cardColor = theme?.get('cardBg');
+    final textColor = theme?.get('text');
+    final textSecondaryColor = theme?.get('textSecondary');
+
     return Card(
+      color: cardColor,
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
         leading: Container(
@@ -123,13 +138,13 @@ class SupportPage extends StatelessWidget {
           title,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Theme.of(context).extension<AppTheme>()!.get('text'),
+            color: textColor,
           ),
         ),
         subtitle: Text(
           subtitle,
           style: TextStyle(
-            color: Theme.of(context).extension<AppTheme>()!.get('text'),
+            color: textSecondaryColor,
           ),
         ),
         onTap: () {
@@ -144,14 +159,20 @@ class SupportPage extends StatelessWidget {
     String question,
     String answer,
   ) {
+    final theme = Theme.of(context).extension<AppTheme>();
+    final cardColor = theme?.get('cardBg');
+    final textColor = theme?.get('text');
+    final textSecondaryColor = theme?.get('textSecondary');
+
     return Card(
+      color: cardColor,
       margin: const EdgeInsets.only(bottom: 8),
       child: ExpansionTile(
         title: Text(
           question,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Theme.of(context).extension<AppTheme>()!.get('text'),
+            color: textColor,
           ),
         ),
         children: [
@@ -160,7 +181,7 @@ class SupportPage extends StatelessWidget {
             child: Text(
               answer,
               style: TextStyle(
-                color: Theme.of(context).extension<AppTheme>()!.get('text'),
+                color: textSecondaryColor,
               ),
             ),
           ),

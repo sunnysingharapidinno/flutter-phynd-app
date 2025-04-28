@@ -99,10 +99,7 @@ class _GameTrialsCardState extends State<GameTrialsCard>
         _animationController.reverse();
       }
     });
-
-    if (widget.onTap != null) {
-      widget.onTap!();
-    }
+    // Remove the onTap call from here since it's now handled in the GestureDetector
   }
 
   @override
@@ -132,6 +129,9 @@ class _GameTrialsCardState extends State<GameTrialsCard>
       child: GestureDetector(
         onTap: () {
           FocusScope.of(context).requestFocus(_focusNode);
+          if (widget.onTap != null) {
+            widget.onTap!(); // Execute the onTap callback
+          }
         },
         child: Focus(
           focusNode: _focusNode,

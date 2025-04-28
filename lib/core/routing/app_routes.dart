@@ -41,8 +41,12 @@ class AppRoutes {
           );
         }
         return _errorRoute("Missing or invalid gameSlug");
+
       case playerProfile:
-        return MaterialPageRoute(builder: (_) => const PlayerProfilePage());
+        return MaterialPageRoute(
+          builder: (_) => PlayerProfilePage(userId: args as String?),
+        );
+
       case publisherProfile:
         return MaterialPageRoute(builder: (_) => const PublisherProfilePage());
       case search:

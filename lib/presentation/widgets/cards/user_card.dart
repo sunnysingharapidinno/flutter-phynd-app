@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
+import 'package:flutter/cupertino.dart';
 
 class UserCard extends StatelessWidget {
-  final String avatarUrl;
+  final String? avatarUrl;
   final String username;
   final String? status;
   final bool isOnline;
@@ -10,7 +11,7 @@ class UserCard extends StatelessWidget {
 
   const UserCard({
     Key? key,
-    required this.avatarUrl,
+    this.avatarUrl,
     required this.username,
     this.status,
     this.isOnline = false,
@@ -45,11 +46,25 @@ class UserCard extends StatelessWidget {
                       color: theme.get('borderColor'),
                       width: 2,
                     ),
-                    image: DecorationImage(
-                      image: NetworkImage(avatarUrl),
-                      fit: BoxFit.cover,
-                    ),
                   ),
+                  child: avatarUrl != null && avatarUrl!.isNotEmpty
+                      ? ClipOval(
+                          child: Image.network(
+                            avatarUrl!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                const Icon(
+                              CupertinoIcons.person_fill,
+                              size: 32,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        )
+                      : const Icon(
+                          CupertinoIcons.person_fill,
+                          size: 32,
+                          color: Colors.grey,
+                        ),
                 ),
                 if (isOnline)
                   Positioned(
