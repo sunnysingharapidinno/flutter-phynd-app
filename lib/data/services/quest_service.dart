@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:phynd_app/core/constants/base_server_endpoints.dart';
 import 'package:phynd_app/core/enums/api_env.dart';
 import 'package:phynd_app/core/utils/api_service.dart';
@@ -19,6 +20,8 @@ class QuestService {
     List<String>? questStatus,
     int? page,
     int? limit,
+    // ignore: non_constant_identifier_names
+    String? sort_by,
   }) async {
     final token = await _storage.get(_tokenKey);
     try {
@@ -26,6 +29,7 @@ class QuestService {
         'quest_status': questStatus,
         'page': page,
         'limit': limit,
+        'sort_by': sort_by,
       };
       final response = await api.post(
         ServerAPIEndpoints.getUserQuests,

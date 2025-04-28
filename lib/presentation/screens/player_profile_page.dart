@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/data/services/user_service.dart';
 import 'package:phynd_app/data/models/response/profile_model.dart';
+import 'package:phynd_app/data/services/user_service.dart';
 import 'package:phynd_app/presentation/layouts/base_layout.dart';
 import 'package:phynd_app/presentation/widgets/profile/achievements_section.dart';
-import 'package:phynd_app/presentation/widgets/profile/profile_header.dart';
 import 'package:phynd_app/presentation/widgets/profile/favorite_games.dart';
+import 'package:phynd_app/presentation/widgets/profile/profile_header.dart';
 import 'package:phynd_app/presentation/widgets/profile/quests_in_progress.dart';
 import 'package:phynd_app/presentation/widgets/profile/recently_uploaded_clips.dart';
 
