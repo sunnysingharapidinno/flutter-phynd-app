@@ -7,6 +7,7 @@ class QuestInProgressCard extends StatelessWidget {
   final int completedMissions;
   final int totalMissions;
   final Color cardColor;
+  final bool showProgressBar;
 
   const QuestInProgressCard({
     super.key,
@@ -16,12 +17,13 @@ class QuestInProgressCard extends StatelessWidget {
     required this.completedMissions,
     required this.totalMissions,
     this.cardColor = Colors.amber,
+    this.showProgressBar = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 225,
+      width: 250,
       margin: const EdgeInsets.only(right: 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -116,24 +118,26 @@ class QuestInProgressCard extends StatelessWidget {
 
                   const SizedBox(height: 12),
 
-                  // Progress bar
-                  LinearProgressIndicator(
-                    value: completedMissions / totalMissions,
-                    backgroundColor: Colors.grey.withOpacity(0.3),
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    minHeight: 8.0, // Increased height from default 4.0
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  // Missions completed text
-                  Text(
-                    'Missions Completed $completedMissions/$totalMissions',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
+                  // Progress bar (conditionally shown)
+                  if (showProgressBar) ...[
+                    LinearProgressIndicator(
+                      value: completedMissions / totalMissions,
+                      backgroundColor: Colors.grey.withOpacity(0.3),
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      minHeight: 8.0, // Increased height from default 4.0
                     ),
-                  ),
+
+                    const SizedBox(height: 8),
+
+                    // Missions completed text
+                    Text(
+                      'Missions Completed $completedMissions/$totalMissions',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),

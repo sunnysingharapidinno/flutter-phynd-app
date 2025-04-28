@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/presentation/layouts/base_layout.dart';
+import 'package:phynd_app/presentation/widgets/profile/suggested_quest.dart';
 import 'package:phynd_app/presentation/widgets/publisher/publisher_header.dart';
 import 'package:phynd_app/presentation/widgets/publisher/follow_section.dart';
 import 'package:phynd_app/presentation/widgets/publisher/latest_updates_section.dart';
@@ -309,6 +310,11 @@ class PublisherProfilePage extends StatelessWidget {
                 primaryColor: primaryColor,
                 textColor: textColor,
               ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: const SuggestedQuest(),
             ),
           ],
         ),
