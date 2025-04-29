@@ -63,4 +63,58 @@ class QuestService {
       return [];
     }
   }
+
+  Future<List<QuestModel>> getQuests({
+    List<String>? questStatus,
+    int? page,
+    int? limit,
+    // ignore: non_constant_identifier_names
+    String? sort_by,
+    // ignore: non_constant_identifier_names
+    bool? is_featured,
+    // ignore: non_constant_identifier_names
+    bool? is_trending,
+  }) async {
+    final token = await _storage.get(_tokenKey);
+    try {
+      final Map<String, dynamic> requestBody = {
+        'quest_status': questStatus,
+        'page': page,
+        'limit': limit,
+        'sort_by': sort_by,
+        'is_featured': is_featured,
+        'is_trending': is_trending,
+      };
+      final response = await api.post(
+        ServerAPIEndpoints.getQuests,
+        body: requestBody,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+      if (response.body.isEmpty) {
+        throw Exception('Empty response from server');
+      }
+
+      final statusCode = response.statusCode;
+
+      if (statusCode == 200) {
+        final data = jsonDecode(response.body);
+        List<QuestModel> quests = [];
+        if (data['data'] != null && data['data'] is List) {
+          quests = (data['data'] as List)
+              .map((questJson) => QuestModel.fromJson(questJson))
+              .toList();
+        }
+
+        return quests;
+      } else {
+        throw Exception('Failed to fetch quests: ');
+      }
+    } catch (e) {
+      print('Error fetching quests: $e');
+      return [];
+    }
+  }
 }
