@@ -140,7 +140,6 @@ class UserService {
   Future<TermsAndConditions> getTermsAndConditions(
       {String? contentType}) async {
     try {
-      final token = await _getAuthToken();
       String url = ServerAPIEndpoints.getTAndC;
 
       // Attach content_type to URL if provided
@@ -148,12 +147,7 @@ class UserService {
         url += '?content_type=$contentType';
       }
 
-      final response = await api.get(
-        url,
-        headers: token != null
-            ? {'Authorization': 'Bearer $token'}
-            : {'Content-Type': 'application/json'},
-      );
+      final response = await api.post(url, auth: true);
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
