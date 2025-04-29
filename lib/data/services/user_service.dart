@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:phynd_app/core/constants/base_server_endpoints.dart';
 import 'package:phynd_app/core/enums/api_env.dart';
+import 'package:phynd_app/core/enums/storage.dart';
 import 'package:phynd_app/core/utils/api_service.dart';
 import 'package:phynd_app/core/utils/storage_service.dart';
 import 'package:phynd_app/data/models/response/profile_model.dart';
@@ -10,30 +11,18 @@ import 'package:phynd_app/data/models/response/terms_and_conditions_model.dart';
 class UserService {
   final String baseURL = ApiBaseUrl.flutterAppUserBaseUrl.url;
   late final ApiService api;
-  static const String _tokenKey = 'auth_token';
   final StorageService _storage = StorageService();
 
   UserService() {
     api = ApiService(baseUrl: baseURL);
-    _initPrefs();
-  }
-
-  Future<void> _initPrefs() async {
-    try {} catch (e) {
-      print('Warning: Failed to initialize SharedPreferences: $e');
-    }
   }
 
   Future<String?> _getAuthToken() async {
-    return await _storage.get(_tokenKey);
+    return await _storage.get(StorageType.authToken.value);
   }
 
-  Future<void> setAuthToken(String token) async {
-    await _storage.set(_tokenKey, token);
-  }
-
-  Future<void> clearAuthToken() async {
-    await _storage.remove(_tokenKey);
+  Future<void> _clearAuthToken() async {
+    await _storage.remove(StorageType.authToken.value);
   }
 
   Future<Map<String, dynamic>> loginUser({
@@ -66,7 +55,8 @@ class UserService {
         // Save the token if login is successful
         print(data['jwt_token']);
         if (data['jwt_token'] != null) {
-          await setAuthToken(data['jwt_token']);
+          final storage = StorageService();
+          await storage.set(StorageType.authToken.value, data['jwt_token']);
         }
 
         return {
@@ -109,9 +99,7 @@ class UserService {
 
       final response = await api.get(
         ServerAPIEndpoints.getUserMyDetails,
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
+        auth: true,
       );
 
       if (response.statusCode == 200) {
@@ -119,7 +107,7 @@ class UserService {
         return Profile.fromJson(data);
       } else if (response.statusCode == 401) {
         // Clear the token if unauthorized
-        await clearAuthToken();
+        await _clearAuthToken();
         throw Exception('Unauthorized: Please login again');
       } else {
         throw Exception('Failed to fetch user details: ${response.statusCode}');
@@ -140,10 +128,6 @@ class UserService {
         print('Data: $data');
         var profile = Profile.fromJson(data);
         return profile;
-      } else if (response.statusCode == 401) {
-        // Clear the token if unauthorized
-        await clearAuthToken();
-        throw Exception('Unauthorized: Please login again');
       } else {
         throw Exception('Failed to fetch user details: ${response.statusCode}');
       }
