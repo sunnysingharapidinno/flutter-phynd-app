@@ -64,7 +64,6 @@ class QuestService {
     // ignore: non_constant_identifier_names
     bool? is_trending,
   }) async {
-    final token = await _storage.get(_tokenKey);
     try {
       final Map<String, dynamic> requestBody = {
         'quest_status': questStatus,
@@ -74,14 +73,8 @@ class QuestService {
         'is_featured': is_featured,
         'is_trending': is_trending,
       };
-      final response = await api.post(
-        ServerAPIEndpoints.getQuests,
-        body: requestBody,
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
+      final response = await api.post(ServerAPIEndpoints.getQuests,
+          body: requestBody, auth: true);
       if (response.body.isEmpty) {
         throw Exception('Empty response from server');
       }
