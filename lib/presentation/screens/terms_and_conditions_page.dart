@@ -1,69 +1,128 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
+import 'package:phynd_app/data/models/response/terms_and_conditions_model.dart';
+import 'package:phynd_app/data/services/user_service.dart';
 import 'package:phynd_app/presentation/layouts/base_layout.dart';
+import 'package:phynd_app/presentation/widgets/loader/circular_load.dart';
 
-class TermsAndConditionsPage extends StatelessWidget {
+class TermsAndConditionsPage extends StatefulWidget {
   const TermsAndConditionsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BaseLayout(
-      title: 'Terms & Conditions',
-      child: SingleChildScrollView(
+  State<TermsAndConditionsPage> createState() => _TermsAndConditionsPageState();
+}
+
+class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
+  final UserService _service = UserService();
+  TermsAndConditions? _termsAndConditions;
+  bool _isLoading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchTermsAndConditions();
+  }
+
+  Future<void> _fetchTermsAndConditions() async {
+    try {
+      setState(() {
+        _isLoading = true;
+        _error = null;
+      });
+
+      final result = await _service.getTermsAndConditions(contentType: "TC");
+
+      setState(() {
+        _termsAndConditions = result;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Error fetching terms and conditions: $e');
+      setState(() {
+        _error =
+            'Unable to load terms and conditions.\nPlease check your internet connection and try again.';
+        _isLoading = false;
+      });
+    }
+  }
+
+  Widget _buildErrorView(String message) {
+    return Center(
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildSection(
-              context,
-              '1. Acceptance of Terms',
-              'By accessing and using the Phynd App, you accept and agree to be bound by the terms and provision of this agreement.',
-            ),
-            _buildSection(
-              context,
-              '2. User Account',
-              'You are responsible for maintaining the confidentiality of your account and password. You agree to accept responsibility for all activities that occur under your account.',
-            ),
-            _buildSection(
-              context,
-              '3. User Conduct',
-              'You agree not to use the app for any illegal or unauthorized purpose. You must not violate any laws in your jurisdiction.',
-            ),
-            _buildSection(
-              context,
-              '4. Intellectual Property',
-              'The app and its original content, features, and functionality are owned by Phynd and are protected by international copyright, trademark, and other intellectual property laws.',
-            ),
-            _buildSection(
-              context,
-              '5. Privacy Policy',
-              'Your use of the app is also governed by our Privacy Policy. Please review our Privacy Policy, which also governs the app and informs users of our data collection practices.',
-            ),
-            _buildSection(
-              context,
-              '6. Termination',
-              'We may terminate or suspend your account and bar access to the app immediately, without prior notice or liability, under our sole discretion, for any reason whatsoever and without limitation.',
-            ),
-            _buildSection(
-              context,
-              '7. Limitation of Liability',
-              'In no event shall Phynd, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages.',
-            ),
-            _buildSection(
-              context,
-              '8. Changes to Terms',
-              'We reserve the right to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days notice prior to any new terms taking effect.',
-            ),
-            const SizedBox(height: 24),
             Text(
-              'Last updated: January 1, 2025',
+              message,
+              textAlign: TextAlign.center,
               style: TextStyle(
-                fontStyle: FontStyle.italic,
-                color: Theme.of(context).extension<AppTheme>()!.get('text'),
+                color: Theme.of(context).extension<AppTheme>()!.get('error'),
+                fontSize: 16,
               ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _fetchTermsAndConditions,
+              style: ElevatedButton.styleFrom(
+                backgroundColor:
+                    Theme.of(context).extension<AppTheme>()!.get('primary'),
+                foregroundColor: Colors.white,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text('Retry'),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildContent(
+      BuildContext context, String content, String contentType) {
+    final textColor = Theme.of(context).extension<AppTheme>()!.get('text');
+
+    if (contentType.toUpperCase() == 'TC') {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Html(
+          data: content,
+          style: {
+            "body": Style(
+              margin: Margins.zero,
+              padding: HtmlPaddings.zero,
+              fontSize: FontSize(16),
+              lineHeight: LineHeight.number(1.6),
+              color: textColor,
+            ),
+            "p": Style(
+              margin: Margins.only(bottom: 16),
+              fontSize: FontSize(16),
+              lineHeight: LineHeight.number(1.6),
+              color: textColor,
+            ),
+            "li": Style(
+              margin: Margins.only(bottom: 8),
+              fontSize: FontSize(16),
+              lineHeight: LineHeight.number(1.6),
+              color: textColor,
+            ),
+          },
+        ),
+      );
+    }
+
+    return Text(
+      content,
+      style: TextStyle(
+        color: textColor,
       ),
     );
   }
@@ -72,27 +131,93 @@ class TermsAndConditionsPage extends StatelessWidget {
     BuildContext context,
     String title,
     String content,
+    String contentType,
   ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).extension<AppTheme>()!.get('text'),
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (title.isNotEmpty) ...[
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).extension<AppTheme>()!.get('text'),
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
+          _buildContent(context, content, contentType),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContentView() {
+    if (_isLoading) {
+      return const Center(child: CircularLoad());
+    }
+
+    if (_error != null) {
+      return _buildErrorView(_error!);
+    }
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.only(bottom: 16.0),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color:
+                      Theme.of(context).extension<AppTheme>()!.get('border') ??
+                          Colors.grey.shade200,
+                  width: 1,
+                ),
+              ),
+            ),
+            child: Text(
+              'Last updated: ${_termsAndConditions!.lastUpdated}',
+              style: TextStyle(
+                fontStyle: FontStyle.italic,
+                color: Theme.of(context).extension<AppTheme>()!.get('text'),
+                fontSize: 14,
+              ),
+            ),
           ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          content,
-          style: TextStyle(
-            color: Theme.of(context).extension<AppTheme>()!.get('text'),
+          const SizedBox(height: 16),
+          _buildContent(
+            context,
+            _termsAndConditions!.content,
+            'TC',
           ),
-        ),
-        const SizedBox(height: 24),
-      ],
+          if (_termsAndConditions!.sections.isNotEmpty) ...[
+            const SizedBox(height: 24),
+            ..._termsAndConditions!.sections.map((section) => _buildSection(
+                  context,
+                  section.title,
+                  section.content,
+                  section.contentType,
+                )),
+          ],
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BaseLayout(
+      title: 'Terms & Conditions',
+      child: _buildContentView(),
     );
   }
 }
