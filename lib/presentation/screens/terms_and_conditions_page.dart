@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
-import 'package:phynd_app/domain/models/terms_and_conditions.dart';
-import 'package:phynd_app/domain/services/terms_and_conditions_service.dart';
+import 'package:phynd_app/data/models/response/terms_and_conditions_model.dart';
+import 'package:phynd_app/data/services/terms_and_conditions_service.dart';
 import 'package:phynd_app/presentation/layouts/base_layout.dart';
 import 'package:phynd_app/presentation/widgets/common/loading_indicator.dart';
 

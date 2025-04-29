@@ -4,7 +4,7 @@ import 'package:phynd_app/core/constants/base_server_endpoints.dart';
 import 'package:phynd_app/core/enums/api_env.dart';
 import 'package:phynd_app/core/utils/api_service.dart';
 import 'package:phynd_app/core/utils/storage_service.dart';
-import 'package:phynd_app/domain/models/terms_and_conditions.dart';
+import 'package:phynd_app/data/models/response/terms_and_conditions_model.dart';
 
 abstract class TermsAndConditionsService {
   Future<TermsAndConditions> getTermsAndConditions({String? contentType});
