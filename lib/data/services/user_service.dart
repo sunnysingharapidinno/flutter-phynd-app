@@ -147,7 +147,7 @@ class UserService {
         url += '?content_type=$contentType';
       }
 
-      final response = await api.post(url, auth: true);
+      final response = await api.get(url, auth: true);
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
