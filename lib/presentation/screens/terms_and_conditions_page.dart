@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/data/models/response/terms_and_conditions_model.dart';
-import 'package:phynd_app/data/services/terms_and_conditions_service.dart';
+import 'package:phynd_app/data/services/user_service.dart';
 import 'package:phynd_app/presentation/layouts/base_layout.dart';
-import 'package:phynd_app/presentation/widgets/common/loading_indicator.dart';
+import 'package:phynd_app/presentation/widgets/loader/circular_load.dart';
 
 class TermsAndConditionsPage extends StatefulWidget {
   const TermsAndConditionsPage({super.key});
@@ -14,7 +14,7 @@ class TermsAndConditionsPage extends StatefulWidget {
 }
 
 class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
-  final TermsAndConditionsService _service = TermsAndConditionsServiceImpl();
+  final UserService _service = UserService();
   TermsAndConditions? _termsAndConditions;
   bool _isLoading = true;
   String? _error;
@@ -159,7 +159,7 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
 
   Widget _buildContentView() {
     if (_isLoading) {
-      return const Center(child: LoadingIndicator());
+      return const Center(child: CircularLoad());
     }
 
     if (_error != null) {
