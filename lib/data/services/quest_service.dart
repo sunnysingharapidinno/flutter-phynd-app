@@ -1,16 +1,12 @@
 import 'dart:convert';
-
 import 'package:phynd_app/core/constants/base_server_endpoints.dart';
 import 'package:phynd_app/core/enums/api_env.dart';
 import 'package:phynd_app/core/utils/api_service.dart';
-import 'package:phynd_app/core/utils/storage_service.dart';
 import 'package:phynd_app/data/models/response/quest_model.dart';
 
 class QuestService {
   final String baseURL = ApiBaseUrl.flutterAppQuestBaseUrl.url;
   late final ApiService api;
-  static const String _tokenKey = 'auth_token';
-  final StorageService _storage = StorageService();
 
   QuestService() {
     api = ApiService(baseUrl: baseURL);
@@ -23,7 +19,6 @@ class QuestService {
     // ignore: non_constant_identifier_names
     String? sort_by,
   }) async {
-    final token = await _storage.get(_tokenKey);
     try {
       final Map<String, dynamic> requestBody = {
         'quest_status': questStatus,
@@ -31,14 +26,8 @@ class QuestService {
         'limit': limit,
         'sort_by': sort_by,
       };
-      final response = await api.post(
-        ServerAPIEndpoints.getUserQuests,
-        body: requestBody,
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
+      final response = await api.post(ServerAPIEndpoints.getUserQuests,
+          body: requestBody, auth: true);
       if (response.body.isEmpty) {
         throw Exception('Empty response from server');
       }
@@ -75,7 +64,6 @@ class QuestService {
     // ignore: non_constant_identifier_names
     bool? is_trending,
   }) async {
-    final token = await _storage.get(_tokenKey);
     try {
       final Map<String, dynamic> requestBody = {
         'quest_status': questStatus,
@@ -85,14 +73,8 @@ class QuestService {
         'is_featured': is_featured,
         'is_trending': is_trending,
       };
-      final response = await api.post(
-        ServerAPIEndpoints.getQuests,
-        body: requestBody,
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
+      final response = await api.post(ServerAPIEndpoints.getQuests,
+          body: requestBody, auth: true);
       if (response.body.isEmpty) {
         throw Exception('Empty response from server');
       }
