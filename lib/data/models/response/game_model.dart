@@ -123,22 +123,22 @@ class GameDetails {
   final String gameTitle;
   final String shortBio;
   final List<String> developers;
-  final bool? isBrowserBasedGame;
+  final bool isBrowserBasedGame;
   final String? downloadUrl;
   final String? launcherUrl;
   final int releaseDate;
   final int? startDate;
   final int? endDate;
-  final bool? isBlockchainSupported;
+  final bool isBlockchainSupported;
   final String? blockchainPlatform;
   final List<String> genre;
   final List<String> subGenre;
-  final bool? adSupported;
-  final bool? contentRating;
-  final bool? ageRestricted;
+  final bool adSupported;
+  final bool contentRating;
+  final bool ageRestricted;
   final String? cost;
   final int? rentalDuration;
-  final bool? syndicated;
+  final bool syndicated;
   final String? websiteUrl;
   final String? twitterLink;
   final String? discordLink;
@@ -148,20 +148,20 @@ class GameDetails {
   final List<String> modes;
   final List<Platform> platforms;
   final List<Controller> controllers;
-  final List<String?> browserSupport;
-  final List<String?> tags;
+  final List<String> browserSupport;
+  final List<String> tags;
   final String? storageRequirements;
   final String? ramRequirements;
   final String? processorRequirements;
   final String? osRequirements;
   final List<GameOverview> gameMedia;
   final List<GameScreenshot> gameScreenshots;
-  final List<String>? gamePlayModes;
-  final bool? inAppPurchases;
-  final bool? isGameFeatured;
-  final bool? isFromVerifiedPublisher;
-  final List<String>? gameFranchise;
-  final bool? iframable;
+  final List<String> gamePlayModes;
+  final bool inAppPurchases;
+  final bool isGameFeatured;
+  final bool isFromVerifiedPublisher;
+  final List<String> gameFranchise;
+  final bool iframable;
   final String? publisherId;
   final String? publisherDisplayName;
   final String? publisherType;
@@ -178,22 +178,22 @@ class GameDetails {
     required this.gameTitle,
     required this.shortBio,
     required this.developers,
-    this.isBrowserBasedGame,
+    required this.isBrowserBasedGame,
     this.downloadUrl,
     this.launcherUrl,
     required this.releaseDate,
     this.startDate,
     this.endDate,
-    this.isBlockchainSupported,
+    required this.isBlockchainSupported,
     this.blockchainPlatform,
     required this.genre,
     required this.subGenre,
-    this.adSupported,
-    this.contentRating,
-    this.ageRestricted,
+    required this.adSupported,
+    required this.contentRating,
+    required this.ageRestricted,
     this.cost,
     this.rentalDuration,
-    this.syndicated,
+    required this.syndicated,
     this.websiteUrl,
     this.twitterLink,
     this.discordLink,
@@ -211,12 +211,12 @@ class GameDetails {
     this.osRequirements,
     required this.gameMedia,
     required this.gameScreenshots,
-    this.gamePlayModes,
-    this.inAppPurchases,
-    this.isGameFeatured,
-    this.isFromVerifiedPublisher,
-    this.gameFranchise,
-    this.iframable,
+    required this.gamePlayModes,
+    required this.inAppPurchases,
+    required this.isGameFeatured,
+    required this.isFromVerifiedPublisher,
+    required this.gameFranchise,
+    required this.iframable,
     this.publisherId,
     this.publisherDisplayName,
     this.publisherType,
@@ -234,23 +234,24 @@ class GameDetails {
       gameSlug: json['game_slug'] ?? '',
       gameTitle: json['game_title'] ?? '',
       shortBio: json['short_bio'] ?? '',
-      developers: List<String>.from(json['developers'] ?? []),
-      isBrowserBasedGame: json['is_browser_based_game'],
+      developers: List<String>.from(
+          (json['developers'] ?? []).where((e) => e != null) ?? []),
+      isBrowserBasedGame: json['is_browser_based_game'] ?? false,
       downloadUrl: json['download_url'],
       launcherUrl: json['launcher_url'],
       releaseDate: json['release_date'] ?? 0,
       startDate: json['start_date'],
       endDate: json['end_date'],
-      isBlockchainSupported: json['is_blockchain_supported'],
+      isBlockchainSupported: json['is_blockchain_supported'] ?? false,
       blockchainPlatform: json['blockchain_platform'],
       genre: List<String>.from(json['genre'] ?? []),
       subGenre: List<String>.from(json['sub_genre'] ?? []),
-      adSupported: json['ad_supported'],
-      contentRating: json['content_rating'],
-      ageRestricted: json['age_restricted'],
+      adSupported: json['ad_supported'] ?? false,
+      contentRating: json['content_rating'] ?? false,
+      ageRestricted: json['age_restricted'] ?? false,
       cost: json['cost']?.toString(),
       rentalDuration: json['rental_duration'],
-      syndicated: json['syndicated'],
+      syndicated: json['syndicated'] ?? false,
       websiteUrl: json['website_url'],
       twitterLink: json['twitter_link'],
       discordLink: json['discord_link'],
@@ -264,8 +265,8 @@ class GameDetails {
       controllers: (json['controllers'] as List? ?? [])
           .map((c) => Controller.fromJson(c))
           .toList(),
-      browserSupport: List<String?>.from(json['browser_support'] ?? []),
-      tags: List<String?>.from(json['tags'] ?? []),
+      browserSupport: List<String>.from(json['browser_support'] ?? []),
+      tags: List<String>.from(json['tags'] ?? []),
       storageRequirements: json['storage_requirements'],
       ramRequirements: json['ram_requirements'],
       processorRequirements: json['processor_requirements'],
@@ -276,16 +277,12 @@ class GameDetails {
       gameScreenshots: (json['game_screenshots'] as List? ?? [])
           .map((x) => GameScreenshot.fromJson(x))
           .toList(),
-      gamePlayModes: json['game_play_modes'] != null
-          ? List<String>.from(json['game_play_modes'])
-          : null,
-      inAppPurchases: json['in_app_purchases'],
-      isGameFeatured: json['is_game_featured'],
-      isFromVerifiedPublisher: json['is_from_verified_publisher'],
-      iframable: json['iframable'],
-      gameFranchise: json['game_franchise'] != null
-          ? List<String>.from(json['game_franchise'])
-          : null,
+      gamePlayModes: List<String>.from(json['game_play_modes'] ?? []),
+      inAppPurchases: json['in_app_purchases'] ?? false,
+      isGameFeatured: json['is_game_featured'] ?? false,
+      isFromVerifiedPublisher: json['is_from_verified_publisher'] ?? false,
+      gameFranchise: List<String>.from(json['game_franchise'] ?? []),
+      iframable: json['iframable'] ?? false,
       publisherId: json['publisher_id'],
       publisherDisplayName: json['publisher_display_name'],
       publisherType: json['publisher_type'],
