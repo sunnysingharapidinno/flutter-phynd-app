@@ -44,7 +44,7 @@ class _TournamentCardState extends State<TournamentCard> {
     final theme = Theme.of(context).extension<AppTheme>()!;
 
     return RemoteControlWrapper(
-      onEnter: widget.onRegisterTap,
+      onTap: widget.onRegisterTap,
       child: Container(
         width: widget.width,
         height: widget.height,

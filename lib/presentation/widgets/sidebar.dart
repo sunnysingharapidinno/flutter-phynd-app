@@ -133,6 +133,10 @@ class Sidebar extends StatelessWidget {
 
                     widgets.add(
                       RemoteControlWrapper(
+                        onTap: () {
+                          Navigator.pushReplacementNamed(
+                              context, item['route'] as String);
+                        },
                         child: ListTile(
                           leading: Icon(
                             item['icon'] as IconData,
@@ -147,10 +151,6 @@ class Sidebar extends StatelessWidget {
                                 context, item['route'] as String);
                           },
                         ),
-                        onEnter: () {
-                          Navigator.pushReplacementNamed(
-                              context, item['route'] as String);
-                        },
                       ),
                     );
 
@@ -161,6 +161,10 @@ class Sidebar extends StatelessWidget {
               if (isAuthenticated) ...[
                 Divider(color: textColor.withOpacity(0.2)),
                 RemoteControlWrapper(
+                  onTap: () {
+                    context.read<AuthBloc>().add(LogoutUser());
+                    Navigator.pushReplacementNamed(context, AppRoutes.login);
+                  },
                   child: ListTile(
                     leading: Icon(
                       Icons.logout,
@@ -175,10 +179,6 @@ class Sidebar extends StatelessWidget {
                       Navigator.pushReplacementNamed(context, AppRoutes.login);
                     },
                   ),
-                  onEnter: () {
-                    context.read<AuthBloc>().add(LogoutUser());
-                    Navigator.pushReplacementNamed(context, AppRoutes.login);
-                  },
                 ),
               ],
             ],

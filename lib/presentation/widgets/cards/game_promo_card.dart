@@ -34,7 +34,7 @@ class _GamePromoCardState extends State<GamePromoCard> {
     final theme = Theme.of(context).extension<AppTheme>()!;
 
     return RemoteControlWrapper(
-      onEnter: widget.onTap,
+      onTap: widget.onTap,
       child: Container(
         width: widget.width,
         height: widget.height,

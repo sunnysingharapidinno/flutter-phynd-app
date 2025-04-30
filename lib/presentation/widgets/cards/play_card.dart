@@ -38,7 +38,7 @@ class PlayCard extends StatelessWidget {
     final theme = Theme.of(context).extension<AppTheme>()!;
 
     return RemoteControlWrapper(
-      onEnter: onTap,
+      onTap: onTap,
       child: Container(
         width: width,
         height: 200.0,

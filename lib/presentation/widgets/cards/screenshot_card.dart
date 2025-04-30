@@ -51,7 +51,7 @@ class _ScreenshotCardState extends State<ScreenshotCard> {
       child: Focus(
         focusNode: _focusNode,
         child: RemoteControlWrapper(
-          onEnter: widget.onTap,
+          onTap: widget.onTap,
           child: Container(
             width: widget.width,
             height: widget.height,

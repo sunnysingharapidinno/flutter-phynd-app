@@ -50,7 +50,7 @@ class _GameplayClipCardState extends State<GameplayClipCard> {
   @override
   Widget build(BuildContext context) {
     return RemoteControlWrapper(
-      onEnter: () {
+      onTap: () {
         // Add your onTap functionality here
       },
       child: Container(

@@ -134,13 +134,7 @@ class _GameTrialsCardState extends State<GameTrialsCard>
             animation: _animationController,
             builder: (context, child) {
               return RemoteControlWrapper(
-                onEnter: widget.onTap,
-                onTap: () {
-                  FocusScope.of(context).requestFocus(_focusNode);
-                  if (widget.onTap != null) {
-                    widget.onTap!(); // Execute the onTap callback
-                  }
-                },
+                onTap: widget.onTap,
                 child: Container(
                   width: _widthAnimation.value,
                   height: _height,

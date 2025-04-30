@@ -24,7 +24,7 @@ class UserCard extends StatelessWidget {
     final theme = Theme.of(context).extension<AppTheme>()!;
 
     return RemoteControlWrapper(
-      onEnter: onTap,
+      onTap: onTap,
       child: Container(
         width: 100,
         height: 130,
