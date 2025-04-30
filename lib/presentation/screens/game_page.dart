@@ -11,6 +11,7 @@ import 'package:phynd_app/presentation/widgets/cards/gameplay_clip_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/ad_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/game_promo_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/tournament_card.dart';
+import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class GamePage extends StatefulWidget {
   final String gameSlug;
@@ -205,107 +206,119 @@ class _GamePageState extends State<GamePage> {
                         // Left side buttons
                         Row(
                           children: [
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Theme.of(context)
-                                    .extension<AppTheme>()!
-                                    .get('primary'),
-                                foregroundColor: Theme.of(context)
-                                    .extension<AppTheme>()!
-                                    .get('textOnPrimary'),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 24, vertical: 12),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                            RemoteControlWrapper(
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Theme.of(context)
+                                      .extension<AppTheme>()!
+                                      .get('primary'),
+                                  foregroundColor: Theme.of(context)
+                                      .extension<AppTheme>()!
+                                      .get('textOnPrimary'),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 24, vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
                                 ),
+                                child: Text('Play Now'),
                               ),
-                              child: Text('Play Now'),
                             ),
                             SizedBox(width: 12),
-                            OutlinedButton(
-                              onPressed: () {},
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: Theme.of(context)
-                                    .extension<AppTheme>()!
-                                    .get('text'),
-                                side: BorderSide(
-                                    color: Theme.of(context)
-                                        .extension<AppTheme>()!
-                                        .get('text')
-                                        .withOpacity(0.3)),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 24, vertical: 12),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                            RemoteControlWrapper(
+                              child: OutlinedButton(
+                                onPressed: () {},
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Theme.of(context)
+                                      .extension<AppTheme>()!
+                                      .get('text'),
+                                  side: BorderSide(
+                                      color: Theme.of(context)
+                                          .extension<AppTheme>()!
+                                          .get('text')
+                                          .withOpacity(0.3)),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 24, vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
                                 ),
+                                child: Text('Start Free Trial'),
                               ),
-                              child: Text('Start Free Trial'),
                             ),
                             SizedBox(width: 12),
-                            OutlinedButton(
-                              onPressed: () {},
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: Theme.of(context)
-                                    .extension<AppTheme>()!
-                                    .get('text'),
-                                side: BorderSide(
-                                    color: Theme.of(context)
-                                        .extension<AppTheme>()!
-                                        .get('text')
-                                        .withOpacity(0.3)),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 24, vertical: 12),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                            RemoteControlWrapper(
+                              child: OutlinedButton(
+                                onPressed: () {},
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Theme.of(context)
+                                      .extension<AppTheme>()!
+                                      .get('text'),
+                                  side: BorderSide(
+                                      color: Theme.of(context)
+                                          .extension<AppTheme>()!
+                                          .get('text')
+                                          .withOpacity(0.3)),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 24, vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
                                 ),
+                                child: Text('Follow Game'),
                               ),
-                              child: Text('Follow Game'),
                             ),
                           ],
                         ),
                         // Right side icon buttons
                         Row(
                           children: [
-                            IconButton(
-                              onPressed: () {},
-                              icon: Icon(Icons.bookmark_border),
-                              color: Theme.of(context)
-                                  .extension<AppTheme>()!
-                                  .get('text'),
-                              style: IconButton.styleFrom(
-                                backgroundColor: Theme.of(context)
+                            RemoteControlWrapper(
+                              child: IconButton(
+                                onPressed: () {},
+                                icon: Icon(Icons.bookmark_border),
+                                color: Theme.of(context)
                                     .extension<AppTheme>()!
-                                    .get('cardBg'),
-                                shape: CircleBorder(),
+                                    .get('text'),
+                                style: IconButton.styleFrom(
+                                  backgroundColor: Theme.of(context)
+                                      .extension<AppTheme>()!
+                                      .get('cardBg'),
+                                  shape: CircleBorder(),
+                                ),
                               ),
                             ),
                             SizedBox(width: 8),
-                            IconButton(
-                              onPressed: () {},
-                              icon: Icon(Icons.favorite_border),
-                              color: Theme.of(context)
-                                  .extension<AppTheme>()!
-                                  .get('text'),
-                              style: IconButton.styleFrom(
-                                backgroundColor: Theme.of(context)
+                            RemoteControlWrapper(
+                              child: IconButton(
+                                onPressed: () {},
+                                icon: Icon(Icons.favorite_border),
+                                color: Theme.of(context)
                                     .extension<AppTheme>()!
-                                    .get('cardBg'),
-                                shape: CircleBorder(),
+                                    .get('text'),
+                                style: IconButton.styleFrom(
+                                  backgroundColor: Theme.of(context)
+                                      .extension<AppTheme>()!
+                                      .get('cardBg'),
+                                  shape: CircleBorder(),
+                                ),
                               ),
                             ),
                             SizedBox(width: 8),
-                            IconButton(
-                              onPressed: () {},
-                              icon: Icon(Icons.share),
-                              color: Theme.of(context)
-                                  .extension<AppTheme>()!
-                                  .get('text'),
-                              style: IconButton.styleFrom(
-                                backgroundColor: Theme.of(context)
+                            RemoteControlWrapper(
+                              child: IconButton(
+                                onPressed: () {},
+                                icon: Icon(Icons.share),
+                                color: Theme.of(context)
                                     .extension<AppTheme>()!
-                                    .get('cardBg'),
-                                shape: CircleBorder(),
+                                    .get('text'),
+                                style: IconButton.styleFrom(
+                                  backgroundColor: Theme.of(context)
+                                      .extension<AppTheme>()!
+                                      .get('cardBg'),
+                                  shape: CircleBorder(),
+                                ),
                               ),
                             ),
                           ],

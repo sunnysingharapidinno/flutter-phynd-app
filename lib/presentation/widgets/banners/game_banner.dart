@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
+import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class GameBanner extends StatelessWidget {
   final String imageUrl;
@@ -32,7 +33,8 @@ class GameBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context).extension<AppTheme>()!;
 
-    return Container(
+    return RemoteControlWrapper(
+        child: Container(
       height: 350,
       width: double.infinity,
       decoration: BoxDecoration(
@@ -223,7 +225,7 @@ class GameBanner extends StatelessWidget {
           //   ),
         ],
       ),
-    );
+    ));
   }
 
   Widget _buildStatItem({

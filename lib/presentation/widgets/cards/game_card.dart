@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
+import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class GameCard extends StatelessWidget {
   final String imageUrl;
@@ -18,8 +19,8 @@ class GameCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final appTheme = Theme.of(context).extension<AppTheme>()!;
 
-    return GestureDetector(
-      onTap: onTap, // Optional tap handler
+    return RemoteControlWrapper(
+      onEnter: onTap,
       child: Container(
         width: 160,
         margin: const EdgeInsets.all(8),

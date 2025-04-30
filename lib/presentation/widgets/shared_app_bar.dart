@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
+import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -37,12 +38,15 @@ class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
               onPressed: () => Navigator.of(context).pop(),
             )
           : showMenuButton
-              ? IconButton(
-                  icon: Icon(
-                    Icons.menu,
-                    color: textColor,
+              ? RemoteControlWrapper(
+                  onEnter: onMenuPressed,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.menu,
+                      color: textColor,
+                    ),
+                    onPressed: onMenuPressed,
                   ),
-                  onPressed: onMenuPressed,
                 )
               : null,
       title: Text(

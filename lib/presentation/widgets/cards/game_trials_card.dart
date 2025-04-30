@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
+import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class GameTrialsCard extends StatefulWidget {
   final String imageUrl;
@@ -127,153 +128,157 @@ class _GameTrialsCardState extends State<GameTrialsCard>
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
       child: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(_focusNode);
-          if (widget.onTap != null) {
-            widget.onTap!(); // Execute the onTap callback
-          }
-        },
         child: Focus(
           focusNode: _focusNode,
           child: AnimatedBuilder(
             animation: _animationController,
             builder: (context, child) {
-              return Container(
-                width: _widthAnimation.value,
-                height: _height,
-                decoration: BoxDecoration(
-                  color: theme.get('trialCardBg'),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: _focusNode.hasFocus || _isHovered
-                        ? theme.get('primary').withOpacity(0.5)
-                        : theme.get('trialCardBorder'),
-                    width: 1.5,
+              return RemoteControlWrapper(
+                onEnter: widget.onTap,
+                onTap: () {
+                  FocusScope.of(context).requestFocus(_focusNode);
+                  if (widget.onTap != null) {
+                    widget.onTap!(); // Execute the onTap callback
+                  }
+                },
+                child: Container(
+                  width: _widthAnimation.value,
+                  height: _height,
+                  decoration: BoxDecoration(
+                    color: theme.get('trialCardBg'),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: _focusNode.hasFocus || _isHovered
+                          ? theme.get('primary').withOpacity(0.5)
+                          : theme.get('trialCardBorder'),
+                      width: 1.5,
+                    ),
                   ),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: Stack(
-                    children: [
-                      // Background image
-                      Positioned.fill(
-                        child: Image.network(
-                          widget.imageUrl,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              Container(
-                            color: theme.get('trialCardHighlight'),
-                            child: Center(
-                              child: Icon(
-                                Icons.image_not_supported,
-                                color: theme.get('trialCardBorder'),
-                                size: 48,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      if (_focusNode.hasFocus) ...[
-                        // Expanded state content
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: Stack(
+                      children: [
+                        // Background image
                         Positioned.fill(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.transparent,
-                                  theme.get('cardOverlay'),
-                                ],
+                          child: Image.network(
+                            widget.imageUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Container(
+                              color: theme.get('trialCardHighlight'),
+                              child: Center(
+                                child: Icon(
+                                  Icons.image_not_supported,
+                                  color: theme.get('trialCardBorder'),
+                                  size: 48,
+                                ),
                               ),
                             ),
-                            child: _buildExpandedContent(
-                                theme, platforms, controllers),
                           ),
                         ),
-                      ] else ...[
-                        // Normal state content
-                        Positioned(
-                          left: 0,
-                          top: 0,
-                          bottom: 0,
-                          width: _normalWidth,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              // Game Image and Badge
-                              Expanded(
-                                child: Stack(
-                                  fit: StackFit.expand,
-                                  children: [
-                                    if (widget.trialDuration != null)
-                                      Positioned(
-                                        top: 12,
-                                        left: 12,
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 6,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: theme.get('trialBadge'),
-                                            borderRadius:
-                                                BorderRadius.circular(6),
-                                          ),
-                                          child: Text(
-                                            'Free ${widget.trialDuration}hr Trial',
-                                            style: TextStyle(
-                                              color:
-                                                  theme.get('trialBadgeText'),
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
+
+                        if (_focusNode.hasFocus) ...[
+                          // Expanded state content
+                          Positioned.fill(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.transparent,
+                                    theme.get('cardOverlay'),
                                   ],
                                 ),
                               ),
-
-                              // Bottom bar with coin info
-                              if (widget.coinPrice != null)
-                                Container(
-                                  height: 48,
-                                  color: theme.get('trialCardBg'),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                              child: _buildExpandedContent(
+                                  theme, platforms, controllers),
+                            ),
+                          ),
+                        ] else ...[
+                          // Normal state content
+                          Positioned(
+                            left: 0,
+                            top: 0,
+                            bottom: 0,
+                            width: _normalWidth,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                // Game Image and Badge
+                                Expanded(
+                                  child: Stack(
+                                    fit: StackFit.expand,
                                     children: [
-                                      Icon(
-                                        Icons.attach_money,
-                                        color: theme.get('trialPrice'),
-                                        size: 20,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        'Play to Earn ${widget.coinPrice}',
-                                        style: TextStyle(
-                                          color: theme.get('text'),
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
+                                      if (widget.trialDuration != null)
+                                        Positioned(
+                                          top: 12,
+                                          left: 12,
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 6,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: theme.get('trialBadge'),
+                                              borderRadius:
+                                                  BorderRadius.circular(6),
+                                            ),
+                                            child: Text(
+                                              'Free ${widget.trialDuration}hr Trial',
+                                              style: TextStyle(
+                                                color:
+                                                    theme.get('trialBadgeText'),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Icon(
-                                        Icons.token,
-                                        color: theme.get('trialCoin'),
-                                        size: 20,
-                                      ),
                                     ],
                                   ),
                                 ),
-                            ],
+
+                                // Bottom bar with coin info
+                                if (widget.coinPrice != null)
+                                  Container(
+                                    height: 48,
+                                    color: theme.get('trialCardBg'),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.attach_money,
+                                          color: theme.get('trialPrice'),
+                                          size: 20,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          'Play to Earn ${widget.coinPrice}',
+                                          style: TextStyle(
+                                            color: theme.get('text'),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Icon(
+                                          Icons.token,
+                                          color: theme.get('trialCoin'),
+                                          size: 20,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                              ],
+                            ),
                           ),
-                        ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
                 ),
               );

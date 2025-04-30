@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
+import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class PublisherCard extends StatelessWidget {
   final String? logoUrl;
@@ -17,8 +18,8 @@ class PublisherCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context).extension<AppTheme>()!;
 
-    return InkWell(
-      onTap: onTap,
+    return RemoteControlWrapper(
+      onEnter: onTap,
       child: Container(
         width: 120,
         height: 120,
