@@ -67,67 +67,59 @@ class _PlayerProfilePageState extends State<PlayerProfilePage> {
       title: 'Player Profile',
       child: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Profile Header with Banner
-                ProfileHeader(
-                    username: displayName,
-                    isOnline: true,
-                    avatar:
-                        _userProfile?.user.dp_url ?? 'assets/images/avatar.png',
-                    bannerImage: _userProfile?.user?.cover_image_url ??
-                        'assets/images/profile_banner.png',
-                    currentlyPlaying: 'Marvel Rivals'),
+          : Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ProfileHeader(
+                        username: displayName,
+                        isOnline: true,
+                        avatar: _userProfile?.user.dp_url ??
+                            'assets/images/avatar.png',
+                        bannerImage: _userProfile?.user?.cover_image_url ??
+                            'assets/images/profile_banner.png',
+                        currentlyPlaying: 'Marvel Rivals'),
 
-                // Stats Row
-                Container(
-                  color: Colors.black,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildStat('0', 'Followers'),
-                      _buildDivider(),
-                      _buildStat('0', 'Following'),
-                      _buildDivider(),
-                      _buildStat('11', 'PHYND Coins'),
-                      _buildDivider(),
-                      _buildStat('0', 'Badges'),
-                      _buildDivider(),
-                      _buildStat('0', 'Clips'),
-                    ],
-                  ),
-                ),
-
-                // Scrollable content
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Favorite Games Section
-                        const Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: SizedBox(
-                            height: 300,
-                            child: FavoriteGames(),
-                          ),
-                        ),
-
-                        // Recently Uploaded Clips Section
-                        const RecentlyUploadedClips(),
-                        // Achievements Section
-                        const AchievementsSection(),
-
-                        // Quests in Progress Section
-                        const QuestsInProgress(),
-                      ],
+                    Container(
+                      color: Colors.black,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildStat('0', 'Followers'),
+                          _buildDivider(),
+                          _buildStat('0', 'Following'),
+                          _buildDivider(),
+                          _buildStat('11', 'PHYND Coins'),
+                          _buildDivider(),
+                          _buildStat('0', 'Badges'),
+                          _buildDivider(),
+                          _buildStat('0', 'Clips'),
+                        ],
+                      ),
                     ),
-                  ),
+
+                    // Favorite Games Section
+                    const Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: SizedBox(
+                        height: 300,
+                        child: FavoriteGames(),
+                      ),
+                    ),
+
+                    // Recently Uploaded Clips Section
+                    const RecentlyUploadedClips(),
+                    // Achievements Section
+                    const AchievementsSection(),
+
+                    // Quests in Progress Section
+                    const QuestsInProgress(),
+                  ],
                 ),
-              ],
+              ),
             ),
     );
   }
