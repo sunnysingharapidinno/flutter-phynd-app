@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
+import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class ProfileHeader extends StatelessWidget {
   final String username;
@@ -42,6 +43,44 @@ class ProfileHeader extends StatelessWidget {
                     bannerImage,
                     fit: BoxFit.cover,
                   ),
+          ),
+
+          // Dark gradient overlay
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withOpacity(0.3), // Subtle darkness at top
+                    Colors.black.withOpacity(0.6), // Medium darkness in middle
+                    Colors.black
+                        .withOpacity(0.8), // Stronger darkness at bottom
+                  ],
+                  stops: const [0.0, 0.5, 1.0],
+                ),
+              ),
+            ),
+          ),
+
+          // Horizontal gradient for better text readability
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    Colors.black
+                        .withOpacity(0.6), // Darker on the left where text is
+                    Colors.black.withOpacity(0.3), // Lighter in the middle
+                    Colors.black.withOpacity(0.6), // Darker on the right
+                  ],
+                  stops: const [0.0, 0.5, 1.0],
+                ),
+              ),
+            ),
           ),
 
           // Profile info container positioned at the bottom
@@ -150,16 +189,20 @@ class ProfileHeader extends StatelessWidget {
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          _buildButton(
-                            icon: Icons.person_add,
-                            label: 'Follow',
-                            onPressed: () {},
+                          RemoteControlWrapper(
+                            child: _buildButton(
+                              icon: Icons.person_add,
+                              label: 'Follow',
+                              onPressed: () {},
+                            ),
                           ),
                           const SizedBox(width: 12),
-                          _buildButton(
-                            icon: Icons.message,
-                            label: 'Message',
-                            onPressed: () {},
+                          RemoteControlWrapper(
+                            child: _buildButton(
+                              icon: Icons.message,
+                              label: 'Message',
+                              onPressed: () {},
+                            ),
                           ),
                         ],
                       ),

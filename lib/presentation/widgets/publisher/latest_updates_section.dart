@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/presentation/widgets/common/section_heading.dart';
+import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class LatestUpdatesSection extends StatelessWidget {
   final List<Map<String, dynamic>> latestUpdates;
@@ -36,14 +37,16 @@ class LatestUpdatesSection extends StatelessWidget {
             itemCount: latestUpdates.length,
             itemBuilder: (context, index) {
               final update = latestUpdates[index];
-              return _buildUpdateCard(
-                context,
-                update['thumbnailUrl'] as String,
-                update['timeAgo'] as String,
-                update['duration'] as String,
-                update['clipTitle'] as String,
-                update['friendsWatched'] as int,
-                update['friendAvatarUrls'] as List<String>,
+              return RemoteControlWrapper(
+                child: _buildUpdateCard(
+                  context,
+                  update['thumbnailUrl'] as String,
+                  update['timeAgo'] as String,
+                  update['duration'] as String,
+                  update['clipTitle'] as String,
+                  update['friendsWatched'] as int,
+                  update['friendAvatarUrls'] as List<String>,
+                ),
               );
             },
           ),
@@ -63,7 +66,6 @@ class LatestUpdatesSection extends StatelessWidget {
   ) {
     return Container(
       width: 320,
-      margin: const EdgeInsets.only(right: 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         color: Colors.black26,

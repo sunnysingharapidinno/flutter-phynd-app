@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:phynd_app/presentation/widgets/common/section_heading.dart';
+import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class AchievementsSection extends StatelessWidget {
   const AchievementsSection({super.key});
@@ -27,12 +28,16 @@ class AchievementsSection extends StatelessWidget {
               child: Row(
                 children: [
                   Expanded(
-                      child: _buildAchievementCard(
-                          "The Loyal Player", Icons.emoji_events)),
+                      child: RemoteControlWrapper(
+                    child: _buildAchievementCard(
+                        "The Loyal Player", Icons.emoji_events),
+                  )),
                   const SizedBox(width: 4),
                   Expanded(
-                      child: _buildAchievementCard(
-                          "Phynd Coins Demo Quest", Icons.monetization_on)),
+                      child: RemoteControlWrapper(
+                    child: _buildAchievementCard(
+                        "Phynd Coins Demo Quest", Icons.monetization_on),
+                  )),
                 ],
               ),
             ),
