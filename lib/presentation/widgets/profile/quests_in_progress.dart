@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/data/services/quest_service.dart';
+import 'package:phynd_app/presentation/screens/quest_details_page.dart';
 import 'package:phynd_app/presentation/widgets/common/section_heading.dart';
 import 'package:phynd_app/presentation/widgets/quest/quest_in_progress_card.dart';
 
@@ -95,6 +96,15 @@ class _QuestsInProgressState extends State<QuestsInProgress> {
                             totalMissions: quest['total_missions'] ?? 1,
                             cardColor: _getCardColor(index),
                             showProgressBar: true,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const QuestDetailsPage(),
+                                ),
+                              );
+                            },
                           );
                         },
                       ),
