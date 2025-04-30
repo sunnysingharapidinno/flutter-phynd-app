@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
+import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class ShortsCard extends StatelessWidget {
   final String thumbnailUrl;
@@ -23,8 +24,8 @@ class ShortsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context).extension<AppTheme>()!;
 
-    return GestureDetector(
-      onTap: onTap,
+    return RemoteControlWrapper(
+      onEnter: onTap,
       child: Container(
         width: width,
         height: 320,

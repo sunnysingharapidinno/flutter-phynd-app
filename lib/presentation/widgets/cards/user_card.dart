@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class UserCard extends StatelessWidget {
   final String? avatarUrl;
@@ -22,7 +23,7 @@ class UserCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context).extension<AppTheme>()!;
 
-    return InkWell(
+    return RemoteControlWrapper(
       onTap: onTap,
       child: Container(
         width: 100,

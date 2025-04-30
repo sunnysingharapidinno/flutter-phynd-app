@@ -15,7 +15,7 @@ class SectionHeading extends StatelessWidget {
     required this.textColor,
     required this.accentColor,
     this.onSeeAllPressed,
-    this.showSeeAll = true,
+    this.showSeeAll = false,
     this.fontSize = 28,
     this.fontWeight = FontWeight.bold,
   });

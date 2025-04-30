@@ -5,6 +5,7 @@ import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/presentation/bloc/auth/auth_bloc.dart';
 import 'package:phynd_app/presentation/bloc/auth/auth_event.dart';
 import 'package:phynd_app/presentation/bloc/auth/auth_state.dart';
+import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class Sidebar extends StatelessWidget {
   const Sidebar({super.key});
@@ -131,19 +132,25 @@ class Sidebar extends StatelessWidget {
                     }
 
                     widgets.add(
-                      ListTile(
-                        leading: Icon(
-                          item['icon'] as IconData,
-                          color: textColor,
-                        ),
-                        title: Text(
-                          item['title'] as String,
-                          style: TextStyle(color: textColor),
-                        ),
+                      RemoteControlWrapper(
                         onTap: () {
                           Navigator.pushReplacementNamed(
                               context, item['route'] as String);
                         },
+                        child: ListTile(
+                          leading: Icon(
+                            item['icon'] as IconData,
+                            color: textColor,
+                          ),
+                          title: Text(
+                            item['title'] as String,
+                            style: TextStyle(color: textColor),
+                          ),
+                          onTap: () {
+                            Navigator.pushReplacementNamed(
+                                context, item['route'] as String);
+                          },
+                        ),
                       ),
                     );
 
@@ -153,19 +160,25 @@ class Sidebar extends StatelessWidget {
                   .toList(),
               if (isAuthenticated) ...[
                 Divider(color: textColor.withOpacity(0.2)),
-                ListTile(
-                  leading: Icon(
-                    Icons.logout,
-                    color: textColor,
-                  ),
-                  title: Text(
-                    'Logout',
-                    style: TextStyle(color: textColor),
-                  ),
+                RemoteControlWrapper(
                   onTap: () {
                     context.read<AuthBloc>().add(LogoutUser());
                     Navigator.pushReplacementNamed(context, AppRoutes.login);
                   },
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.logout,
+                      color: textColor,
+                    ),
+                    title: Text(
+                      'Logout',
+                      style: TextStyle(color: textColor),
+                    ),
+                    onTap: () {
+                      context.read<AuthBloc>().add(LogoutUser());
+                      Navigator.pushReplacementNamed(context, AppRoutes.login);
+                    },
+                  ),
                 ),
               ],
             ],

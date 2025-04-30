@@ -76,9 +76,9 @@ class _PlayerProfilePageState extends State<PlayerProfilePage> {
                         username: displayName,
                         isOnline: true,
                         avatar: _userProfile?.user.dp_url ??
-                            'assets/images/avatar.png',
+                            'https://xstrela-alpha.s3.amazonaws.com/images/GamerAvatar1.jpeg',
                         bannerImage: _userProfile?.user?.cover_image_url ??
-                            'assets/images/profile_banner.png',
+                            'https://xstrela-alpha.s3.amazonaws.com/images/profileCover.png',
                         currentlyPlaying: 'Marvel Rivals'),
 
                     Container(
@@ -112,6 +112,7 @@ class _PlayerProfilePageState extends State<PlayerProfilePage> {
 
                     // Recently Uploaded Clips Section
                     const RecentlyUploadedClips(),
+
                     // Achievements Section
                     const AchievementsSection(),
 

@@ -39,7 +39,7 @@ class _AppInitializerState extends State<AppInitializer> {
       final authBloc = context.read<AuthBloc>();
       authBloc.add(GetUserDetails());
     } catch (e) {
-      print('Auth check error: $e');
+      debugPrint('Auth check error: $e');
     }
   }
 
