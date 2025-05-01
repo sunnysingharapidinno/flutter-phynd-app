@@ -111,8 +111,9 @@ class _SuggestedQuestState extends State<SuggestedQuest> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      const QuestDetailsPage(),
+                                  builder: (context) => QuestDetailsPage(
+                                    questId: quest['quest_id'] ?? '',
+                                  ),
                                 ),
                               );
                             },

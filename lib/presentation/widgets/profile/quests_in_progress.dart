@@ -101,8 +101,9 @@ class _QuestsInProgressState extends State<QuestsInProgress> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      QuestDetailsPage(questData: quest),
+                                  builder: (context) => QuestDetailsPage(
+                                    questId: quest['quest_id'] ?? '',
+                                  ),
                                 ),
                               );
                             },

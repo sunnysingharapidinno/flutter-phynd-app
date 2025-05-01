@@ -32,34 +32,15 @@ class QuestInProgressCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap ??
           () {
-            // Create quest data map if not provided
-            final quest = questData ??
-                {
-                  'quest_id': questId,
-                  'name': title,
-                  'description': 'Complete missions in $gameName',
-                  'image': imageUrl,
-                  'total_missions': totalMissions,
-                  'mission_completed': completedMissions,
-                  'participants': 0,
-                  'completed': false,
-                  'phynd_coins': 0,
-                  'phynd_coins_bonus': 0,
-                  'game_name': gameName,
-                  'quest_type': 'GENERAL',
-                  'is_enabled': true,
-                  'has_started': true,
-                  'is_modified': false,
-                  'is_featured': false,
-                  'category': [],
-                  'awards': [],
-                  'game': [],
-                };
+            if (questId == null || questId!.isEmpty) {
+              print('No quest ID available');
+              return;
+            }
 
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => QuestDetailsPage(questData: quest),
+                builder: (context) => QuestDetailsPage(questId: questId!),
               ),
             );
           },

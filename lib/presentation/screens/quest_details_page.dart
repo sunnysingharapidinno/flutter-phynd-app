@@ -7,11 +7,11 @@ import 'package:phynd_app/presentation/widgets/quest/quest_rewards_section.dart'
 import 'package:phynd_app/presentation/widgets/quest/quest_missions_section.dart';
 
 class QuestDetailsPage extends StatefulWidget {
-  final Map<String, dynamic>? questData;
+  final String questId;
 
   const QuestDetailsPage({
     super.key,
-    this.questData,
+    required this.questId,
   });
 
   @override
@@ -27,38 +27,34 @@ class _QuestDetailsPageState extends State<QuestDetailsPage> {
   @override
   void initState() {
     super.initState();
-    _getQuestDetails(widget.questData);
+    _getQuestDetails();
   }
 
-  Future<void> _getQuestDetails(Map<String, dynamic>? questData) async {
+  Future<void> _getQuestDetails() async {
+    setState(() {
+      _isLoading = true;
+      _hasError = false;
+    });
+
     try {
-      if (questData != null) {
-        final String questId = questData['quest_id'] ?? '';
-        if (questId.isNotEmpty) {
-          final quest = await _questService.getQuestDetails(questId: questId);
-          print('quest: $quest');
-          setState(() {
-            _questDetails = quest;
-            _isLoading = false;
-          });
-        } else {
-          setState(() {
-            _questDetails = QuestModel.fromJson(questData);
-            _isLoading = false;
-          });
-        }
-      } else {
+      final quest =
+          await _questService.getQuestDetails(questId: widget.questId);
+
+      if (mounted) {
+        setState(() {
+          _questDetails = quest;
+          _isLoading = false;
+          _hasError = false;
+        });
+      }
+    } catch (e) {
+      print('Error fetching quest details: $e');
+      if (mounted) {
         setState(() {
           _isLoading = false;
           _hasError = true;
         });
       }
-    } catch (e) {
-      debugPrint('Error fetching quest details: $e');
-      setState(() {
-        _isLoading = false;
-        _hasError = true;
-      });
     }
   }
 
@@ -107,11 +103,7 @@ class _QuestDetailsPageState extends State<QuestDetailsPage> {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () {
-                  setState(() {
-                    _isLoading = true;
-                    _hasError = false;
-                  });
-                  _getQuestDetails(widget.questData);
+                  _getQuestDetails();
                 },
                 child: const Text('Retry'),
               ),
