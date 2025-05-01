@@ -96,12 +96,13 @@ class _QuestsInProgressState extends State<QuestsInProgress> {
                             totalMissions: quest['total_missions'] ?? 1,
                             cardColor: _getCardColor(index),
                             showProgressBar: true,
+                            questId: quest['quest_id'],
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      const QuestDetailsPage(),
+                                      QuestDetailsPage(questData: quest),
                                 ),
                               );
                             },

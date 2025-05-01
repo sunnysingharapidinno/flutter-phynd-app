@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:phynd_app/data/models/response/quest_model.dart';
 
 class QuestHeader extends StatelessWidget {
-  final Map<String, dynamic> questData;
+  final QuestModel questData;
   final VoidCallback? onJoinPressed;
 
   const QuestHeader({
@@ -42,7 +43,7 @@ class QuestHeader extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        'ENDS IN ${questData['timeLeft'] ?? '153D 18H 47M 01S'}',
+                        'ENDS IN ${questData.timeLeft ?? '153D 18H 47M 01S'}',
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -87,8 +88,7 @@ class QuestHeader extends StatelessWidget {
               width: 450,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: NetworkImage(questData['image'] ??
-                      'https://xstrela-alpha.s3.us-east-1.amazonaws.com/general/2025/03/12/0724cd4ae01c4754a70fa91a0a574e13.png'),
+                  image: NetworkImage(questData.image),
                   fit: BoxFit.cover,
                 ),
                 border: Border.all(
@@ -117,49 +117,50 @@ class QuestHeader extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: Colors.black54,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                  color: Colors.purple.withOpacity(0.3),
-                                  shape: BoxShape.circle,
+                    if (questData.isFeatured)
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.black54,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.purple.withOpacity(0.3),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.hexagon_outlined,
+                                    color: Colors.purple,
+                                    size: 16,
+                                  ),
                                 ),
-                                child: const Icon(
-                                  Icons.hexagon_outlined,
-                                  color: Colors.purple,
-                                  size: 16,
-                                ),
-                              ),
-                              const SizedBox(width: 6),
-                            ],
+                                const SizedBox(width: 6),
+                              ],
+                            ),
                           ),
-                        ),
-                        const Text(
-                          'Featured Quest',
-                          style: TextStyle(
-                            color: Colors.purple,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
+                          const Text(
+                            'Featured Quest',
+                            style: TextStyle(
+                              color: Colors.purple,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
 
                     Row(
                       children: [
                         Expanded(
                           child: Text(
-                            questData['name'] ?? 'The Chatty Explorer',
+                            questData.name,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 32,
@@ -171,8 +172,7 @@ class QuestHeader extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      questData['description'] ??
-                          'Follow more users and join the conversation',
+                      questData.description,
                       style: const TextStyle(
                         color: Colors.white70,
                         fontSize: 16,
@@ -183,13 +183,17 @@ class QuestHeader extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _buildStat('0', 'Participants'),
+                        _buildStat((questData.participants ?? 0).toString(),
+                            'Participants'),
                         _buildDivider(),
-                        _buildStat('0', 'Completed'),
+                        _buildStat((questData.completed == true ? 'Yes' : 'No'),
+                            'Completed'),
                         _buildDivider(),
-                        _buildStat('2', 'Missions'),
+                        _buildStat((questData.totalMissions ?? 0).toString(),
+                            'Missions'),
                         _buildDivider(),
-                        _buildStat('0', 'Rewards'),
+                        _buildStat(
+                            (questData.phyndCoins ?? 0).toString(), 'Rewards'),
                       ],
                     ),
                     const SizedBox(height: 16),

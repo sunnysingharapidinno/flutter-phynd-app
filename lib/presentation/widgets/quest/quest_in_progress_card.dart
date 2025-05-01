@@ -11,6 +11,7 @@ class QuestInProgressCard extends StatelessWidget {
   final bool showProgressBar;
   final VoidCallback? onTap;
   final Map<String, dynamic>? questData;
+  final String? questId;
 
   const QuestInProgressCard({
     super.key,
@@ -23,6 +24,7 @@ class QuestInProgressCard extends StatelessWidget {
     this.showProgressBar = false,
     this.onTap,
     this.questData,
+    this.questId,
   });
 
   @override
@@ -33,15 +35,25 @@ class QuestInProgressCard extends StatelessWidget {
             // Create quest data map if not provided
             final quest = questData ??
                 {
+                  'quest_id': questId,
                   'name': title,
                   'description': 'Complete missions in $gameName',
                   'image': imageUrl,
-                  'timeLeft': '153D 18H 47M 01S',
-                  'totalMissions': totalMissions,
-                  'completedMissions': completedMissions,
+                  'total_missions': totalMissions,
+                  'mission_completed': completedMissions,
                   'participants': 0,
-                  'completed': 0,
-                  'rewards': 0,
+                  'completed': false,
+                  'phynd_coins': 0,
+                  'phynd_coins_bonus': 0,
+                  'game_name': gameName,
+                  'quest_type': 'GENERAL',
+                  'is_enabled': true,
+                  'has_started': true,
+                  'is_modified': false,
+                  'is_featured': false,
+                  'category': [],
+                  'awards': [],
+                  'game': [],
                 };
 
             Navigator.push(

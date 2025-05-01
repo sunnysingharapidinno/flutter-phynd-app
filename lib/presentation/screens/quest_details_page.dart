@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:phynd_app/data/models/response/quest_model.dart';
+import 'package:phynd_app/data/services/quest_service.dart';
 import 'package:phynd_app/presentation/widgets/quest/quest_header.dart';
 import 'package:phynd_app/presentation/widgets/quest/quest_creator_section.dart';
 import 'package:phynd_app/presentation/widgets/quest/quest_rewards_section.dart';
 import 'package:phynd_app/presentation/widgets/quest/quest_missions_section.dart';
 
-class QuestDetailsPage extends StatelessWidget {
+class QuestDetailsPage extends StatefulWidget {
   final Map<String, dynamic>? questData;
 
   const QuestDetailsPage({
@@ -13,44 +15,111 @@ class QuestDetailsPage extends StatelessWidget {
   });
 
   @override
+  State<QuestDetailsPage> createState() => _QuestDetailsPageState();
+}
+
+class _QuestDetailsPageState extends State<QuestDetailsPage> {
+  final QuestService _questService = QuestService();
+  QuestModel? _questDetails;
+  bool _isLoading = true;
+  bool _hasError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _getQuestDetails(widget.questData);
+  }
+
+  Future<void> _getQuestDetails(Map<String, dynamic>? questData) async {
+    try {
+      if (questData != null) {
+        final String questId = questData['quest_id'] ?? '';
+        if (questId.isNotEmpty) {
+          final quest = await _questService.getQuestDetails(questId: questId);
+          print('quest: $quest');
+          setState(() {
+            _questDetails = quest;
+            _isLoading = false;
+          });
+        } else {
+          setState(() {
+            _questDetails = QuestModel.fromJson(questData);
+            _isLoading = false;
+          });
+        }
+      } else {
+        setState(() {
+          _isLoading = false;
+          _hasError = true;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error fetching quest details: $e');
+      setState(() {
+        _isLoading = false;
+        _hasError = true;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Sample quest data if not provided
-    final quest = questData ??
-        {
-          'name': 'The Chatty Explorer',
-          'description': 'Follow more users and join the conversation',
-          'image':
-              'https://xstrela-alpha.s3.us-east-1.amazonaws.com/general/2025/03/12/0724cd4ae01c4754a70fa91a0a574e13.png',
-          'timeLeft': '153D 18H 47M 01S',
-          'totalMissions': 2,
-          'completedMissions': 0,
-          'participants': 0,
-          'completed': 0,
-          'rewards': 0,
-          'activeParticipants': 0,
-          'creator': 'PHYND',
-          'missions': {
-            'required': [
-              {
-                'title': 'User Accepted Chat Request',
-                'count': '0/2',
-                'isCompleted': false,
-              },
-              {
-                'title': 'User Sent Chat Message',
-                'count': '0/10',
-                'isCompleted': false,
-              },
+    if (_isLoading) {
+      return const Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (_hasError || _questDetails == null) {
+      return Scaffold(
+        backgroundColor: Colors.black,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          leading: IconButton(
+            icon: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.black54,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(Icons.arrow_back, color: Colors.white),
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.error_outline,
+                color: Colors.red,
+                size: 48,
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Failed to load quest details',
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _isLoading = true;
+                    _hasError = false;
+                  });
+                  _getQuestDetails(widget.questData);
+                },
+                child: const Text('Retry'),
+              ),
             ],
-            'optional': [
-              {
-                'title': 'Follow user',
-                'count': '',
-                'isCompleted': false,
-              },
-            ],
-          },
-        };
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -92,16 +161,16 @@ class QuestDetailsPage extends StatelessWidget {
               child: Column(
                 children: [
                   QuestHeader(
-                    questData: quest,
+                    questData: _questDetails!,
                   ),
                   QuestCreatorSection(
-                    questData: quest,
+                    questData: _questDetails!,
                   ),
                   QuestRewardsSection(
-                    questData: quest,
+                    questData: _questDetails!,
                   ),
                   QuestMissionsSection(
-                    questData: quest,
+                    questData: _questDetails!,
                   ),
                 ],
               ),

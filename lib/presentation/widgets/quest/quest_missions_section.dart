@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:phynd_app/data/models/response/quest_model.dart';
+import 'package:phynd_app/data/services/quest_service.dart';
 
-class QuestMissionsSection extends StatelessWidget {
-  final Map<String, dynamic> questData;
+class QuestMissionsSection extends StatefulWidget {
+  final QuestModel questData;
 
   const QuestMissionsSection({
     super.key,
@@ -9,181 +11,165 @@ class QuestMissionsSection extends StatelessWidget {
   });
 
   @override
+  State<QuestMissionsSection> createState() => _QuestMissionsSectionState();
+}
+
+class _QuestMissionsSectionState extends State<QuestMissionsSection> {
+  final QuestService _questService = QuestService();
+  List<QuestMissionModel>? _questMissions;
+  bool _isLoading = true;
+  bool _hasError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _getQuestMissions();
+  }
+
+  Future<void> _getQuestMissions() async {
+    try {
+      final String questId = widget.questData.questId ?? '';
+
+      if (questId.isNotEmpty) {
+        final response = await _questService.getQuestMissions(questId: questId);
+
+        setState(() {
+          _questMissions = response;
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          _isLoading = false;
+          _hasError = true;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _hasError = true;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_hasError || _questMissions == null) {
+      return const Center(
+        child: Text(
+          'Failed to load missions',
+          style: TextStyle(color: Colors.white),
+        ),
+      );
+    }
+
+    if (_questMissions!.isEmpty) {
+      return const Center(
+        child: Text(
+          'No missions available',
+          style: TextStyle(color: Colors.white),
+        ),
+      );
+    }
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.0),
-            child: Text(
-              'Quest Missions',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-
-          // Required Missions Section
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20.0),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade900.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: Colors.grey.shade800,
-                width: 1,
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Required Section Header
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade800.withOpacity(0.5),
-                    borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(16)),
-                  ),
-                  child: const Row(
-                    children: [
-                      Text(
-                        'Complete all of the following',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
+        children: _questMissions!.map((group) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Logic Group Header
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2F3543),
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Colors.grey.shade800,
+                      width: 1,
+                    ),
                   ),
                 ),
-                // Required Missions List
-                _buildMissionItem(
-                  'User Accepted Chat Request',
-                  'Count 0/2',
-                  false,
-                ),
-                _buildMissionItem(
-                  'User Sent Chat Message',
-                  'Count 0/10',
-                  false,
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
-          // Optional Missions Section
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20.0),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade900.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: Colors.grey.shade800,
-                width: 1,
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Optional Section Header
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade800.withOpacity(0.5),
-                    borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(16)),
-                  ),
-                  child: const Row(
-                    children: [
-                      Text(
-                        'Complete any of the following',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // Optional Missions List
-                _buildMissionItem(
-                  'Follow user',
-                  '',
-                  false,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMissionItem(String title, String count, bool isCompleted) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Colors.grey.shade800,
-            width: 1,
-          ),
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
+                child: Text(
+                  group.logicGroupType == 'ALL'
+                      ? 'Complete all of the following'
+                      : 'Complete any of the following',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: 20,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                if (count.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    count,
-                    style: TextStyle(
-                      color: Colors.grey.shade400,
-                      fontSize: 14,
+              ),
+              // Mission Items
+              ...group.events.map((event) => Container(
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF2F3543),
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Colors.grey.shade800,
+                          width: 1,
+                        ),
+                      ),
                     ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-          Container(
-            width: 24,
-            height: 24,
-            decoration: BoxDecoration(
-              color: isCompleted ? Colors.green : Colors.grey.shade800,
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: isCompleted
-                ? const Icon(
-                    Icons.check,
-                    color: Colors.white,
-                    size: 16,
-                  )
-                : null,
-          ),
-        ],
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                event.name,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              if (event.eventCount > 0) ...[
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Count ${event.userEventCount}/${event.eventCount}',
+                                  style: TextStyle(
+                                    color: Colors.grey.shade400,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: event.isCompleted
+                                ? Colors.green
+                                : Colors.grey.shade700,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: event.isCompleted
+                              ? const Icon(
+                                  Icons.check,
+                                  color: Colors.white,
+                                  size: 24,
+                                )
+                              : null,
+                        ),
+                      ],
+                    ),
+                  )),
+              const SizedBox(height: 16), // Spacing between groups
+            ],
+          );
+        }).toList(),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/data/models/response/quest_model.dart';
 import 'package:phynd_app/data/services/quest_service.dart';
+import 'package:phynd_app/presentation/screens/quest_details_page.dart';
 import 'package:phynd_app/presentation/widgets/quest/quest_in_progress_card.dart';
 
 class QuestListView extends StatefulWidget {
@@ -88,6 +89,24 @@ class _QuestListViewState extends State<QuestListView> {
             gameName: quest.gameName,
             completedMissions: quest.missionCompleted ?? 0,
             totalMissions: quest.totalMissions ?? 1,
+            questId: quest.questId,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => QuestDetailsPage(
+                    questData: {
+                      'id': quest.questId,
+                      'name': quest.name,
+                      'description': quest.description,
+                      'image': quest.image,
+                      'totalMissions': quest.totalMissions,
+                      'completedMissions': quest.missionCompleted,
+                    },
+                  ),
+                ),
+              );
+            },
           );
         },
       ),

@@ -9,12 +9,12 @@ class QuestModel {
   final String image;
   final String? imageSmall;
   final String? imageMedium;
-  final String startTime;
-  final String endTime;
+  final dynamic startTime;
+  final dynamic endTime;
   final String timezone;
   final bool completed;
-  final String created;
-  final String lastModified;
+  final dynamic created; // Can be int or String
+  final dynamic modified; // Can be int or String
   final bool isCreatedByAdmin;
   final int totalMissions;
   final int missionCompleted;
@@ -27,6 +27,21 @@ class QuestModel {
   final int phyndCoins;
   final int phyndCoinsBonus;
   final String gameName;
+  final int participants;
+  final String timeLeft;
+  final bool isEnabled;
+  final bool hasStarted;
+  final bool isModified;
+  final bool isFeatured;
+  final List<Category> category;
+  final String? categoryName;
+  final String? categoryLevel;
+  final String? categoryLevelValue;
+  final String? categoryUrl;
+  final int logicGroup;
+  final String? publisherName;
+  final String? publisherType;
+  final int missions;
 
   QuestModel({
     required this.questId,
@@ -44,7 +59,7 @@ class QuestModel {
     required this.timezone,
     required this.completed,
     required this.created,
-    required this.lastModified,
+    required this.modified,
     required this.isCreatedByAdmin,
     required this.totalMissions,
     required this.missionCompleted,
@@ -57,6 +72,21 @@ class QuestModel {
     required this.phyndCoins,
     required this.phyndCoinsBonus,
     required this.gameName,
+    required this.participants,
+    required this.timeLeft,
+    required this.isEnabled,
+    required this.hasStarted,
+    required this.isModified,
+    required this.isFeatured,
+    required this.category,
+    this.categoryName,
+    this.categoryLevel,
+    this.categoryLevelValue,
+    this.categoryUrl,
+    required this.logicGroup,
+    this.publisherName,
+    this.publisherType,
+    required this.missions,
   });
 
   factory QuestModel.fromJson(Map<String, dynamic> json) {
@@ -72,12 +102,12 @@ class QuestModel {
       image: json['image'] ?? '',
       imageSmall: json['image_small'],
       imageMedium: json['image_medium'],
-      startTime: json['start_time'] ?? '',
-      endTime: json['end_time'] ?? '',
+      startTime: json['start_time'] ?? 0,
+      endTime: json['end_time'] ?? 0,
       timezone: json['timezone'] ?? '',
       completed: json['completed'] ?? false,
-      created: json['created'] ?? '',
-      lastModified: json['last_modified'] ?? '',
+      created: json['created'] ?? 0,
+      modified: json['modified'] ?? 0,
       isCreatedByAdmin: json['is_created_by_admin'] ?? false,
       totalMissions: json['total_missions'] ?? 0,
       missionCompleted: json['mission_completed'] ?? 0,
@@ -93,6 +123,25 @@ class QuestModel {
       phyndCoins: json['phynd_coins'] ?? 0,
       phyndCoinsBonus: json['phynd_coins_bonus'] ?? 0,
       gameName: json['game_name'] ?? '',
+      participants: json['participants'] ?? 0,
+      timeLeft: json['end_time']?.toString() ?? '',
+      isEnabled: json['is_enabled'] ?? false,
+      hasStarted: json['has_started'] ?? false,
+      isModified: json['is_modified'] ?? false,
+      isFeatured: json['is_featured'] ?? false,
+      category: (json['category'] as List<dynamic>?)
+              ?.map((categoryJson) => Category(
+                  sections: List<String>.from(categoryJson['sections'] ?? [])))
+              .toList() ??
+          [],
+      categoryName: json['category_name'],
+      categoryLevel: json['category_level'],
+      categoryLevelValue: json['category_level_value'],
+      categoryUrl: json['category_url'],
+      logicGroup: json['logic_group'] ?? 0,
+      publisherName: json['publisher_name'],
+      publisherType: json['publisher_type'],
+      missions: json['missions'] ?? 0,
     );
   }
 
@@ -113,7 +162,7 @@ class QuestModel {
       'timezone': timezone,
       'completed': completed,
       'created': created,
-      'last_modified': lastModified,
+      'modified': modified,
       'is_created_by_admin': isCreatedByAdmin,
       'total_missions': totalMissions,
       'mission_completed': missionCompleted,
@@ -125,6 +174,19 @@ class QuestModel {
       'game': game.map((g) => g.toJson()).toList(),
       'phynd_coins': phyndCoins,
       'phynd_coins_bonus': phyndCoinsBonus,
+      'is_enabled': isEnabled,
+      'has_started': hasStarted,
+      'is_modified': isModified,
+      'is_featured': isFeatured,
+      'category': category.map((c) => c.toJson()).toList(),
+      'category_name': categoryName,
+      'category_level': categoryLevel,
+      'category_level_value': categoryLevelValue,
+      'category_url': categoryUrl,
+      'logic_group': logicGroup,
+      'publisher_name': publisherName,
+      'publisher_type': publisherType,
+      'missions': missions,
     };
   }
 }
@@ -149,6 +211,135 @@ class Game {
     return {
       'slug': slug,
       'name': name,
+    };
+  }
+}
+
+class Category {
+  final List<dynamic> sections;
+
+  Category({required this.sections});
+
+  factory Category.fromJson(Map<String, dynamic> json) {
+    return Category(
+      sections: json['sections'] ?? [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'sections': sections,
+    };
+  }
+}
+
+class QuestMissionModel {
+  final int logicGroupId;
+  final String logicGroupType;
+  final String logicTitle;
+  final dynamic companyId;
+  final dynamic companyName;
+  final String description;
+  final int totalEvents;
+  final bool isLogicGroupCompleted;
+  final List<MissionEvent> events;
+
+  QuestMissionModel({
+    required this.logicGroupId,
+    required this.logicGroupType,
+    required this.logicTitle,
+    this.companyId,
+    this.companyName,
+    required this.description,
+    required this.totalEvents,
+    required this.isLogicGroupCompleted,
+    required this.events,
+  });
+
+  factory QuestMissionModel.fromJson(Map<String, dynamic> json) {
+    return QuestMissionModel(
+      logicGroupId: json['logic_group_id'] ?? 0,
+      logicGroupType: json['logic_group_type'] ?? '',
+      logicTitle: json['logic_title'] ?? '',
+      companyId: json['company_id'],
+      companyName: json['company_name'],
+      description: json['description'] ?? '',
+      totalEvents: json['total_events'] ?? 0,
+      isLogicGroupCompleted: json['is_logic_group_completed'] ?? false,
+      events: (json['events'] as List<dynamic>?)
+              ?.map((e) => MissionEvent.fromJson(e))
+              .toList() ??
+          [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'logic_group_id': logicGroupId,
+      'logic_group_type': logicGroupType,
+      'logic_title': logicTitle,
+      'company_id': companyId,
+      'company_name': companyName,
+      'description': description,
+      'total_events': totalEvents,
+      'is_logic_group_completed': isLogicGroupCompleted,
+      'events': events.map((e) => e.toJson()).toList(),
+    };
+  }
+}
+
+class MissionEvent {
+  final int id;
+  final String name;
+  final bool repeatable;
+  final int points;
+  final int eventCount;
+  final int userEventCount;
+  final dynamic repeatPeriod;
+  final bool isCompleted;
+  final dynamic gameSlug;
+  final dynamic gameName;
+
+  MissionEvent({
+    required this.id,
+    required this.name,
+    required this.repeatable,
+    required this.points,
+    required this.eventCount,
+    required this.userEventCount,
+    this.repeatPeriod,
+    required this.isCompleted,
+    this.gameSlug,
+    this.gameName,
+  });
+
+  factory MissionEvent.fromJson(Map<String, dynamic> json) {
+    return MissionEvent(
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
+      repeatable: json['repeatable'] ?? false,
+      points: json['points'] ?? 0,
+      eventCount: json['event_count'] ?? 0,
+      userEventCount: json['user_event_count'] ?? 0,
+      repeatPeriod: json['repeat_period'],
+      isCompleted: json['is_completed'] ?? false,
+      gameSlug: json['game_slug'],
+      gameName: json['game_name'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'repeatable': repeatable,
+      'points': points,
+      'event_count': eventCount,
+      'user_event_count': userEventCount,
+      'repeat_period': repeatPeriod,
+      'is_completed': isCompleted,
+      'game_slug': gameSlug,
+      'game_name': gameName,
     };
   }
 }

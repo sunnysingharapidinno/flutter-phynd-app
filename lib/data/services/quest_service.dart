@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:phynd_app/core/constants/base_server_endpoints.dart';
 import 'package:phynd_app/core/enums/api_env.dart';
 import 'package:phynd_app/core/utils/api_service.dart';
@@ -75,6 +76,7 @@ class QuestService {
       };
       final response = await api.post(ServerAPIEndpoints.getQuests,
           body: requestBody, auth: true);
+
       if (response.body.isEmpty) {
         throw Exception('Empty response from server');
       }
@@ -97,6 +99,85 @@ class QuestService {
     } catch (e) {
       print('Error fetching quests: $e');
       return [];
+    }
+  }
+
+  Future<QuestModel> getQuestDetails({
+    String? questId,
+  }) async {
+    try {
+      final url = '${ServerAPIEndpoints.getQuestDetails}?quest_id=$questId';
+      final response = await api.get(url, auth: true);
+      if (response.body.isEmpty) {
+        throw Exception('Empty response from server');
+      }
+
+      final statusCode = response.statusCode;
+
+      if (statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data != null) {
+          return QuestModel.fromJson(data);
+        } else {
+          throw Exception('Invalid quest data format');
+        }
+      } else {
+        throw Exception(
+            'Failed to fetch quest details: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching quest details: $e');
+      throw Exception('Failed to get quest details: $e');
+    }
+  }
+
+  Future<List<QuestMissionModel>> getQuestMissions({
+    String? questId,
+  }) async {
+    try {
+      final url = '${ServerAPIEndpoints.getQuestMissions}?quest_id=$questId';
+      final response = await api.get(url, auth: true);
+
+      if (response.body.isEmpty) {
+        throw Exception('Empty response from server');
+      }
+
+      final statusCode = response.statusCode;
+
+      if (statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        if (data == null) {
+          throw Exception('Invalid response format: null data');
+        }
+
+        List<dynamic> missionsList;
+        if (data is List) {
+          missionsList = data;
+        } else if (data is Map<String, dynamic>) {
+          if (data['data'] is List) {
+            missionsList = data['data'];
+          } else {
+            throw Exception(
+                'Invalid response format: data field is not a List');
+          }
+        } else {
+          throw Exception(
+              'Invalid response format: expected List or Map with data field');
+        }
+
+        return missionsList
+            .map((json) => QuestMissionModel.fromJson(json))
+            .toList();
+      } else {
+        throw Exception(
+            'Failed to fetch quest missions: ${response.statusCode}');
+      }
+    } catch (e) {
+      if (e is TypeError) {
+        print('TypeError details: ${e.toString()}');
+      }
+      throw Exception('Failed to get quest missions: $e');
     }
   }
 }

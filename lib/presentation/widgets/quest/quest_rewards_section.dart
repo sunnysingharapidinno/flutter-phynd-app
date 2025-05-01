@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:phynd_app/data/models/response/quest_model.dart';
 
 class QuestRewardsSection extends StatelessWidget {
-  final Map<String, dynamic> questData;
+  final QuestModel questData;
 
   const QuestRewardsSection({
     super.key,
@@ -20,12 +21,12 @@ class QuestRewardsSection extends StatelessWidget {
       },
       {
         'type': 'coins',
-        'title': '200 PHYND Coins',
+        'title': '${questData.phyndCoins} PHYND Coins',
         'image': 'https://xstrela-alpha.s3.amazonaws.com/images/PhyndCoin.png',
       },
       {
         'type': 'bonus',
-        'title': '75 PHYND Coins bonus',
+        'title': '${questData.phyndCoinsBonus} PHYND Coins bonus',
         'image': 'https://xstrela-alpha.s3.amazonaws.com/images/PhyndCoin.png'
       },
     ];
@@ -67,6 +68,7 @@ class QuestRewardsSection extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 24,
               children: rewards.map((reward) {
                 return Column(
                   children: [

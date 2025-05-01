@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:phynd_app/data/models/response/quest_model.dart';
 
 class QuestCreatorSection extends StatelessWidget {
-  final Map<String, dynamic> questData;
+  final QuestModel questData;
 
   const QuestCreatorSection({
     super.key,
@@ -35,9 +36,9 @@ class QuestCreatorSection extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const Text(
-                'PHYND',
-                style: TextStyle(
+              Text(
+                questData.isCreatedByAdmin == true ? 'PHYND' : '',
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -57,7 +58,7 @@ class QuestCreatorSection extends StatelessWidget {
                 ),
               ),
               Text(
-                '${questData['activeParticipants'] ?? 0}',
+                '${questData.participants ?? 0}',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 24,
