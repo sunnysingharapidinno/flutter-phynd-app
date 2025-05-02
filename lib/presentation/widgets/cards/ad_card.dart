@@ -32,7 +32,7 @@ class _AdCardState extends State<AdCard> {
     final theme = Theme.of(context).extension<AppTheme>()!;
 
     return RemoteControlWrapper(
-      onEnter: widget.onWatchTap,
+      onTap: widget.onWatchTap,
       child: Container(
         width: widget.width,
         height: widget.height,
@@ -136,7 +136,7 @@ class _AdCardState extends State<AdCard> {
                     children: [
                       // Watch Ad button
                       RemoteControlWrapper(
-                        onEnter: widget.onWatchTap,
+                        onTap: widget.onWatchTap,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 8),
@@ -159,7 +159,7 @@ class _AdCardState extends State<AdCard> {
 
                       // Shop Now button
                       RemoteControlWrapper(
-                        onEnter: widget.onShopTap,
+                        onTap: widget.onShopTap,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 8),
