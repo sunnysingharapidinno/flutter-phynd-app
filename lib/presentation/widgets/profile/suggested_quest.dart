@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/data/services/quest_service.dart';
+import 'package:phynd_app/core/routing/app_routes.dart';
 import 'package:phynd_app/presentation/widgets/common/section_heading.dart';
 import 'package:phynd_app/presentation/widgets/quest/quest_in_progress_card.dart';
 
@@ -106,6 +107,13 @@ class _SuggestedQuestState extends State<SuggestedQuest> {
                             completedMissions: quest['completed_missions'] ?? 0,
                             totalMissions: quest['total_missions'] ?? 1,
                             cardColor: _getCardColor(index),
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.questDetails,
+                                arguments: quest['quest_id'] ?? '',
+                              );
+                            },
                           );
                         },
                       ),
