@@ -1,8 +1,22 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class CustomVideoPlayer extends StatefulWidget {
-  const CustomVideoPlayer({super.key});
+  final String videoUrl;
+  final bool isAds;
+  final String? sponsorName;
+  final String? sponsorLogoUrl;
+  final VoidCallback? onVideoComplete;
+
+  const CustomVideoPlayer({
+    super.key,
+    required this.videoUrl,
+    this.isAds = false,
+    this.sponsorName,
+    this.sponsorLogoUrl,
+    this.onVideoComplete,
+  });
 
   @override
   State<CustomVideoPlayer> createState() => _CustomVideoPlayerState();
@@ -12,6 +26,8 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   late final VideoPlayerController _controller;
   bool _isInitialized = false;
   String? _errorMessage;
+  int _remainingAdTime = 0;
+  Timer? _adTimer;
 
   @override
   void initState() {
@@ -19,22 +35,57 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
     _initializePlayer();
   }
 
+  void _startAdTimer() {
+    // Get total duration in seconds
+    final totalDuration = _controller.value.duration.inSeconds;
+    _remainingAdTime = totalDuration;
+
+    _adTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_remainingAdTime > 0) {
+        setState(() {
+          _remainingAdTime--;
+        });
+      } else {
+        _adTimer?.cancel();
+        widget.onVideoComplete?.call();
+      }
+    });
+  }
+
+  void _videoListener() {
+    // Check if video has reached the end (with a small buffer to account for rounding errors)
+    if (_controller.value.position >=
+        _controller.value.duration - const Duration(milliseconds: 300)) {
+      if (!widget.isAds) {
+        widget.onVideoComplete?.call();
+      }
+    }
+  }
+
   Future<void> _initializePlayer() async {
     try {
       _controller = VideoPlayerController.networkUrl(
-        Uri.parse(
-            'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'),
+        Uri.parse(widget.videoUrl),
         videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
       );
 
+      _controller.addListener(_videoListener);
       await _controller.initialize();
-      _controller.setLooping(true);
+
+      if (!widget.isAds) {
+        _controller.setLooping(false);
+      }
+
       await _controller.play();
 
       if (mounted) {
         setState(() {
           _isInitialized = true;
         });
+
+        if (widget.isAds) {
+          _startAdTimer();
+        }
       }
     } catch (e) {
       debugPrint('Error initializing video player: $e');
@@ -48,7 +99,9 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
 
   @override
   void dispose() {
+    _controller.removeListener(_videoListener);
     _controller.dispose();
+    _adTimer?.cancel();
     super.dispose();
   }
 
@@ -74,17 +127,203 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
     }
 
     return Material(
-      child: AspectRatio(
-        aspectRatio: _controller.value.aspectRatio,
-        child: Stack(
-          alignment: Alignment.bottomCenter,
-          children: <Widget>[
-            VideoPlayer(_controller),
-            _ControlsOverlay(controller: _controller),
-            VideoProgressIndicator(_controller, allowScrubbing: true),
-          ],
+      color: Colors.black,
+      child: Center(
+        child: AspectRatio(
+          aspectRatio: _controller.value.aspectRatio,
+          child: Stack(
+            fit: StackFit.expand,
+            alignment: Alignment.bottomCenter,
+            children: <Widget>[
+              VideoPlayer(_controller),
+              if (!widget.isAds) ...[
+                _ControlsOverlay(controller: _controller),
+                Positioned(
+                  bottom: 10,
+                  left: 0,
+                  right: 0,
+                  child: VideoProgressIndicator(
+                    _controller,
+                    allowScrubbing: true,
+                    colors: const VideoProgressColors(
+                      playedColor: Colors.white,
+                      bufferedColor: Colors.white24,
+                      backgroundColor: Colors.grey,
+                    ),
+                  ),
+                ),
+              ] else ...[
+                // Ad UI overlay
+                _AdOverlay(
+                  controller: _controller,
+                  remainingTime: _remainingAdTime,
+                  sponsorName: widget.sponsorName ?? 'Sponsored',
+                  sponsorLogoUrl: widget.sponsorLogoUrl,
+                ),
+              ],
+            ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+class _AdOverlay extends StatelessWidget {
+  final VideoPlayerController controller;
+  final int remainingTime;
+  final String sponsorName;
+  final String? sponsorLogoUrl;
+
+  const _AdOverlay({
+    required this.controller,
+    required this.remainingTime,
+    required this.sponsorName,
+    this.sponsorLogoUrl,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final totalDuration = controller.value.duration.inSeconds;
+
+    return Stack(
+      children: [
+        // Bottom progress bar
+        Positioned(
+          bottom: 10,
+          left: 20,
+          right: 20,
+          child: VideoProgressIndicator(
+            controller,
+            allowScrubbing: false,
+            colors: const VideoProgressColors(
+              playedColor: Colors.white,
+              bufferedColor: Colors.white24,
+              backgroundColor: Colors.grey,
+            ),
+          ),
+        ),
+
+        // Sponsor info at bottom left
+        Positioned(
+          bottom: 36,
+          left: 16,
+          child: Row(
+            children: [
+              // Sponsor logo
+              if (sponsorLogoUrl != null)
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: NetworkImage(sponsorLogoUrl!),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                )
+              else
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.blue,
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.business,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              const SizedBox(width: 8),
+              // Sponsor info
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.6),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Text(
+                      'Sponsored',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Text(
+                        sponsorName,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      const Icon(
+                        Icons.verified,
+                        color: Colors.blue,
+                        size: 16,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+
+        // Timer at bottom right with circular progress
+        Positioned(
+          bottom: 36,
+          right: 16,
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.black.withOpacity(0.6),
+            ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                // Circular progress indicator
+                SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: CircularProgressIndicator(
+                    value: remainingTime / totalDuration,
+                    strokeWidth: 3,
+                    backgroundColor: Colors.grey.withOpacity(0.3),
+                    valueColor:
+                        const AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                ),
+                // Timer text
+                Text(
+                  '$remainingTime',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
