@@ -20,7 +20,7 @@ class GameCard extends StatelessWidget {
     final appTheme = Theme.of(context).extension<AppTheme>()!;
 
     return RemoteControlWrapper(
-      onEnter: onTap,
+      onTap: onTap,
       child: Container(
         width: 160,
         margin: const EdgeInsets.all(8),
