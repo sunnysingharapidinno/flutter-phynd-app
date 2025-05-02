@@ -5,6 +5,7 @@ import 'package:phynd_app/presentation/screens/login_page.dart';
 import 'package:phynd_app/presentation/screens/player_profile_page.dart';
 import 'package:phynd_app/presentation/screens/publisher_profile_page.dart';
 import 'package:phynd_app/presentation/screens/quest_page.dart';
+import 'package:phynd_app/presentation/screens/quest_details_page.dart';
 import 'package:phynd_app/presentation/screens/registration_page.dart';
 import 'package:phynd_app/presentation/screens/search_page.dart';
 import 'package:phynd_app/presentation/screens/support_page.dart';
@@ -20,6 +21,7 @@ class AppRoutes {
   static const String publisherProfile = '/publisher-profile';
   static const String search = '/search';
   static const String quest = '/quest';
+  static const String questDetails = '/quest-details';
   static const String support = '/support';
   static const String termsAndConditions = '/terms-and-conditions';
   static const String video = '/video';
@@ -53,6 +55,13 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const SearchPage());
       case quest:
         return MaterialPageRoute(builder: (_) => const QuestPage());
+      case questDetails:
+        if (args is String) {
+          return MaterialPageRoute(
+            builder: (_) => QuestDetailsPage(questId: args),
+          );
+        }
+        return _errorRoute("Missing or invalid questId");
       case support:
         return MaterialPageRoute(builder: (_) => const SupportPage());
       case video:

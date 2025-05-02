@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/data/services/quest_service.dart';
-import 'package:phynd_app/presentation/screens/quest_details_page.dart';
+import 'package:phynd_app/core/routing/app_routes.dart';
 import 'package:phynd_app/presentation/widgets/common/section_heading.dart';
 import 'package:phynd_app/presentation/widgets/quest/quest_in_progress_card.dart';
 
@@ -47,72 +47,56 @@ class _QuestsInProgressState extends State<QuestsInProgress> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).extension<AppTheme>();
-    final textColor = theme?.get('text') ?? Colors.white;
-    final primaryColor = theme?.get('primary') ?? Colors.blue;
+    final textColor = theme?.get('text');
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Section heading
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: SectionHeading(
-              title: 'Quests in Progress',
-              textColor: textColor,
-              accentColor: primaryColor,
-              onSeeAllPressed: () {
-                // View all quests
-              },
-            ),
-          ),
-          const SizedBox(height: 8),
-          // Cards
-          SizedBox(
-            height: 320,
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _quests.isEmpty
-                    ? Center(
-                        child: Text(
-                          'No quests in progress',
-                          style: TextStyle(color: textColor),
-                        ),
-                      )
-                    : ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        scrollDirection: Axis.horizontal,
-                        itemCount: _quests.length,
-                        itemBuilder: (context, index) {
-                          final quest = _quests[index];
-                          return QuestInProgressCard(
-                            imageUrl: quest['image'] ??
-                                'https://xstrela-alpha.s3.amazonaws.com/images/quest_default.jpg',
-                            title: quest['name'] ?? 'Unknown Quest',
-                            gameName: quest['game_name'] ?? 'Unknown Game',
-                            completedMissions: quest['completed_missions'] ?? 0,
-                            totalMissions: quest['total_missions'] ?? 1,
-                            cardColor: _getCardColor(index),
-                            showProgressBar: true,
-                            questId: quest['quest_id'],
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => QuestDetailsPage(
-                                    questId: quest['quest_id'] ?? '',
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SectionHeading(
+          title: 'Quests in Progress',
+          textColor: Colors.white,
+          accentColor: Colors.purple,
+          showSeeAll: true,
+        ),
+        SizedBox(
+          height: 320,
+          child: _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _quests.isEmpty
+                  ? Center(
+                      child: Text(
+                        'No quests in progress',
+                        style: TextStyle(color: textColor),
                       ),
-          ),
-        ],
-      ),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _quests.length,
+                      itemBuilder: (context, index) {
+                        final quest = _quests[index];
+                        return QuestInProgressCard(
+                          imageUrl: quest['image'] ??
+                              'https://xstrela-alpha.s3.amazonaws.com/images/quest_default.jpg',
+                          title: quest['name'] ?? 'Unknown Quest',
+                          gameName: quest['game_name'] ?? 'Unknown Game',
+                          completedMissions: quest['completed_missions'] ?? 0,
+                          totalMissions: quest['total_missions'] ?? 1,
+                          cardColor: _getCardColor(index),
+                          showProgressBar: true,
+                          questId: quest['quest_id'],
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              AppRoutes.questDetails,
+                              arguments: quest['quest_id'] ?? '',
+                            );
+                          },
+                        );
+                      },
+                    ),
+        ),
+      ],
     );
   }
 
@@ -120,12 +104,11 @@ class _QuestsInProgressState extends State<QuestsInProgress> {
     // Cycle through colors for different quests
     final colors = [
       Colors.amber,
-      Colors.teal,
-      Colors.deepPurple,
-      Colors.indigo,
-      Colors.pink,
+      Colors.blue,
+      Colors.green,
+      Colors.purple,
+      Colors.red,
     ];
-
     return colors[index % colors.length];
   }
 }
