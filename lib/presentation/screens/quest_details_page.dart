@@ -5,6 +5,7 @@ import 'package:phynd_app/presentation/widgets/quest/quest_header.dart';
 import 'package:phynd_app/presentation/widgets/quest/quest_creator_section.dart';
 import 'package:phynd_app/presentation/widgets/quest/quest_rewards_section.dart';
 import 'package:phynd_app/presentation/widgets/quest/quest_missions_section.dart';
+import 'package:phynd_app/presentation/layouts/base_layout.dart';
 
 class QuestDetailsPage extends StatefulWidget {
   final String questId;
@@ -61,32 +62,18 @@ class _QuestDetailsPageState extends State<QuestDetailsPage> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
-        backgroundColor: Colors.black,
-        body: Center(
+      return BaseLayout(
+        title: 'Quest Details',
+        child: const Center(
           child: CircularProgressIndicator(),
         ),
       );
     }
 
     if (_hasError || _questDetails == null) {
-      return Scaffold(
-        backgroundColor: Colors.black,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          leading: IconButton(
-            icon: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.black54,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(Icons.arrow_back, color: Colors.white),
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ),
-        body: Center(
+      return BaseLayout(
+        title: 'Quest Details',
+        child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -113,39 +100,10 @@ class _QuestDetailsPageState extends State<QuestDetailsPage> {
       );
     }
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: CustomScrollView(
+    return BaseLayout(
+      title: 'Quest Details',
+      child: CustomScrollView(
         slivers: [
-          // App Bar
-          SliverAppBar(
-            backgroundColor: Colors.transparent,
-            leading: IconButton(
-              icon: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.black54,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Icon(Icons.arrow_back, color: Colors.white),
-              ),
-              onPressed: () => Navigator.pop(context),
-            ),
-            actions: [
-              IconButton(
-                icon: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.black54,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(Icons.more_horiz, color: Colors.white),
-                ),
-                onPressed: () {},
-              ),
-            ],
-          ),
-
           // Quest Content
           SliverToBoxAdapter(
             child: Padding(
