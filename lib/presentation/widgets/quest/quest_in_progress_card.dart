@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:phynd_app/presentation/screens/quest_details_page.dart';
+import 'package:phynd_app/core/routing/app_routes.dart';
+import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class QuestInProgressCard extends StatelessWidget {
   final String imageUrl;
@@ -29,7 +30,7 @@ class QuestInProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return RemoteControlWrapper(
       onTap: onTap ??
           () {
             if (questId == null || questId!.isEmpty) {
@@ -37,11 +38,10 @@ class QuestInProgressCard extends StatelessWidget {
               return;
             }
 
-            Navigator.push(
+            Navigator.pushNamed(
               context,
-              MaterialPageRoute(
-                builder: (context) => QuestDetailsPage(questId: questId!),
-              ),
+              AppRoutes.questDetails,
+              arguments: questId!,
             );
           },
       child: Container(

@@ -23,11 +23,9 @@ class QuestHeader extends StatelessWidget {
             children: [
               // Timer pill
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: Colors.black54,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8)
+                    .copyWith(right: 200),
+                decoration: BoxDecoration(),
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.grey.withOpacity(0.3),
@@ -54,7 +52,6 @@ class QuestHeader extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
               // Live badge
               Container(
                 padding:
@@ -72,7 +69,6 @@ class QuestHeader extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
               // Featured Quest badge
             ],
           ),
