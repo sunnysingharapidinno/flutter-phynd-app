@@ -39,7 +39,7 @@ class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
             )
           : showMenuButton
               ? RemoteControlWrapper(
-                  onEnter: onMenuPressed,
+                  onTap: onMenuPressed,
                   child: IconButton(
                     icon: Icon(
                       Icons.menu,

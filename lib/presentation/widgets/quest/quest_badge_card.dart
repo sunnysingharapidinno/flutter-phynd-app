@@ -28,18 +28,14 @@ class QuestBadgeCard extends StatefulWidget {
 }
 
 class _QuestBadgeCardState extends State<QuestBadgeCard> {
-  final FocusNode _focusNode = FocusNode();
-
   @override
   void dispose() {
-    _focusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return RemoteControlWrapper(
-      focusNode: _focusNode,
       onTap: widget.onTap,
       child: Container(
         width: 220,

@@ -32,7 +32,6 @@ class PrimaryButton extends StatelessWidget {
     final appTheme = theme.extension<AppTheme>()!;
 
     return RemoteControlWrapper(
-      onEnter: onPressed,
       onTap: onPressed,
       child: SizedBox(
         width: isFullWidth ? double.infinity : width,

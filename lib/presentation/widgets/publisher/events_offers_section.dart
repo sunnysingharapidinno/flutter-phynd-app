@@ -107,18 +107,14 @@ class EventOfferCard extends StatefulWidget {
 }
 
 class _EventOfferCardState extends State<EventOfferCard> {
-  final FocusNode _focusNode = FocusNode();
-
   @override
   void dispose() {
-    _focusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return RemoteControlWrapper(
-      focusNode: _focusNode,
       onTap: () {
         // Handle card tap
       },
