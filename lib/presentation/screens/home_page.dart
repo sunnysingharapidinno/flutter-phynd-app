@@ -6,8 +6,6 @@ import 'package:phynd_app/core/routing/app_routes.dart';
 import 'package:phynd_app/data/models/payload/game_payload_model.dart';
 import 'package:phynd_app/data/models/response/game_list_model.dart';
 import 'package:phynd_app/data/services/game_service.dart';
-import 'package:phynd_app/presentation/layouts/base_layout.dart';
-import 'package:phynd_app/presentation/widgets/buttons/primary_button.dart';
 import 'package:phynd_app/presentation/widgets/loader/circular_load.dart';
 import 'package:phynd_app/presentation/widgets/section/home_section.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
@@ -150,241 +148,191 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseLayout(
-      title: 'Home',
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Button Variants Section
-            // Container(
-            //   padding: const EdgeInsets.all(16.0),
-            //   child: Column(
-            //     crossAxisAlignment: CrossAxisAlignment.start,
-            //     children: [
-            //       const Text(
-            //         'Button Variants',
-            //         style: TextStyle(
-            //           fontSize: 20,
-            //           fontWeight: FontWeight.bold,
-            //         ),
-            //       ),
-            //       const SizedBox(height: 16),
-            //       Wrap(
-            //         spacing: 16,
-            //         runSpacing: 16,
-            //         children: [
-            //           Button(
-            //             text: 'Primary Button',
-            //             icon: Icons.rocket_launch,
-            //             onPressed: () {},
-            //             variant: ButtonVariant.primary,
-            //           ),
-            //           Button(
-            //             text: 'Secondary Button',
-            //             icon: Icons.star,
-            //             onPressed: () {},
-            //             variant: ButtonVariant.secondary,
-            //           ),
-            //           Button(
-            //             text: 'Transparent Button',
-            //             icon: Icons.visibility,
-            //             onPressed: () {},
-            //             variant: ButtonVariant.transparent,
-            //           ),
-            //           Button(
-            //             icon: Icons.add,
-            //             onPressed: () {},
-            //             variant: ButtonVariant.icon,
-            //           ),
-            //           Button(
-            //             icon: Icons.favorite,
-            //             onPressed: () {},
-            //             variant: ButtonVariant.icon,
-            //             isCircular: true,
-            //           ),
-            //           Button(
-            //             text: 'Item Library',
-            //             icon: Icons.library_books,
-            //             onPressed: () {
-            //               Navigator.pushNamed(context, AppRoutes.itemLibrary);
-            //             },
-            //             variant: ButtonVariant.primary,
-            //           ),
-            //           Button(
-            //             text: 'Loading Button',
-            //             icon: Icons.refresh,
-            //             onPressed: () {},
-            //             isLoading: true,
-            //           ),
-            //         ],
-            //       ),
-            //     ],
-            //   ),
-            // ),
-            // const SizedBox(height: 24),
+    final theme = Theme.of(context).extension<AppTheme>()!;
 
-            // Featured Game Banner
-            _buildFeaturedGameSection(context),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // PrimaryButton(
+          //     text: "Show Game",
+          //     onPressed: () {
+          //       Navigator.pushNamed(
+          //         context,
+          //         AppRoutes.game,
+          //         arguments: 'need-for-speed-heat',
+          //       );
+          //     }),
 
-            // Latest Activity Section
-            _buildLatestActivitySection(context),
+          // PrimaryButton(
+          //     text: "View Video",
+          //     onPressed: () {
+          //       Navigator.pushNamed(
+          //         context,
+          //         AppRoutes.video,
+          //       );
+          //     }),
 
-            // Continue Playing Section
-            HomeSection(
-              heading: 'Continue Playing',
-              height: 220,
-              items: (_trendGamesList ?? [])
-                  .map((game) => {
-                        'slug': game.slug,
-                        'title': game.name,
-                        'imageUrl': game.image?.isNotEmpty == true
-                            ? game.image!
-                            : 'https://via.placeholder.com/300x200/1a1a1a/ffffff?text=Game+Image',
-                        'rating':
-                            4.0, // Default value since Game model doesn't have rating
-                        'isFree':
-                            true, // Default value since Game model doesn't have isFree
-                        'isMultiplayer':
-                            game.mode?.contains('multiplayer') ?? false,
-                        'isSinglePlayer':
-                            game.mode?.contains('singleplayer') ?? false,
-                        'esrbRating': game.esrbRatingImgUrl ?? '',
-                      })
-                  .toList(),
-              cardBuilder: (context, game) {
-                return PlayCard(
-                  imageUrl: game['imageUrl'] as String,
-                  title: game['title'] as String,
-                  rating: game['rating'] as double,
-                  isFree: game['isFree'] as bool,
-                  isMultiplayer: game['isMultiplayer'] as bool,
-                  isSinglePlayer: game['isSinglePlayer'] as bool,
-                  esrbRating: game['esrbRating'] as String,
-                  width: 300,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      AppRoutes.game,
-                      arguments: game['slug'],
-                    );
-                  },
-                );
-              },
-            ),
+          // Featured Game Banner
+          _buildFeaturedGameSection(context),
 
-            // Clips from Friends Section
-            _buildClipsFromFriendsSection(context),
+          // Latest Activity Section
+          _buildLatestActivitySection(context),
 
-            // Free to Play Section
-            HomeSection(
-              heading: 'Free to Play',
-              height: 220,
-              items: (_featGamesList ?? [])
-                  .map((game) => {
-                        'slug': game.slug,
-                        'title': game.name,
-                        'imageUrl': game.image?.isNotEmpty == true
-                            ? game.image!
-                            : 'https://via.placeholder.com/300x200/1a1a1a/ffffff?text=Game+Image',
-                        'rating':
-                            4.0, // Default value since Game model doesn't have rating
-                        'isFree':
-                            true, // Default value since Game model doesn't have isFree
-                        'isMultiplayer':
-                            game.mode?.contains('multiplayer') ?? false,
-                        'isSinglePlayer':
-                            game.mode?.contains('singleplayer') ?? false,
-                        'esrbRating': game.esrbRatingImgUrl ?? '',
-                      })
-                  .toList(),
-              cardBuilder: (context, game) {
-                return FreePlayCard(
-                  isExclusive: true,
-                  imageUrl: game['imageUrl'] as String,
-                  title: game['title'] as String,
-                  rating: game['rating'] as double,
-                  isFree: game['isFree'] as bool,
-                  isMultiplayer: game['isMultiplayer'] as bool,
-                  isSinglePlayer: game['isSinglePlayer'] as bool,
-                  esrbRating: game['esrbRating'] as String,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      AppRoutes.game,
-                      arguments: game['slug'],
-                    );
-                  },
-                );
-              },
-            ),
+          // Continue Playing Section
+          HomeSection(
+            heading: 'Continue Playing',
+            height: 220,
+            items: (_trendGamesList ?? [])
+                .map((game) => {
+                      'slug': game.slug,
+                      'title': game.name,
+                      'imageUrl': game.image?.isNotEmpty == true
+                          ? game.image!
+                          : 'https://via.placeholder.com/300x200/1a1a1a/ffffff?text=Game+Image',
+                      'rating':
+                          4.0, // Default value since Game model doesn't have rating
+                      'isFree':
+                          true, // Default value since Game model doesn't have isFree
+                      'isMultiplayer':
+                          game.mode?.contains('multiplayer') ?? false,
+                      'isSinglePlayer':
+                          game.mode?.contains('singleplayer') ?? false,
+                      'esrbRating': game.esrbRatingImgUrl ?? '',
+                    })
+                .toList(),
+            cardBuilder: (context, game) {
+              return PlayCard(
+                imageUrl: game['imageUrl'] as String,
+                title: game['title'] as String,
+                rating: game['rating'] as double,
+                isFree: game['isFree'] as bool,
+                isMultiplayer: game['isMultiplayer'] as bool,
+                isSinglePlayer: game['isSinglePlayer'] as bool,
+                esrbRating: game['esrbRating'] as String,
+                width: 300,
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    AppRoutes.game,
+                    arguments: game['slug'],
+                  );
+                },
+              );
+            },
+          ),
 
-            // Free Trials Section
-            HomeSection(
-              heading: 'Free Trials',
-              height: 314,
-              items: (_newGamesList ?? [])
-                  .map((game) => {
-                        'slug': game.slug,
-                        'title': game.name,
-                        'imageUrl': game.image?.isNotEmpty == true
-                            ? game.image!
-                            : 'https://via.placeholder.com/300x200/1a1a1a/ffffff?text=Game+Image',
-                        'rating':
-                            4.0, // Default value since Game model doesn't have rating
-                        'isFree':
-                            true, // Default value since Game model doesn't have isFree
-                        'isMultiplayer':
-                            game.mode?.contains('multiplayer') ?? false,
-                        'isSinglePlayer':
-                            game.mode?.contains('singleplayer') ?? false,
-                        'esrbRating': game.esrbRatingImgUrl ?? '',
-                        'rating': 4.5,
-                        'trialDuration': '2',
-                        'price': '9.99',
-                        'coinPrice': 24,
-                        'friendAvatars': [
-                          'https://i.imgur.com/VvvURHZ.jpeg',
-                          'https://i.imgur.com/kxNSgIY.jpeg',
-                          'https://i.imgur.com/iNKFLtW.jpeg',
-                        ],
-                        'friendsPlayingCount': 56,
-                        'onlineCount': 15,
-                      })
-                  .toList(),
-              cardBuilder: (context, game) {
-                return GameTrialsCard(
-                  trialDuration: game['trialDuration'] as String,
-                  price: game['price'] as String,
-                  coinPrice: '${game['coinPrice']}',
-                  friendAvatars: (game['friendAvatars'] as List).cast<String>(),
-                  friendsPlayingCount: game['friendsPlayingCount'] as int,
-                  onlineCount: game['onlineCount'] as int,
-                  imageUrl: game['imageUrl'] as String,
-                  title: game['title'] as String,
-                  rating: game['rating'] as double,
-                  esrbRating: game['esrbRating'] as String,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      AppRoutes.game,
-                      arguments: game['slug'],
-                    );
-                  },
-                );
-              },
-            ),
+          // Clips from Friends Section
+          _buildClipsFromFriendsSection(context),
 
-            // Livestreaming Now Section
-            _buildLivestreamingSection(context),
+          // Free to Play Section
+          HomeSection(
+            heading: 'Free to Play',
+            height: 220,
+            items: (_featGamesList ?? [])
+                .map((game) => {
+                      'slug': game.slug,
+                      'title': game.name,
+                      'imageUrl': game.image?.isNotEmpty == true
+                          ? game.image!
+                          : 'https://via.placeholder.com/300x200/1a1a1a/ffffff?text=Game+Image',
+                      'rating':
+                          4.0, // Default value since Game model doesn't have rating
+                      'isFree':
+                          true, // Default value since Game model doesn't have isFree
+                      'isMultiplayer':
+                          game.mode?.contains('multiplayer') ?? false,
+                      'isSinglePlayer':
+                          game.mode?.contains('singleplayer') ?? false,
+                      'esrbRating': game.esrbRatingImgUrl ?? '',
+                    })
+                .toList(),
+            cardBuilder: (context, game) {
+              return FreePlayCard(
+                isExclusive: true,
+                imageUrl: game['imageUrl'] as String,
+                title: game['title'] as String,
+                rating: game['rating'] as double,
+                isFree: game['isFree'] as bool,
+                isMultiplayer: game['isMultiplayer'] as bool,
+                isSinglePlayer: game['isSinglePlayer'] as bool,
+                esrbRating: game['esrbRating'] as String,
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    AppRoutes.game,
+                    arguments: game['slug'],
+                  );
+                },
+              );
+            },
+          ),
 
-            // Shorts Section
-            _buildShortsSection(context),
+          // Free Trials Section
+          HomeSection(
+            heading: 'Free Trials',
+            height: 314,
+            items: (_newGamesList ?? [])
+                .map((game) => {
+                      'slug': game.slug,
+                      'title': game.name,
+                      'imageUrl': game.image?.isNotEmpty == true
+                          ? game.image!
+                          : 'https://via.placeholder.com/300x200/1a1a1a/ffffff?text=Game+Image',
+                      'rating':
+                          4.0, // Default value since Game model doesn't have rating
+                      'isFree':
+                          true, // Default value since Game model doesn't have isFree
+                      'isMultiplayer':
+                          game.mode?.contains('multiplayer') ?? false,
+                      'isSinglePlayer':
+                          game.mode?.contains('singleplayer') ?? false,
+                      'esrbRating': game.esrbRatingImgUrl ?? '',
+                      'rating': 4.5,
+                      'trialDuration': '2',
+                      'price': '9.99',
+                      'coinPrice': 24,
+                      'friendAvatars': [
+                        'https://i.imgur.com/VvvURHZ.jpeg',
+                        'https://i.imgur.com/kxNSgIY.jpeg',
+                        'https://i.imgur.com/iNKFLtW.jpeg',
+                      ],
+                      'friendsPlayingCount': 56,
+                      'onlineCount': 15,
+                    })
+                .toList(),
+            cardBuilder: (context, game) {
+              return GameTrialsCard(
+                trialDuration: game['trialDuration'] as String,
+                price: game['price'] as String,
+                coinPrice: '${game['coinPrice']}',
+                friendAvatars: (game['friendAvatars'] as List).cast<String>(),
+                friendsPlayingCount: game['friendsPlayingCount'] as int,
+                onlineCount: game['onlineCount'] as int,
+                imageUrl: game['imageUrl'] as String,
+                title: game['title'] as String,
+                rating: game['rating'] as double,
+                esrbRating: game['esrbRating'] as String,
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    AppRoutes.game,
+                    arguments: game['slug'],
+                  );
+                },
+              );
+            },
+          ),
 
-            // Bottom padding
-            const SizedBox(height: 24),
-          ],
-        ),
+          // Livestreaming Now Section
+          _buildLivestreamingSection(context),
+
+          // Shorts Section
+          _buildShortsSection(context),
+
+          // Bottom padding
+          const SizedBox(height: 24),
+        ],
       ),
     );
   }

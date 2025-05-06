@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/routing/app_routes.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
-import 'package:phynd_app/presentation/layouts/base_layout.dart';
 import 'package:phynd_app/presentation/widgets/cards/game_trials_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/publisher_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/user_card.dart';
@@ -115,48 +114,45 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).extension<AppTheme>()!;
-    return BaseLayout(
-      title: 'Search',
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: SearchInputField(
-              controller: _searchController,
-              onChanged: _onSearchChanged,
-              hintText: 'Phynd Anything...',
-              isLoading:
-                  _isGamesLoading || _isUsersLoading || _isPublishersLoading,
-            ),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: SearchInputField(
+            controller: _searchController,
+            onChanged: _onSearchChanged,
+            hintText: 'Phynd Anything...',
+            isLoading:
+                _isGamesLoading || _isUsersLoading || _isPublishersLoading,
           ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (_isGamesLoading || _gameResults.isNotEmpty)
-                      _buildGamesSection(theme),
-                    if (_isUsersLoading || _userResults.isNotEmpty)
-                      _buildUsersSection(theme),
-                    if (_isPublishersLoading || _publisherResults.isNotEmpty)
-                      _buildPublishersSection(theme),
-                    if (!_isGamesLoading &&
-                        !_isUsersLoading &&
-                        !_isPublishersLoading &&
-                        _gameResults.isEmpty &&
-                        _userResults.isEmpty &&
-                        _publisherResults.isEmpty &&
-                        _searchController.text.isNotEmpty)
-                      _buildNoResultsMessage(theme),
-                  ],
-                ),
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (_isGamesLoading || _gameResults.isNotEmpty)
+                    _buildGamesSection(theme),
+                  if (_isUsersLoading || _userResults.isNotEmpty)
+                    _buildUsersSection(theme),
+                  if (_isPublishersLoading || _publisherResults.isNotEmpty)
+                    _buildPublishersSection(theme),
+                  if (!_isGamesLoading &&
+                      !_isUsersLoading &&
+                      !_isPublishersLoading &&
+                      _gameResults.isEmpty &&
+                      _userResults.isEmpty &&
+                      _publisherResults.isEmpty &&
+                      _searchController.text.isNotEmpty)
+                    _buildNoResultsMessage(theme),
+                ],
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:phynd_app/presentation/layouts/base_layout.dart';
 import 'package:phynd_app/presentation/widgets/forms/signup_form.dart';
 import 'package:phynd_app/data/models/payload/user_signup_payload_model.dart';
 
@@ -28,26 +27,23 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseLayout(
-      title: 'Sign Up',
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            if (_errorMessage != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
-                child: Text(
-                  _errorMessage!,
-                  style: const TextStyle(color: Colors.red),
-                ),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          if (_errorMessage != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: Text(
+                _errorMessage!,
+                style: const TextStyle(color: Colors.red),
               ),
-            SignupForm(
-              onSubmit: _handleSignup,
-              isLoading: _isLoading,
             ),
-          ],
-        ),
+          SignupForm(
+            onSubmit: _handleSignup,
+            isLoading: _isLoading,
+          ),
+        ],
       ),
     );
   }

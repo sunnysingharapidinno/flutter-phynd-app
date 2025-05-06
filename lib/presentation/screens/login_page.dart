@@ -5,7 +5,6 @@ import 'package:phynd_app/data/services/user_service.dart';
 import 'package:phynd_app/presentation/bloc/auth/auth_bloc.dart';
 import 'package:phynd_app/presentation/bloc/auth/auth_event.dart';
 import 'package:phynd_app/presentation/bloc/auth/auth_state.dart';
-import 'package:phynd_app/presentation/layouts/base_layout.dart';
 import 'package:phynd_app/presentation/widgets/forms/login_form.dart';
 import 'package:phynd_app/core/utils/storage_service.dart';
 
@@ -61,20 +60,18 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseLayout(
-        title: 'Login',
-        child: BlocBuilder<AuthBloc, AuthState>(
-          builder: (context, state) {
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: LoginForm(
-                onSubmit: (email, password) {
-                  _handleLogin(context, email, password);
-                },
-                isLoading: _isLoading,
-              ),
-            );
-          },
-        ));
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: LoginForm(
+            onSubmit: (email, password) {
+              _handleLogin(context, email, password);
+            },
+            isLoading: _isLoading,
+          ),
+        );
+      },
+    );
   }
 }

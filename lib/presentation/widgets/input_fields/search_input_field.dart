@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 
 class SearchInputField extends StatelessWidget {
-  final TextEditingController controller;
-  final Function(String) onChanged;
+  final TextEditingController? controller;
+  final Function(String)? onChanged;
   final String hintText;
   final bool isLoading;
 
   const SearchInputField({
     super.key,
-    required this.controller,
-    required this.onChanged,
+    this.controller,
+    this.onChanged,
     this.hintText = 'Search...',
     this.isLoading = false,
   });
@@ -36,8 +36,11 @@ class SearchInputField extends StatelessWidget {
           Icons.search,
           color: theme.get('textSecondary'),
         ),
-        suffixIcon: isLoading
-            ? SizedBox(
+        suffixIcon: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (isLoading)
+              SizedBox(
                 width: 24,
                 height: 24,
                 child: Center(
@@ -46,8 +49,15 @@ class SearchInputField extends StatelessWidget {
                     color: theme.get('primary'),
                   ),
                 ),
-              )
-            : null,
+              ),
+            SizedBox(width: 12),
+            Icon(
+              Icons.mic,
+              color: theme.get('textSecondary'),
+            ),
+            SizedBox(width: 12),
+          ],
+        ),
         filled: true,
         fillColor: theme.get('cardBg'),
         border: OutlineInputBorder(

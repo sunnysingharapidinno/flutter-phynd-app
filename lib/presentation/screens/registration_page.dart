@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:phynd_app/presentation/layouts/base_layout.dart';
 import 'package:phynd_app/presentation/widgets/forms/publisher_registration_form.dart';
 import 'package:phynd_app/presentation/widgets/forms/user_registration_form.dart';
 
@@ -8,10 +7,7 @@ class RegistrationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseLayout(
-      title: 'Registration',
-      child: RegistrationScreen(),
-    );
+    return RegistrationScreen();
   }
 }
 

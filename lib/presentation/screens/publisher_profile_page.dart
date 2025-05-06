@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
-import 'package:phynd_app/presentation/layouts/base_layout.dart';
 import 'package:phynd_app/presentation/widgets/profile/suggested_quest.dart';
 import 'package:phynd_app/presentation/widgets/publisher/publisher_header.dart';
 import 'package:phynd_app/presentation/widgets/publisher/follow_section.dart';
@@ -233,91 +232,88 @@ class PublisherProfilePage extends StatelessWidget {
       },
     ];
 
-    return BaseLayout(
-      title: 'Publisher Profile',
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(
-            0), // Remove padding to allow header to extend full width
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header with banner, profile, title, and stats
-            PublisherHeader(
-              name: 'SNK_CORP',
-              profileImageUrl:
-                  'https://xstrela-alpha.s3.us-east-1.amazonaws.com/images/temp/DP_IMAGE_URL/PNG/8005f2f1-6d23-4521-84d4-91f16ac200ca',
-              bannerImageUrl:
-                  'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/publisher-page-tv-screen/hero-section/hero2/hero2.png',
-              stats: publisherStats,
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(
+          0), // Remove padding to allow header to extend full width
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header with banner, profile, title, and stats
+          PublisherHeader(
+            name: 'SNK_CORP',
+            profileImageUrl:
+                'https://xstrela-alpha.s3.us-east-1.amazonaws.com/images/temp/DP_IMAGE_URL/PNG/8005f2f1-6d23-4521-84d4-91f16ac200ca',
+            bannerImageUrl:
+                'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/publisher-page-tv-screen/hero-section/hero2/hero2.png',
+            stats: publisherStats,
+          ),
+
+          // Follow section with button and followers
+          const SizedBox(height: 8),
+
+          // Follow Section
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: FollowSection(
+              publisherName: 'SNK_CORP',
+              followersCount: 86,
+              followerAvatars: followerAvatars,
+              onFollowPressed: () {
+                // Handle follow action
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Follow action triggered')),
+                );
+              },
             ),
+          ),
 
-            // Follow section with button and followers
-            const SizedBox(height: 8),
+          const SizedBox(height: 16),
 
-            // Follow Section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: FollowSection(
-                publisherName: 'SNK_CORP',
-                followersCount: 86,
-                followerAvatars: followerAvatars,
-                onFollowPressed: () {
-                  // Handle follow action
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Follow action triggered')),
-                  );
-                },
-              ),
+          // Events and Offers Section
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: EventsOffersSection(
+              eventsOffers: eventsOffers,
+              primaryColor: primaryColor,
+              textColor: textColor,
             ),
+          ),
 
-            const SizedBox(height: 16),
-
-            // Events and Offers Section
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: EventsOffersSection(
-                eventsOffers: eventsOffers,
-                primaryColor: primaryColor,
-                textColor: textColor,
-              ),
+          // Latest Updates Section
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: LatestUpdatesSection(
+              latestUpdates: latestUpdates,
+              primaryColor: primaryColor,
+              textColor: textColor,
             ),
+          ),
 
-            // Latest Updates Section
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: LatestUpdatesSection(
-                latestUpdates: latestUpdates,
-                primaryColor: primaryColor,
-                textColor: textColor,
-              ),
+          // Trending Games Section
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TrendingGamesSection(
+              trendingGames: trendingGames,
+              primaryColor: primaryColor,
+              textColor: textColor,
             ),
+          ),
 
-            // Trending Games Section
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: TrendingGamesSection(
-                trendingGames: trendingGames,
-                primaryColor: primaryColor,
-                textColor: textColor,
-              ),
+          // Featured Games Section
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: FeaturedGamesSection(
+              featuredGames: featuredGames,
+              primaryColor: primaryColor,
+              textColor: textColor,
             ),
+          ),
 
-            // Featured Games Section
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: FeaturedGamesSection(
-                featuredGames: featuredGames,
-                primaryColor: primaryColor,
-                textColor: textColor,
-              ),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: const SuggestedQuest(),
-            ),
-          ],
-        ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: const SuggestedQuest(),
+          ),
+        ],
       ),
     );
   }
