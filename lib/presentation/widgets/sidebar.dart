@@ -50,6 +50,13 @@ class Sidebar extends StatelessWidget {
       'route': AppRoutes.publisherProfile,
       'isDivider': false,
     },
+
+    {
+      'title': 'Library',
+      'icon': Icons.library_books,
+      'route': AppRoutes.library,
+      'isDivider': false,
+    },
     {
       'title': 'Login',
       'icon': Icons.login,

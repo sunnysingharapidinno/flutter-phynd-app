@@ -17,6 +17,7 @@ import 'package:phynd_app/presentation/widgets/cards/play_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/free_play_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/shorts_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/game_trials_card.dart';
+import 'package:phynd_app/presentation/widgets/buttons/button.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -149,32 +150,79 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).extension<AppTheme>()!;
-
     return BaseLayout(
       title: 'Home',
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // PrimaryButton(
-            //     text: "Show Game",
-            //     onPressed: () {
-            //       Navigator.pushNamed(
-            //         context,
-            //         AppRoutes.game,
-            //         arguments: 'need-for-speed-heat',
-            //       );
-            //     }),
-
-            // PrimaryButton(
-            //     text: "View Video",
-            //     onPressed: () {
-            //       Navigator.pushNamed(
-            //         context,
-            //         AppRoutes.video,
-            //       );
-            //     }),
+            // Button Variants Section
+            // Container(
+            //   padding: const EdgeInsets.all(16.0),
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     children: [
+            //       const Text(
+            //         'Button Variants',
+            //         style: TextStyle(
+            //           fontSize: 20,
+            //           fontWeight: FontWeight.bold,
+            //         ),
+            //       ),
+            //       const SizedBox(height: 16),
+            //       Wrap(
+            //         spacing: 16,
+            //         runSpacing: 16,
+            //         children: [
+            //           Button(
+            //             text: 'Primary Button',
+            //             icon: Icons.rocket_launch,
+            //             onPressed: () {},
+            //             variant: ButtonVariant.primary,
+            //           ),
+            //           Button(
+            //             text: 'Secondary Button',
+            //             icon: Icons.star,
+            //             onPressed: () {},
+            //             variant: ButtonVariant.secondary,
+            //           ),
+            //           Button(
+            //             text: 'Transparent Button',
+            //             icon: Icons.visibility,
+            //             onPressed: () {},
+            //             variant: ButtonVariant.transparent,
+            //           ),
+            //           Button(
+            //             icon: Icons.add,
+            //             onPressed: () {},
+            //             variant: ButtonVariant.icon,
+            //           ),
+            //           Button(
+            //             icon: Icons.favorite,
+            //             onPressed: () {},
+            //             variant: ButtonVariant.icon,
+            //             isCircular: true,
+            //           ),
+            //           Button(
+            //             text: 'Item Library',
+            //             icon: Icons.library_books,
+            //             onPressed: () {
+            //               Navigator.pushNamed(context, AppRoutes.itemLibrary);
+            //             },
+            //             variant: ButtonVariant.primary,
+            //           ),
+            //           Button(
+            //             text: 'Loading Button',
+            //             icon: Icons.refresh,
+            //             onPressed: () {},
+            //             isLoading: true,
+            //           ),
+            //         ],
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            // const SizedBox(height: 24),
 
             // Featured Game Banner
             _buildFeaturedGameSection(context),

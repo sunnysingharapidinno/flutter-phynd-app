@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/presentation/screens/game_page.dart';
 import 'package:phynd_app/presentation/screens/home_page.dart';
+import 'package:phynd_app/presentation/screens/item_library.dart';
+import 'package:phynd_app/presentation/screens/library_page/library_page.dart';
 import 'package:phynd_app/presentation/screens/login_page.dart';
 import 'package:phynd_app/presentation/screens/player_profile_page.dart';
 import 'package:phynd_app/presentation/screens/publisher_profile_page.dart';
-import 'package:phynd_app/presentation/screens/quest_page.dart';
 import 'package:phynd_app/presentation/screens/quest_details_page.dart';
+import 'package:phynd_app/presentation/screens/quest_page.dart';
 import 'package:phynd_app/presentation/screens/registration_page.dart';
 import 'package:phynd_app/presentation/screens/search_page.dart';
 import 'package:phynd_app/presentation/screens/support_page.dart';
@@ -25,6 +27,8 @@ class AppRoutes {
   static const String support = '/support';
   static const String termsAndConditions = '/terms-and-conditions';
   static const String video = '/video';
+  static const String itemLibrary = '/item-library';
+  static const String library = '/library';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;
@@ -69,6 +73,10 @@ class AppRoutes {
       case termsAndConditions:
         return MaterialPageRoute(
             builder: (_) => const TermsAndConditionsPage());
+      case library:
+        return MaterialPageRoute(
+          builder: (_) => const LibraryPage(),
+        );
       default:
         return _errorRoute("Route not found");
     }
