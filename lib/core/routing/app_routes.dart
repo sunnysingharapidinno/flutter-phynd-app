@@ -24,6 +24,8 @@ class AppRoutes {
   static const String video = '/video';
   static const String playerProfile = '/player-profile';
 
+  //-------------------------------- below pages are not confirmed yet --------------------------------
+
   static const String login = '/login';
   static const String registration = '/registration';
   static const String game = '/game';
@@ -32,6 +34,7 @@ class AppRoutes {
   static const String questDetails = '/quest-details';
   static const String support = '/support';
   static const String termsAndConditions = '/terms-and-conditions';
+  static const String itemLibrary = '/item-library';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;

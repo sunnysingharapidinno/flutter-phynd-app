@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:phynd_app/core/utils/size_utils.dart';
-import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
-import 'package:phynd_app/presentation/widgets/sidebar.dart';
-import 'package:phynd_app/presentation/widgets/shared_app_bar.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
+import 'package:phynd_app/core/utils/size_utils.dart';
 import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 import 'package:phynd_app/presentation/widgets/shared_app_bar.dart';
 import 'package:phynd_app/presentation/widgets/sidebar.dart';
