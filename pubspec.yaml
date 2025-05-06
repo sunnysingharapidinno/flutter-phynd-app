@@ -47,8 +47,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   algoliasearch: ^1.31.3
   google_fonts: ^6.2.1
+  responsive_framework: ^1.5.1
   auto_size_text: ^3.0.0
-  responsive_framework: ^0.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

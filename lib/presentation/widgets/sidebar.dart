@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/routing/app_routes.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
-import 'package:phynd_app/core/utils/font_utils.dart';
 import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class Sidebar extends StatelessWidget {
@@ -49,7 +48,6 @@ class Sidebar extends StatelessWidget {
       'route': AppRoutes.friends,
       'isDivider': false,
     },
-
     {
       'title': 'Library',
       'icon': Icons.library_books,
@@ -114,11 +112,10 @@ class Sidebar extends StatelessWidget {
                           color: textColor,
                         ),
                         const SizedBox(width: 12),
-                        Text(
-                          item['title'] as String,
-                          style: TextStyle(
-                            color: textColor,
-                            fontSize: FontUtils.pxToSp(context, 26),
+                        Flexible(
+                          child: Text(
+                            item['title'] as String,
+                            style: TextStyle(color: textColor),
                           ),
                         ),
                       ],

@@ -22,6 +22,9 @@ class _BaseLayoutState extends State<BaseLayout> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isSidebarExpanded = false;
 
+  final double _minExpWidth = 80;
+  final double _maxExpWidth = 200;
+
   // Focus management
   final FocusNode _sidebarFocusNode = FocusNode();
   final FocusNode _contentFocusNode = FocusNode();
@@ -122,11 +125,12 @@ class _BaseLayoutState extends State<BaseLayout> {
                         },
                         child: AnimatedContainer(
                           duration: Duration(milliseconds: 200),
-                          width: _isSidebarExpanded ? maxExpWidth : minExpWidth,
+                          width:
+                              _isSidebarExpanded ? _maxExpWidth : _minExpWidth,
                           child: Sidebar(
                             isSidebarExpanded: _isSidebarExpanded,
-                            maxExpWidth: maxExpWidth,
-                            minExpWidth: minExpWidth,
+                            maxExpWidth: _maxExpWidth,
+                            minExpWidth: _minExpWidth,
                             onFocus: (focused) {
                               if (focused && !_isSidebarExpanded) {
                                 setState(() {

@@ -1,8 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
-import 'package:phynd_app/core/utils/font_utils.dart';
-import 'package:phynd_app/core/utils/size_utils.dart';
 import 'package:phynd_app/presentation/widgets/input_fields/search_input_field.dart';
 
 class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -15,7 +13,7 @@ class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     this.onMenuPressed,
     this.username,
-    this.isOnline = true,
+    this.isOnline = false,
     this.avatarUrl,
   });
 
@@ -27,28 +25,29 @@ class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Container(
-      height: SizeUtils.pxToDp(context, 165),
+      height: 165,
       color: backgroundColor,
-      child: Padding(
-        padding: SizeUtils.pxToEdgeInsets(context,
-            left: 120, right: 120, top: 16, bottom: 16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // Left: Brand logo
-            _buildBrandLogo(),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 80.0, vertical: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Left: Brand logo
+              _buildBrandLogo(),
 
-            // Center: Search bar
-            SizedBox(
-              width: screenWidth * 0.5,
-              child: SearchInputField(
-                hintText: 'Phynd Anything...',
+              // Center: Search bar
+              SizedBox(
+                width: screenWidth * 0.5,
+                child: SearchInputField(
+                  hintText: 'Phynd Anything...',
+                ),
               ),
-            ),
 
-            // Right: Profile info
-            _buildProfileInfo(textColor, context),
-          ],
+              // Right: Profile info
+              _buildProfileInfo(textColor),
+            ],
+          ),
         ),
       ),
     );
@@ -103,7 +102,7 @@ class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  Widget _buildProfileInfo(Color textColor, BuildContext context) {
+  Widget _buildProfileInfo(Color textColor) {
     return Row(
       children: [
         // Username and online status
@@ -116,7 +115,7 @@ class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
               style: TextStyle(
                 color: textColor,
                 fontWeight: FontWeight.bold,
-                fontSize: FontUtils.pxToSp(context, 28),
+                fontSize: 28,
               ),
             ),
             Row(
@@ -131,11 +130,11 @@ class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
                 const SizedBox(width: 4),
-                Text(
+                AutoSizeText(
                   isOnline ? 'Online' : 'Offline',
                   style: TextStyle(
                     color: textColor.withOpacity(0.7),
-                    fontSize: 18,
+                    fontSize: 22,
                   ),
                 ),
               ],
