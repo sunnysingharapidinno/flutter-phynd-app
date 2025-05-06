@@ -14,17 +14,23 @@ import 'package:phynd_app/presentation/screens/video_page.dart';
 
 class AppRoutes {
   static const String home = '/';
+  static const String intGame = '/game-int';
+  static const String library = '/library';
+  static const String friends = '/friends';
+  static const String following = '/following';
+  static const String account = '/account';
+  static const String search = '/search';
+  static const String video = '/video';
+  static const String playerProfile = '/player-profile';
+
   static const String login = '/login';
   static const String registration = '/registration';
   static const String game = '/game';
-  static const String playerProfile = '/player-profile';
   static const String publisherProfile = '/publisher-profile';
-  static const String search = '/search';
   static const String quest = '/quest';
   static const String questDetails = '/quest-details';
   static const String support = '/support';
   static const String termsAndConditions = '/terms-and-conditions';
-  static const String video = '/video';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;

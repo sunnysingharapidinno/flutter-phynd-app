@@ -3,7 +3,6 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/data/models/response/terms_and_conditions_model.dart';
 import 'package:phynd_app/data/services/user_service.dart';
-import 'package:phynd_app/presentation/layouts/base_layout.dart';
 import 'package:phynd_app/presentation/widgets/loader/circular_load.dart';
 
 class TermsAndConditionsPage extends StatefulWidget {
@@ -215,9 +214,6 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseLayout(
-      title: 'Terms & Conditions',
-      child: _buildContentView(),
-    );
+    return _buildContentView();
   }
 }

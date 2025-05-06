@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:phynd_app/core/utils/app_theme.dart';
-import 'package:phynd_app/presentation/layouts/base_layout.dart';
 import 'package:phynd_app/presentation/widgets/profile/quests_in_progress.dart';
 import 'package:phynd_app/presentation/widgets/profile/suggested_quest.dart';
 import 'package:phynd_app/presentation/widgets/quest/phynd_badge_quests_section.dart';
@@ -10,36 +8,33 @@ class QuestPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseLayout(
-      title: 'Quests',
-      child: ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: const [
-          SizedBox(height: 24),
-          // Quests in Progress
-          QuestsInProgress(),
-          SizedBox(height: 24),
-          // Suggested Quests
-          SuggestedQuest(
-            title: 'Recommended',
-            isTrending: true,
-          ),
-          SuggestedQuest(
-            title: 'Top Earning and Rewards',
-          ),
-          SuggestedQuest(
-            title: 'Trending',
-            isTrending: true,
-          ),
-          SuggestedQuest(
-            title: 'Play Later List',
-            isFeatured: true,
-          ),
+    return ListView(
+      padding: const EdgeInsets.all(16.0),
+      children: const [
+        SizedBox(height: 24),
+        // Quests in Progress
+        QuestsInProgress(),
+        SizedBox(height: 24),
+        // Suggested Quests
+        SuggestedQuest(
+          title: 'Recommended',
+          isTrending: true,
+        ),
+        SuggestedQuest(
+          title: 'Top Earning and Rewards',
+        ),
+        SuggestedQuest(
+          title: 'Trending',
+          isTrending: true,
+        ),
+        SuggestedQuest(
+          title: 'Play Later List',
+          isFeatured: true,
+        ),
 
-          // PHYND Badge Quests Section
-          PhyndBadgeQuestsSection(),
-        ],
-      ),
+        // PHYND Badge Quests Section
+        PhyndBadgeQuestsSection(),
+      ],
     );
   }
 }

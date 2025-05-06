@@ -18,7 +18,7 @@ class AppColors {
   static const Color translucentLavender = Color(0xCDF4F3FC);
 
   // Dark theme colors
-  static const Color darkBackground = Color(0xFF121212);
+  static const Color darkBackground = Color(0xFF1B1D26);
   static const Color darkCardBg = Color(0xFF1E1E1E);
 
   // Primary and secondary colors

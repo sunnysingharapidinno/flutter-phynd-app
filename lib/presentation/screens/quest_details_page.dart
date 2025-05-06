@@ -5,7 +5,6 @@ import 'package:phynd_app/presentation/widgets/quest/quest_header.dart';
 import 'package:phynd_app/presentation/widgets/quest/quest_creator_section.dart';
 import 'package:phynd_app/presentation/widgets/quest/quest_rewards_section.dart';
 import 'package:phynd_app/presentation/widgets/quest/quest_missions_section.dart';
-import 'package:phynd_app/presentation/layouts/base_layout.dart';
 
 class QuestDetailsPage extends StatefulWidget {
   final String questId;
@@ -62,72 +61,63 @@ class _QuestDetailsPageState extends State<QuestDetailsPage> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return BaseLayout(
-        title: 'Quest Details',
-        child: const Center(
-          child: CircularProgressIndicator(),
-        ),
+      return const Center(
+        child: CircularProgressIndicator(),
       );
     }
 
     if (_hasError || _questDetails == null) {
-      return BaseLayout(
-        title: 'Quest Details',
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.error_outline,
-                color: Colors.red,
-                size: 48,
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Failed to load quest details',
-                style: TextStyle(color: Colors.white, fontSize: 18),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () {
-                  _getQuestDetails();
-                },
-                child: const Text('Retry'),
-              ),
-            ],
-          ),
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.error_outline,
+              color: Colors.red,
+              size: 48,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Failed to load quest details',
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () {
+                _getQuestDetails();
+              },
+              child: const Text('Retry'),
+            ),
+          ],
         ),
       );
     }
 
-    return BaseLayout(
-      title: 'Quest Details',
-      child: CustomScrollView(
-        slivers: [
-          // Quest Content
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32.0),
-              child: Column(
-                children: [
-                  QuestHeader(
-                    questData: _questDetails!,
-                  ),
-                  QuestCreatorSection(
-                    questData: _questDetails!,
-                  ),
-                  QuestRewardsSection(
-                    questData: _questDetails!,
-                  ),
-                  QuestMissionsSection(
-                    questData: _questDetails!,
-                  ),
-                ],
-              ),
+    return CustomScrollView(
+      slivers: [
+        // Quest Content
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            child: Column(
+              children: [
+                QuestHeader(
+                  questData: _questDetails!,
+                ),
+                QuestCreatorSection(
+                  questData: _questDetails!,
+                ),
+                QuestRewardsSection(
+                  questData: _questDetails!,
+                ),
+                QuestMissionsSection(
+                  questData: _questDetails!,
+                ),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
