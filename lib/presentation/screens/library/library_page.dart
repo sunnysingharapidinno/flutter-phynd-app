@@ -1,24 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/presentation/layouts/base_layout.dart';
 import 'package:phynd_app/presentation/widgets/cards/clip_card/game_clip_card.dart';
-import 'package:phynd_app/presentation/widgets/cards/clip_card/game_clip_preview.dart';
 import 'package:phynd_app/presentation/widgets/game_clip_slider/game_clip_slider.dart';
-import 'package:phynd_app/presentation/widgets/heading/slider_heading.dart';
 import 'package:phynd_app/presentation/widgets/ratings/ratings.dart';
 
 class LibraryPage extends StatelessWidget {
   const LibraryPage({Key? key}) : super(key: key);
 
   @override
-  @override
   Widget build(BuildContext context) {
     return BaseLayout(
-      title: 'Library Page',
-      child: ListView(
-        children: [
-          const GameClipGrid(),
-        ],
-      ),
+      title: 'Library',
+      child: const GameClipGrid(),
     );
   }
 }
@@ -30,13 +23,14 @@ class GameClipGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final cards = <GameClipCard>[
       GameClipCard(
-          imageUrl:
-              'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
-          videoUrl: 'https://cdn.pixabay.com/video/2025/04/29/275633_large.mp4',
-          gameName: 'Heroes of Mavia',
-          badge: const Ratings(rating: 1.0),
-          esrbImageUrl:
-              'https://xstrela-uat.s3.us-east-1.amazonaws.com/ESRB/everyone.png'),
+        imageUrl:
+            'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
+        videoUrl: 'https://cdn.pixabay.com/video/2025/04/29/275633_large.mp4',
+        gameName: 'Heroes of Mavia',
+        badge: const Ratings(rating: 1.0),
+        esrbImageUrl:
+            'https://images.unsplash.com/photo-1511512578047-dfb367046420',
+      ),
       GameClipCard(
         imageUrl:
             'https://images.unsplash.com/photo-1511512578047-dfb367046420',
@@ -44,7 +38,7 @@ class GameClipGrid extends StatelessWidget {
         gameName: 'Cyber Quest',
         badge: const Ratings(rating: 3.5),
         esrbImageUrl:
-            'https://xstrela-uat.s3.us-east-1.amazonaws.com/ESRB/everyone.png',
+            'https://images.unsplash.com/photo-1464983953574-0892a716854b3fb',
       ),
       GameClipCard(
         imageUrl:
@@ -53,7 +47,7 @@ class GameClipGrid extends StatelessWidget {
         gameName: 'Jungle Run',
         badge: const Ratings(rating: 5.0),
         esrbImageUrl:
-            'https://xstrela-uat.s3.us-east-1.amazonaws.com/ESRB/everyone.png',
+            'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429',
       ),
       GameClipCard(
         imageUrl:
@@ -62,7 +56,7 @@ class GameClipGrid extends StatelessWidget {
         gameName: 'Sky Legends',
         badge: const Ratings(rating: 2.5),
         esrbImageUrl:
-            'https://xstrela-uat.s3.us-east-1.amazonaws.com/ESRB/everyone.png',
+            'https://images.unsplash.com/photo-1509228468518-180dd4864904',
       ),
       GameClipCard(
         imageUrl:
@@ -71,7 +65,7 @@ class GameClipGrid extends StatelessWidget {
         gameName: 'Pixel Adventure',
         badge: const Ratings(rating: 4.5),
         esrbImageUrl:
-            'https://xstrela-uat.s3.us-east-1.amazonaws.com/ESRB/everyone.png',
+            'https://images.unsplash.com/photo-1519125323398-675f0ddb6308',
       ),
       GameClipCard(
         imageUrl:
@@ -79,6 +73,8 @@ class GameClipGrid extends StatelessWidget {
         videoUrl: 'https://cdn.pixabay.com/video/2025/04/29/275633_large.mp4',
         gameName: 'Mystic Valley',
         badge: const Ratings(rating: 4.2),
+        esrbImageUrl:
+            'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
       ),
     ];
 
@@ -86,21 +82,25 @@ class GameClipGrid extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GameClipPreview(
-            aspectRatio: 4 / 1,
-            imageUrl:
-                'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
-            videoUrl:
-                'https://cdn.pixabay.com/video/2025/04/29/275633_large.mp4',
+          GameClipSlider(
+            title: 'Favorited Games',
+            cards: cards,
           ),
-          GameClipSlider(cards: cards, title: 'Favorited Games'),
           const SizedBox(height: 32),
-          GameClipSlider(cards: cards.reversed.toList(), title: 'Saved Games'),
+          GameClipSlider(
+            title: 'Saved Games',
+            cards: cards.reversed.toList(),
+          ),
           const SizedBox(height: 32),
-          GameClipSlider(cards: cards, title: 'Favorited Content'),
+          GameClipSlider(
+            title: 'Favorited Content',
+            cards: cards,
+          ),
           const SizedBox(height: 32),
-          GameClipSlider(cards: cards, title: 'Saved Content'),
-          const SizedBox(height: 50),
+          GameClipSlider(
+            title: 'Saved Content',
+            cards: cards,
+          ),
         ],
       ),
     );
