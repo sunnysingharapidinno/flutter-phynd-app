@@ -1,0 +1,143 @@
+Test Coverage Report
+Generated on: Mon May  5 17:57:57 IST 2025
+File                                         |% Branch | % Funcs | % Lines | Uncovered Line #s |
+---------------------------------------------|---------|---------|---------|-------------------|
+lib/                                         |         |         |         |                   |
+ app.dart                                    |    0.00 |    0.00 |    0.00 |    no unit testing|
+ main.dart                                   |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/config/                                  |         |         |         |                   |
+ app_config.dart                             |    0.00 |    0.00 |    0.00 |    no unit testing|
+ env.dart                                    |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/core/constants/                          |         |         |         |                   |
+ base_server_endpoints.dart                  |    0.00 |    0.00 |    0.00 |    no unit testing|
+ remote_keys.dart                            |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/core/enums/                              |         |         |         |                   |
+ algolia_index.dart                          |    0.00 |    0.00 |    0.00 |    no unit testing|
+ api_env.dart                                |    0.00 |    0.00 |    0.00 |    no unit testing|
+ marketplace.dart                            |    0.00 |    0.00 |    0.00 |    no unit testing|
+ storage.dart                                |    0.00 |    0.00 |    0.00 |    no unit testing|
+ user_role.dart                              |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/core/routing/                            |         |         |         |                   |
+ app_routes.dart                             |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/core/theme/                              |         |         |         |                   |
+ app_colors.dart                             |  100.00 |  100.00 |   50.00 |              29,30|
+ dark_theme.dart                             |    0.00 |    0.00 |    0.00 |    no unit testing|
+ light_theme.dart                            |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/core/utils/                              |         |         |         |                   |
+ api_service.dart                            |    0.00 |    0.00 |    0.00 |    no unit testing|
+ app_theme.dart                              |  100.00 |  100.00 |   14.29 |...3,24,25,27,29,33|
+ storage_service.dart                        |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/data/models/payload/                     |         |         |         |                   |
+ game_payload_model.dart                     |    0.00 |    0.00 |    0.00 |    no unit testing|
+ user_signup_payload_model.dart              |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/data/models/response/                    |         |         |         |                   |
+ game_list_model.dart                        |    0.00 |    0.00 |    0.00 |    no unit testing|
+ game_model.dart                             |    0.00 |    0.00 |    0.00 |    no unit testing|
+ profile_model.dart                          |    0.00 |    0.00 |    0.00 |    no unit testing|
+ quest_mission_model.dart                    |    0.00 |    0.00 |    0.00 |    no unit testing|
+ quest_model.dart                            |    0.00 |    0.00 |    0.00 |    no unit testing|
+ terms_and_conditions_model.dart             |    0.00 |    0.00 |    0.00 |    no unit testing|
+ user.dart                                   |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/data/services/                           |         |         |         |                   |
+ algolia_service.dart                        |    0.00 |    0.00 |    0.00 |    no unit testing|
+ game_service.dart                           |    0.00 |    0.00 |    0.00 |    no unit testing|
+ quest_service.dart                          |    0.00 |    0.00 |    0.00 |    no unit testing|
+ user_service.dart                           |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/presentation/bloc/auth/                  |         |         |         |                   |
+ auth_bloc.dart                              |    0.00 |    0.00 |    0.00 |    no unit testing|
+ auth_event.dart                             |    0.00 |    0.00 |    0.00 |    no unit testing|
+ auth_state.dart                             |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/presentation/layouts/                    |         |         |         |                   |
+ base_layout.dart                            |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/presentation/screens/                    |         |         |         |                   |
+ game_page.dart                              |    0.00 |    0.00 |    0.00 |    no unit testing|
+ home_page.dart                              |    0.00 |    0.00 |    0.00 |    no unit testing|
+ login_page.dart                             |    0.00 |    0.00 |    0.00 |    no unit testing|
+ player_profile_page.dart                    |    0.00 |    0.00 |    0.00 |    no unit testing|
+ publisher_profile_page.dart                 |    0.00 |    0.00 |    0.00 |    no unit testing|
+ quest_details_page.dart                     |    0.00 |    0.00 |    0.00 |    no unit testing|
+ quest_page.dart                             |    0.00 |    0.00 |    0.00 |    no unit testing|
+ registration_page.dart                      |    0.00 |    0.00 |    0.00 |    no unit testing|
+ search_page.dart                            |    0.00 |    0.00 |    0.00 |    no unit testing|
+ signup_page.dart                            |    0.00 |    0.00 |    0.00 |    no unit testing|
+ support_page.dart                           |    0.00 |    0.00 |    0.00 |    no unit testing|
+ terms_and_conditions_page.dart              |    0.00 |    0.00 |    0.00 |    no unit testing|
+ video_page.dart                             |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/presentation/styles/                     |         |         |         |                   |
+ app_typography.dart                         |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/presentation/widgets/                    |         |         |         |                   |
+ remote_control_wrapper.dart                 |  100.00 |  100.00 |   47.37 |...,127,143,144,145|
+ shared_app_bar.dart                         |    0.00 |    0.00 |    0.00 |    no unit testing|
+ sidebar.dart                                |    0.00 |    0.00 |    0.00 |    no unit testing|
+ video_player.dart                           |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/presentation/widgets/banners/            |         |         |         |                   |
+ game_banner.dart                            |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/presentation/widgets/buttons/            |         |         |         |                   |
+ primary_button.dart                         |  100.00 |  100.00 |  100.00 |                   |
+ secondary_button.dart                       |  100.00 |  100.00 |  100.00 |                   |
+lib/presentation/widgets/cards/              |         |         |         |                   |
+ ad_card.dart                                |    0.00 |    0.00 |    0.00 |    no unit testing|
+ free_play_card.dart                         |    0.00 |    0.00 |    0.00 |    no unit testing|
+ game_activity_card.dart                     |    0.00 |    0.00 |    0.00 |    no unit testing|
+ game_card.dart                              |    0.00 |    0.00 |    0.00 |    no unit testing|
+ game_promo_card.dart                        |    0.00 |    0.00 |    0.00 |    no unit testing|
+ game_trials_card.dart                       |    0.00 |    0.00 |    0.00 |    no unit testing|
+ gameplay_clip_card.dart                     |    0.00 |    0.00 |    0.00 |    no unit testing|
+ play_card.dart                              |    0.00 |    0.00 |    0.00 |    no unit testing|
+ publisher_card.dart                         |    0.00 |    0.00 |    0.00 |    no unit testing|
+ screenshot_card.dart                        |    0.00 |    0.00 |    0.00 |    no unit testing|
+ shorts_card.dart                            |    0.00 |    0.00 |    0.00 |    no unit testing|
+ tournament_card.dart                        |    0.00 |    0.00 |    0.00 |    no unit testing|
+ user_card.dart                              |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/presentation/widgets/common/             |         |         |         |                   |
+ profile_avatar_stack.dart                   |    0.00 |    0.00 |    0.00 |    no unit testing|
+ section_heading.dart                        |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/presentation/widgets/forms/              |         |         |         |                   |
+ login_form.dart                             |    0.00 |    0.00 |    0.00 |    no unit testing|
+ publisher_registration_form.dart            |    0.00 |    0.00 |    0.00 |    no unit testing|
+ signup_form.dart                            |    0.00 |    0.00 |    0.00 |    no unit testing|
+ user_registration_form.dart                 |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/presentation/widgets/game/               |         |         |         |                   |
+ game_header.dart                            |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/presentation/widgets/image/              |         |         |         |                   |
+ image.dart                                  |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/presentation/widgets/input_fields/       |         |         |         |                   |
+ password_input_field.dart                   |    0.00 |    0.00 |    0.00 |    no unit testing|
+ search_input_field.dart                     |    0.00 |    0.00 |    0.00 |    no unit testing|
+ text_input_field.dart                       |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/presentation/widgets/loader/             |         |         |         |                   |
+ circular_load.dart                          |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/presentation/widgets/profile/            |         |         |         |                   |
+ achievements_section.dart                   |    0.00 |    0.00 |    0.00 |    no unit testing|
+ favorite_games.dart                         |    0.00 |    0.00 |    0.00 |    no unit testing|
+ game_card.dart                              |    0.00 |    0.00 |    0.00 |    no unit testing|
+ profile_header.dart                         |    0.00 |    0.00 |    0.00 |    no unit testing|
+ quests_in_progress.dart                     |    0.00 |    0.00 |    0.00 |    no unit testing|
+ recently_uploaded_clips.dart                |    0.00 |    0.00 |    0.00 |    no unit testing|
+ stat_counter.dart                           |    0.00 |    0.00 |    0.00 |    no unit testing|
+ suggested_quest.dart                        |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/presentation/widgets/publisher/          |         |         |         |                   |
+ events_offers_section.dart                  |    0.00 |    0.00 |    0.00 |    no unit testing|
+ featured_games_section.dart                 |    0.00 |    0.00 |    0.00 |    no unit testing|
+ follow_section.dart                         |    0.00 |    0.00 |    0.00 |    no unit testing|
+ latest_updates_section.dart                 |    0.00 |    0.00 |    0.00 |    no unit testing|
+ publisher_header.dart                       |    0.00 |    0.00 |    0.00 |    no unit testing|
+ trending_games_section.dart                 |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/presentation/widgets/quest/              |         |         |         |                   |
+ phynd_badge_quests_section.dart             |    0.00 |    0.00 |    0.00 |    no unit testing|
+ quest_badge_card.dart                       |    0.00 |    0.00 |    0.00 |    no unit testing|
+ quest_card.dart                             |    0.00 |    0.00 |    0.00 |    no unit testing|
+ quest_creator_section.dart                  |    0.00 |    0.00 |    0.00 |    no unit testing|
+ quest_header.dart                           |    0.00 |    0.00 |    0.00 |    no unit testing|
+ quest_in_progress_card.dart                 |    0.00 |    0.00 |    0.00 |    no unit testing|
+ quest_list_view.dart                        |    0.00 |    0.00 |    0.00 |    no unit testing|
+ quest_missions_section.dart                 |    0.00 |    0.00 |    0.00 |    no unit testing|
+ quest_rewards_section.dart                  |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/presentation/widgets/quest_list/         |         |         |         |                   |
+ quest_list.dart                             |    0.00 |    0.00 |    0.00 |    no unit testing|
+lib/presentation/widgets/section/            |         |         |         |                   |
+ home_section.dart                           |    0.00 |    0.00 |    0.00 |    no unit testing|
+ section.dart                                |    0.00 |    0.00 |    0.00 |    no unit testing|
+---------------------------------------------|---------|---------|---------|-------------------|
+ All files with unit testing                 |  100.00 |  100.00 |   60.29 |                   |
+---------------------------------------------|---------|---------|---------|-------------------|
