@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:phynd_app/core/utils/font_utils.dart';
 
 enum ButtonVariant {
   primary,
@@ -41,12 +43,12 @@ class Button extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: _getButtonStyle(context),
-        child: _buildChild(),
+        child: _buildChild(context),
       ),
     );
   }
 
-  Widget _buildChild() {
+  Widget _buildChild(BuildContext context) {
     if (isLoading) {
       return const SizedBox(
         width: 24,
@@ -73,7 +75,7 @@ class Button extends StatelessWidget {
           ],
           Text(
             text!,
-            style: _getTextStyle(),
+            style: _getTextStyle(context),
           ),
         ],
       );
@@ -127,32 +129,15 @@ class Button extends StatelessWidget {
     }
   }
 
-  TextStyle _getTextStyle() {
-    switch (variant) {
-      case ButtonVariant.primary:
-        return const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          color: Colors.white,
-        );
-      case ButtonVariant.secondary:
-        return const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          color: Colors.black87,
-        );
-      case ButtonVariant.transparent:
-        return const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          color: Colors.white,
-        );
-      case ButtonVariant.icon:
-        return const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          color: Colors.white,
-        );
-    }
+  TextStyle _getTextStyle(BuildContext context) {
+    final double fontSize =
+        variant == ButtonVariant.icon ? 16 : FontUtils.pxToSp(context, 25);
+    final Color color =
+        variant == ButtonVariant.secondary ? Colors.black87 : Colors.white;
+    return GoogleFonts.rubik(
+      fontSize: fontSize,
+      fontWeight: FontWeight.w600,
+      color: color,
+    );
   }
 }
