@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:phynd_app/core/utils/size_utils.dart';
+import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
+import 'package:phynd_app/presentation/widgets/sidebar.dart';
+import 'package:phynd_app/presentation/widgets/shared_app_bar.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
 import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
@@ -21,9 +25,6 @@ class BaseLayout extends StatefulWidget {
 class _BaseLayoutState extends State<BaseLayout> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isSidebarExpanded = false;
-
-  final double _minExpWidth = 80;
-  final double _maxExpWidth = 200;
 
   // Focus management
   final FocusNode _sidebarFocusNode = FocusNode();
@@ -125,12 +126,11 @@ class _BaseLayoutState extends State<BaseLayout> {
                         },
                         child: AnimatedContainer(
                           duration: Duration(milliseconds: 200),
-                          width:
-                              _isSidebarExpanded ? _maxExpWidth : _minExpWidth,
+                          width: _isSidebarExpanded ? maxExpWidth : minExpWidth,
                           child: Sidebar(
                             isSidebarExpanded: _isSidebarExpanded,
-                            maxExpWidth: _maxExpWidth,
-                            minExpWidth: _minExpWidth,
+                            maxExpWidth: maxExpWidth,
+                            minExpWidth: minExpWidth,
                             onFocus: (focused) {
                               if (focused && !_isSidebarExpanded) {
                                 setState(() {
