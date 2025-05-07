@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:phynd_app/core/theme/app_colors.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 
@@ -42,4 +43,6 @@ final darkThemeColors = {
   'trialAvatarText': AppColors.trialAvatarText,
 };
 
-final ThemeData darkTheme = ThemeData(extensions: [AppTheme(darkThemeColors)]);
+final ThemeData darkTheme = ThemeData(extensions: [
+  AppTheme(darkThemeColors),
+], textTheme: GoogleFonts.poppinsTextTheme());
