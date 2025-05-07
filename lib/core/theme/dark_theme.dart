@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:phynd_app/core/theme/app_colors.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 
@@ -27,6 +26,8 @@ final darkThemeColors = {
   'clipTextSecondary': AppColors.clipTextSecondary,
   'verifiedBadgeClip': AppColors.verifiedBadgeClip,
 
+  'borderColors': AppColors.darkSlateGray,
+
   // Game Trial Card theme colors
   'trialCardBorder': AppColors.trialCardBorderColor,
   'trialCardBg': AppColors.trialCardBackground,
@@ -45,4 +46,4 @@ final darkThemeColors = {
 
 final ThemeData darkTheme = ThemeData(extensions: [
   AppTheme(darkThemeColors),
-], textTheme: GoogleFonts.poppinsTextTheme());
+], fontFamily: 'Poppins');

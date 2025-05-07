@@ -28,7 +28,9 @@ final lightThemeColors = {
   'trialAvatarBorder': AppColors.trialAvatarBorder,
   'trialAvatarOverlay': AppColors.trialAvatarOverlay,
   'trialAvatarText': AppColors.trialAvatarText,
+  'borderColors': AppColors.darkSlateGray,
 };
 
-final ThemeData lightTheme =
-    ThemeData(extensions: [AppTheme(lightThemeColors)]);
+final ThemeData lightTheme = ThemeData(extensions: [
+  AppTheme(lightThemeColors),
+], fontFamily: 'Poppins');

@@ -1,5 +1,5 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:phynd_app/core/constants/app_images.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/core/utils/font_utils.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
@@ -22,9 +22,8 @@ class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).extension<AppTheme>();
-    final textColor = theme?.get('text') ?? Colors.black;
-    final backgroundColor = theme?.get('bgColor') ?? Colors.black;
-    final screenWidth = MediaQuery.of(context).size.width;
+    final textColor = theme?.get('text');
+    final backgroundColor = theme?.get('bgColor');
 
     return Container(
       height: SizeUtils.pxToDp(context, 165),
@@ -34,38 +33,79 @@ class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
             left: 120, right: 120, top: 16, bottom: 16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Left: Brand logo
-            _buildBrandLogo(),
-
+            _buildBrandLogo(context),
+            SizedBox(width: SizeUtils.pxToDp(context, 40)),
             // Center: Search bar
-            SizedBox(
-              width: screenWidth * 0.5,
-              child: SearchInputField(
-                hintText: 'Phynd Anything...',
+            Expanded(
+              child: Center(
+                child: Container(
+                  height: SizeUtils.pxToDp(context, 80),
+                  constraints: BoxConstraints(
+                    maxWidth: SizeUtils.pxToDp(context, 1600),
+                  ),
+                  child: SearchInputField(
+                    hintText: 'Phynd Anything...',
+                  ),
+                ),
               ),
             ),
 
+            SizedBox(width: SizeUtils.pxToDp(context, 40)),
+
             // Right: Profile info
-            _buildProfileInfo(textColor, context),
+            _buildProfileInfo(textColor!, context),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildBrandLogo() {
+  Widget _buildBrandLogo(BuildContext context) {
+    final theme = Theme.of(context).extension<AppTheme>();
+    final border = theme?.get('borderColors');
+    final tagBg = theme?.get('textSecondary');
+    final text = theme?.get('bgColor');
+    final textColor = theme?.get('text');
+
+    Widget getVersion() {
+      return Container(
+        height: SizeUtils.pxToDp(context, 53),
+        padding: SizeUtils.pxToEdgeInsets(context,
+            left: 14, right: 14, top: 4, bottom: 4),
+        decoration: BoxDecoration(
+          color: tagBg,
+          borderRadius: SizeUtils.pxToAllBorderRadius(context, radius: 4),
+          border:
+              Border.all(color: border!, width: SizeUtils.pxToDp(context, 2)),
+        ),
+        child: Center(
+          child: Text(
+            'ALPHA',
+            style: TextStyle(
+              color: text,
+              fontWeight: FontWeight.w600,
+              fontSize: FontUtils.pxToSp(context, 29),
+            ),
+          ),
+        ),
+      );
+    }
+
     return Row(
       children: [
         Image.asset(
-          'assets/images/phynd_logo.png',
-          height: 40,
+          AppImages.navLogo,
+          height: SizeUtils.pxToDp(context, 75),
+          fit: BoxFit.contain,
           errorBuilder: (context, error, stackTrace) {
             return Container(
-              height: 40,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              height: SizeUtils.pxToDp(context, 32),
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: textColor,
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Row(
@@ -73,32 +113,19 @@ class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
                   Text(
                     'PHYND',
                     style: TextStyle(
-                      color: Colors.black,
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: FontUtils.pxToSp(context, 18),
                     ),
                   ),
-                  SizedBox(width: 4),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                    child: Text(
-                      'ALPHA',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 10,
-                      ),
-                    ),
-                  ),
+                  SizedBox(width: SizeUtils.pxToDp(context, 8)),
+                  getVersion(),
                 ],
               ),
             );
           },
         ),
+        SizedBox(width: SizeUtils.pxToDp(context, 8)),
+        getVersion()
       ],
     );
   }
@@ -106,67 +133,57 @@ class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget _buildProfileInfo(Color textColor, BuildContext context) {
     return Row(
       children: [
-        // Username and online status
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            AutoSizeText(
-              username ?? 'GamerTag1234',
-              style: TextStyle(
-                color: textColor,
-                fontWeight: FontWeight.bold,
-                fontSize: FontUtils.pxToSp(context, 28),
+        Padding(
+          padding: SizeUtils.pxToEdgeInsets(context,
+              left: 48, right: 48, top: 24, bottom: 24),
+          child: Row(
+            children: [
+              Image.asset(AppImages.profileAvatar,
+                  fit: BoxFit.contain,
+                  height: SizeUtils.pxToDp(context, 80),
+                  width: SizeUtils.pxToDp(context, 80)),
+              SizedBox(width: SizeUtils.pxToDp(context, 32)),
+
+              Text(
+                "Gamertag1234",
+                style: TextStyle(
+                  color: textColor,
+                  fontSize: FontUtils.pxToSp(context, 28),
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: isOnline ? Colors.green : Colors.grey,
-                    shape: BoxShape.circle,
+
+              SizedBox(width: SizeUtils.pxToDp(context, 32)),
+
+              // status
+              Row(
+                children: [
+                  Container(
+                    width: SizeUtils.pxToDp(context, 16),
+                    height: SizeUtils.pxToDp(context, 16),
+                    decoration: BoxDecoration(
+                      color: isOnline ? Colors.green : Colors.grey,
+                      shape: BoxShape.circle,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  isOnline ? 'Online' : 'Offline',
-                  style: TextStyle(
-                    color: textColor.withOpacity(0.7),
-                    fontSize: 18,
+                  SizedBox(width: SizeUtils.pxToDp(context, 8)),
+                  Text(
+                    isOnline ? 'Online' : 'Offline',
+                    style: TextStyle(
+                      color: textColor.withOpacity(0.7),
+                      fontSize: FontUtils.pxToSp(context, 22),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        const SizedBox(width: 12),
-        // Avatar
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.grey[800],
-            image: avatarUrl != null
-                ? DecorationImage(
-                    image: NetworkImage(avatarUrl!),
-                    fit: BoxFit.cover,
-                  )
-                : null,
+                ],
+              ),
+            ],
           ),
-          child: avatarUrl == null
-              ? const Center(
-                  child: Icon(
-                    Icons.person,
-                    color: Colors.white,
-                    size: 24,
-                  ),
-                )
-              : null,
         ),
+        SizedBox(width: SizeUtils.pxToDp(context, 32)),
+        Image.asset(AppImages.kidsLogo,
+            fit: BoxFit.contain,
+            height: SizeUtils.pxToDp(context, 80),
+            width: SizeUtils.pxToDp(context, 80)),
       ],
     );
   }

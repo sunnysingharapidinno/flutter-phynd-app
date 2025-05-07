@@ -80,16 +80,16 @@ class Sidebar extends StatelessWidget {
               onFocus: () {
                 onFocus?.call(true);
               },
-              onTap: () {
-                Navigator.pushReplacementNamed(
-                    context, item['route'] as String);
-              },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 250),
                 padding: EdgeInsets.symmetric(
                     horizontal: isSidebarExpanded ? 16 : 0),
                 child: ListTile(
                   contentPadding: EdgeInsets.zero,
+                  onTap: () {
+                    Navigator.pushReplacementNamed(
+                        context, item['route'] as String);
+                  },
                   title: Row(
                     children: [
                       if (!isSidebarExpanded)

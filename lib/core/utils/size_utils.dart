@@ -29,4 +29,24 @@ class SizeUtils {
       horizontal: pxToDp(context, horizontal),
     );
   }
+
+  /// Converts px values to BorderRadius based on the current devicePixelRatio
+  static BorderRadius pxToBorderRadius(BuildContext context,
+      {double topLeft = 0,
+      double topRight = 0,
+      double bottomLeft = 0,
+      double bottomRight = 0}) {
+    return BorderRadius.only(
+      topLeft: Radius.circular(pxToDp(context, topLeft)),
+      topRight: Radius.circular(pxToDp(context, topRight)),
+      bottomLeft: Radius.circular(pxToDp(context, bottomLeft)),
+      bottomRight: Radius.circular(pxToDp(context, bottomRight)),
+    );
+  }
+
+  /// Shortcut for uniform BorderRadius
+  static BorderRadius pxToAllBorderRadius(BuildContext context,
+      {double radius = 0}) {
+    return BorderRadius.all(Radius.circular(pxToDp(context, radius)));
+  }
 }

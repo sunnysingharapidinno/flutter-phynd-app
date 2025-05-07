@@ -122,4 +122,5 @@ class AppColors {
   static const Color trialAvatarOverlay =
       Color(0x99000000); // black with 60% opacity
   static const Color trialAvatarText = Colors.white;
+  static const Color darkSlateGray = Color(0xFF313544);
 }

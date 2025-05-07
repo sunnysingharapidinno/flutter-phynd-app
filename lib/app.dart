@@ -5,8 +5,6 @@ import 'package:phynd_app/core/theme/dark_theme.dart';
 import 'package:phynd_app/data/services/user_service.dart';
 import 'package:phynd_app/presentation/bloc/auth/auth_bloc.dart';
 import 'package:phynd_app/presentation/bloc/auth/auth_event.dart';
-import 'package:phynd_app/presentation/layouts/base_layout.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 
 class MyApp extends StatelessWidget {
   final UserService userService;
@@ -51,36 +49,6 @@ class _AppInitializerState extends State<AppInitializer> {
       debugShowCheckedModeBanner: false,
       title: 'Phynd App',
       theme: darkTheme,
-      builder: (context, child) {
-        return BaseLayout(
-          child: child ?? const SizedBox(),
-        );
-      },
-      // builder: (context, child) => ResponsiveBreakpoints.builder(
-      //   breakpoints: [
-      //     const Breakpoint(start: 0, end: 450, name: MOBILE),
-      //     const Breakpoint(start: 451, end: 800, name: TABLET),
-      //     const Breakpoint(start: 801, end: 1920, name: DESKTOP),
-      //     const Breakpoint(start: 1921, end: double.infinity, name: '4K'),
-      //   ],
-      // child: BaseLayout(
-      //   child: child ?? const SizedBox(),
-      // ),
-      // ),
-      // builder: (context, child) => ResponsiveWrapper.builder(
-      //   BaseLayout(
-      //     child: child ?? const SizedBox(),
-      //   ),
-      //   maxWidth: 4000,
-      //   minWidth: 720,
-      //   defaultScale: true,
-      //   breakpoints: [
-      //     // ResponsiveBreakpoint.resize(480, name: MOBILE),
-      //     ResponsiveBreakpoint.autoScaleDown(1000, name: TABLET),
-      //     // ResponsiveBreakpoint.resize(1000, name: DESKTOP),
-      //   ],
-      //   // background: Container(color: Color(0xFFF5F5F5))
-      // ),
       onGenerateRoute: AppRoutes.generateRoute,
       initialRoute: AppRoutes.home,
     );

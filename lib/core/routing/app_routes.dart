@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phynd_app/presentation/layouts/base_layout.dart';
 import 'package:phynd_app/presentation/screens/game_page.dart';
 import 'package:phynd_app/presentation/screens/home_page.dart';
 import 'package:phynd_app/presentation/screens/login_page.dart';
@@ -35,46 +36,51 @@ class AppRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;
 
+    Widget wrap(Widget child) => BaseLayout(child: child);
+
     switch (settings.name) {
       case home:
-        return MaterialPageRoute(builder: (_) => const HomePage());
+        return MaterialPageRoute(builder: (_) => wrap(const HomePage()));
       case login:
-        return MaterialPageRoute(builder: (_) => const LoginPage());
+        return MaterialPageRoute(builder: (_) => wrap(const LoginPage()));
       case registration:
-        return MaterialPageRoute(builder: (_) => const RegistrationScreen());
+        return MaterialPageRoute(
+            builder: (_) => wrap(const RegistrationScreen()));
       case game:
         if (args is String) {
           return MaterialPageRoute(
-            builder: (_) => GamePage(gameSlug: args),
+            builder: (_) => wrap(GamePage(gameSlug: args)),
           );
         }
         return _errorRoute("Missing or invalid gameSlug");
 
       case playerProfile:
         return MaterialPageRoute(
-          builder: (_) => PlayerProfilePage(userId: args as String?),
+          builder: (_) => wrap(PlayerProfilePage(userId: args as String?)),
         );
 
       case publisherProfile:
-        return MaterialPageRoute(builder: (_) => const PublisherProfilePage());
+        return MaterialPageRoute(
+            builder: (_) => wrap(const PublisherProfilePage()));
       case search:
-        return MaterialPageRoute(builder: (_) => const SearchPage());
+        return MaterialPageRoute(builder: (_) => wrap(const SearchPage()));
       case quest:
-        return MaterialPageRoute(builder: (_) => const QuestPage());
+        return MaterialPageRoute(builder: (_) => wrap(const QuestPage()));
       case questDetails:
         if (args is String) {
           return MaterialPageRoute(
-            builder: (_) => QuestDetailsPage(questId: args),
+            builder: (_) => wrap(QuestDetailsPage(questId: args)),
           );
         }
         return _errorRoute("Missing or invalid questId");
+
       case support:
-        return MaterialPageRoute(builder: (_) => const SupportPage());
+        return MaterialPageRoute(builder: (_) => wrap(const SupportPage()));
       case video:
-        return MaterialPageRoute(builder: (_) => const VideoPage());
+        return MaterialPageRoute(builder: (_) => wrap(const VideoPage()));
       case termsAndConditions:
         return MaterialPageRoute(
-            builder: (_) => const TermsAndConditionsPage());
+            builder: (_) => wrap(const TermsAndConditionsPage()));
       default:
         return _errorRoute("Route not found");
     }
