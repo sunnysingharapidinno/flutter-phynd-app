@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/theme/app_colors.dart';
+import 'package:phynd_app/core/utils/font_utils.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
 import 'package:phynd_app/presentation/widgets/buttons/primary_button.dart';
 import 'package:phynd_app/presentation/widgets/image/image_thumbnail.dart';
@@ -40,7 +41,7 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
         // Content
         SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: EdgeInsets.all(SizeUtils.pxToDp(context, 80)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -52,8 +53,8 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                     ImageThumbnail(
                       imageUrl:
                           'https://www.forgottenplayland.com/_next/image?url=%2Fassets%2Flogo.webp&w=640&q=75',
-                      width: SizeUtils.pxToDp(context, 606),
-                      height: SizeUtils.pxToDp(context, 238),
+                      width: SizeUtils.pxToDp(context, 1212),
+                      height: SizeUtils.pxToDp(context, 476),
                       fit: BoxFit.contain,
                     ),
                     SizedBox(width: SizeUtils.pxToDp(context, 16)),
@@ -96,7 +97,7 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                     textAlign: TextAlign.left,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: FontUtils.pxToSp(context, 57),
                       color: AppColors.text,
                       height: 1.5,
                     ),
@@ -109,7 +110,7 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                 Row(
                   children: [
                     SizedBox(
-                      width: SizeUtils.pxToDp(context, 199),
+                      width: SizeUtils.pxToDp(context, 394),
                       child: PrimaryButton(
                         text: 'Play',
                         onPressed: () {},
@@ -117,9 +118,9 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                         icon: Icons.play_arrow,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: SizeUtils.pxToDp(context, 64)),
                     SizedBox(
-                      width: SizeUtils.pxToDp(context, 264),
+                      width: SizeUtils.pxToDp(context, 519),
                       child: PrimaryButton(
                         text: 'More Info',
                         onPressed: () {},
@@ -127,9 +128,9 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                         icon: Icons.info_outline,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: SizeUtils.pxToDp(context, 64)),
                     SizedBox(
-                      width: SizeUtils.pxToDp(context, 227),
+                      width: SizeUtils.pxToDp(context, 448),
                       child: PrimaryButton(
                         text: 'Follow',
                         onPressed: () {},
@@ -137,7 +138,7 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                         icon: Icons.add,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: SizeUtils.pxToDp(context, 64)),
                     CircleAvatar(
                       backgroundColor: Colors.white60,
                       radius: SizeUtils.pxToDp(context, 36),
