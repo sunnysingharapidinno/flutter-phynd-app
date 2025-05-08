@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/presentation/layouts/base_layout.dart';
+import 'package:phynd_app/presentation/screens/game_interstitial.dart';
 import 'package:phynd_app/presentation/screens/game_page.dart';
 import 'package:phynd_app/presentation/screens/home_page.dart';
 import 'package:phynd_app/presentation/screens/login_page.dart';
@@ -15,7 +16,7 @@ import 'package:phynd_app/presentation/screens/video_page.dart';
 
 class AppRoutes {
   static const String home = '/';
-  static const String intGame = '/game-int';
+  static const String gameInterstitial = '/game-interstitial';
   static const String library = '/library';
   static const String friends = '/friends';
   static const String following = '/following';
@@ -40,7 +41,11 @@ class AppRoutes {
 
     switch (settings.name) {
       case home:
-        return MaterialPageRoute(builder: (_) => wrap(const HomePage()));
+        return MaterialPageRoute(
+            builder: (_) => wrap(const GameInterstitialPage()));
+      case gameInterstitial:
+        return MaterialPageRoute(
+            builder: (_) => wrap(const GameInterstitialPage()));
       case login:
         return MaterialPageRoute(builder: (_) => wrap(const LoginPage()));
       case registration:

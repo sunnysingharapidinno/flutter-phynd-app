@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 
-class GameImageThumbnail extends StatelessWidget {
+class ImageThumbnail extends StatelessWidget {
   final String? imageUrl;
-  final double size;
+  final double width;
+  final double height;
+  final BoxFit? fit;
   final BorderRadius borderRadius;
 
-  const GameImageThumbnail({
+  const ImageThumbnail({
     super.key,
     this.imageUrl,
-    this.size = 80,
-    this.borderRadius = const BorderRadius.all(Radius.circular(8)),
+    this.width = 80,
+    this.height = 80,
+    this.fit,
+    this.borderRadius = const BorderRadius.all(Radius.circular(0)),
   });
 
   @override
@@ -19,12 +23,12 @@ class GameImageThumbnail extends StatelessWidget {
       borderRadius: borderRadius,
       child: Image.network(
         imageUrl ?? '',
-        width: size,
-        height: size,
-        fit: BoxFit.cover,
+        width: width,
+        height: height,
+        fit: fit,
         errorBuilder: (context, error, stackTrace) => Container(
-          width: size,
-          height: size,
+          width: width,
+          height: height,
           decoration: BoxDecoration(
             color: Theme.of(context).extension<AppTheme>()!.get('primary'),
             borderRadius: borderRadius,

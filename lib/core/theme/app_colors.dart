@@ -123,4 +123,20 @@ class AppColors {
       Color(0x99000000); // black with 60% opacity
   static const Color trialAvatarText = Colors.white;
   static const Color darkSlateGray = Color(0xFF313544);
+
+  // Game Interstitial Colors
+  static const Color gameInterstitialBg = Color(0xFF1A1B26);
+  static const Color gameTagBg = Color(0xFF2A2D36);
+  static const Color onlineCountBg = Color(0xFF2E3341);
+  static const Color onlineIndicator = Color(0xFF4CAF50);
+  static const Color followButtonBg = Color(0xFF3A3E52);
+
+  // Text colors for game interstitial
+  static const Color text = Color(0xFFFFFFFF);
+  static const Color textSecondary = Color(0xFFABABAB);
+
+  // Button colors
+  static const Color buttonPrimary = Color(0xFF6200EE);
+  static const Color buttonSecondary = Color(0xFF3A3E52);
+  static const Color buttonIcon = Color(0xFFFFFFFF);
 }

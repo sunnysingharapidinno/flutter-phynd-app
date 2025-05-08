@@ -12,6 +12,8 @@ class PrimaryButton extends StatelessWidget {
   final Color? backgroundColor;
   final Color? textColor;
   final bool isTransparent;
+  final IconData? icon;
+  final double? iconSize;
 
   const PrimaryButton({
     Key? key,
@@ -24,6 +26,8 @@ class PrimaryButton extends StatelessWidget {
     this.backgroundColor,
     this.textColor,
     this.isTransparent = false,
+    this.icon,
+    this.iconSize = 24,
   }) : super(key: key);
 
   @override
@@ -61,12 +65,22 @@ class PrimaryButton extends StatelessWidget {
                     ),
                   ),
                 )
-              : Text(
-                  text,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (icon != null) ...[
+                      Icon(icon, size: iconSize),
+                      if (text.isNotEmpty) const SizedBox(width: 8),
+                    ],
+                    if (text.isNotEmpty)
+                      Text(
+                        text,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                  ],
                 ),
         ),
       ),
