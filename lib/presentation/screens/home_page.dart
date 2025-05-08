@@ -15,6 +15,7 @@ import 'package:phynd_app/presentation/widgets/cards/play_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/free_play_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/shorts_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/game_trials_card.dart';
+import 'package:phynd_app/presentation/widgets/buttons/button.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

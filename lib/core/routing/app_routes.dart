@@ -3,11 +3,12 @@ import 'package:phynd_app/presentation/layouts/base_layout.dart';
 import 'package:phynd_app/presentation/screens/game_interstitial.dart';
 import 'package:phynd_app/presentation/screens/game_page.dart';
 import 'package:phynd_app/presentation/screens/home_page.dart';
+import 'package:phynd_app/presentation/screens/library_page/library_page.dart';
 import 'package:phynd_app/presentation/screens/login_page.dart';
 import 'package:phynd_app/presentation/screens/player_profile_page.dart';
 import 'package:phynd_app/presentation/screens/publisher_profile_page.dart';
-import 'package:phynd_app/presentation/screens/quest_page.dart';
 import 'package:phynd_app/presentation/screens/quest_details_page.dart';
+import 'package:phynd_app/presentation/screens/quest_page.dart';
 import 'package:phynd_app/presentation/screens/registration_page.dart';
 import 'package:phynd_app/presentation/screens/search_page.dart';
 import 'package:phynd_app/presentation/screens/support_page.dart';
@@ -24,11 +25,13 @@ class AppRoutes {
   static const String search = '/search';
   static const String video = '/video';
   static const String playerProfile = '/player-profile';
+  static const String publisherProfile = '/publisher-profile';
+  static const String login = '/sign-up';
 
-  static const String login = '/login';
+  //-------------------------------- below pages are not confirmed yet --------------------------------
+
   static const String registration = '/registration';
   static const String game = '/game';
-  static const String publisherProfile = '/publisher-profile';
   static const String quest = '/quest';
   static const String questDetails = '/quest-details';
   static const String support = '/support';
@@ -41,8 +44,7 @@ class AppRoutes {
 
     switch (settings.name) {
       case home:
-        return MaterialPageRoute(
-            builder: (_) => wrap(const GameInterstitialPage()));
+        return MaterialPageRoute(builder: (_) => wrap(const HomePage()));
       case gameInterstitial:
         return MaterialPageRoute(
             builder: (_) => wrap(const GameInterstitialPage()));
@@ -86,6 +88,8 @@ class AppRoutes {
       case termsAndConditions:
         return MaterialPageRoute(
             builder: (_) => wrap(const TermsAndConditionsPage()));
+      case library:
+        return MaterialPageRoute(builder: (_) => wrap(const LibraryPage()));
       default:
         return _errorRoute("Route not found");
     }
