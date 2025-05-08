@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:phynd_app/core/constants/app_images.dart';
 import 'package:phynd_app/core/theme/app_colors.dart';
+import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/core/utils/font_utils.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
 import 'package:phynd_app/presentation/widgets/buttons/primary_button.dart';
 import 'package:phynd_app/presentation/widgets/image/image_thumbnail.dart';
+import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class GameInterstitialPage extends StatefulWidget {
   const GameInterstitialPage({super.key});
@@ -16,6 +19,17 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
   @override
   Widget build(BuildContext context) {
     final appTheme = Theme.of(context);
+    final theme = appTheme.extension<AppTheme>();
+    final instParaColor = theme?.get('instPara');
+    final textColor = theme?.get('text');
+    final buttonBg2 = theme?.get('buttonBg2');
+    final btnText = theme?.get('btnText');
+    final subText2 = theme?.get('subText2');
+    final onlineColor = theme?.get('onlineIndicator');
+    final bgColor = theme?.get('bgColor');
+    final shadowBlack = theme?.get('shadowBlack');
+    final midnightGray = theme?.get('midnightGray');
+    final textLight = theme?.get('textLight');
 
     return Stack(
       children: [
@@ -23,25 +37,53 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
         SizedBox(
           width: double.infinity,
           height: double.infinity,
-          child: ColorFiltered(
-            colorFilter: ColorFilter.mode(
-              AppColors.black.withOpacity(0.5),
-              BlendMode.darken,
-            ),
-            child: ImageThumbnail(
-              imageUrl:
-                  'https://xstrela-alpha.s3.us-east-1.amazonaws.com/general/2025/03/16/3bc8bc2f85184505aec7858df30ac041.png',
-              width: double.infinity,
-              height: double.infinity,
-              fit: BoxFit.cover,
-            ),
+          child: Stack(
+            children: [
+              // Image background with gradient
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(
+                      'https://xstrela-alpha.s3.us-east-1.amazonaws.com/general/2025/03/16/3bc8bc2f85184505aec7858df30ac041.png',
+                    ),
+                    fit: BoxFit.cover,
+                  ),
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    stops: [0.3613, 0.5962, 0.8327],
+                    colors: [
+                      shadowBlack!,
+                      midnightGray!,
+                      bgColor!,
+                    ],
+                  ),
+                ),
+              ),
+              // Color filter with darken effect
+              ColorFiltered(
+                colorFilter: ColorFilter.mode(
+                  textLight?.withOpacity(0.5) ?? Colors.black.withOpacity(0.5),
+                  BlendMode.darken,
+                ),
+                child: ImageThumbnail(
+                  imageUrl:
+                      'https://xstrela-alpha.s3.us-east-1.amazonaws.com/general/2025/03/16/3bc8bc2f85184505aec7858df30ac041.png',
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ],
           ),
         ),
 
         // Content
         SafeArea(
           child: Padding(
-            padding: EdgeInsets.all(SizeUtils.pxToDp(context, 80)),
+            padding: EdgeInsets.symmetric(
+                horizontal: SizeUtils.pxToDp(context, 56),
+                vertical: SizeUtils.pxToDp(context, 80)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -53,11 +95,11 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                     ImageThumbnail(
                       imageUrl:
                           'https://www.forgottenplayland.com/_next/image?url=%2Fassets%2Flogo.webp&w=640&q=75',
-                      width: SizeUtils.pxToDp(context, 1212),
-                      height: SizeUtils.pxToDp(context, 476),
+                      width: SizeUtils.pxToDp(context, 606),
+                      height: SizeUtils.pxToDp(context, 238),
                       fit: BoxFit.contain,
                     ),
-                    SizedBox(width: SizeUtils.pxToDp(context, 16)),
+                    SizedBox(width: SizeUtils.pxToDp(context, 48)),
                     // ESRB Rating (also a network image)
                     ImageThumbnail(
                       imageUrl:
@@ -69,22 +111,22 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                   ],
                 ),
 
-                SizedBox(height: SizeUtils.pxToDp(context, 16)),
+                SizedBox(height: SizeUtils.pxToDp(context, 32)),
 
                 // Game Tags
                 Row(
                   children: [
-                    _buildTag('Action'),
+                    _buildTag('Action', context),
                     SizedBox(width: SizeUtils.pxToDp(context, 24)),
-                    _buildTag('Adventure'),
+                    _buildTag('Adventure', context),
                     SizedBox(width: SizeUtils.pxToDp(context, 24)),
-                    _buildTag('Racing'),
+                    _buildTag('Racing', context),
                     SizedBox(width: SizeUtils.pxToDp(context, 24)),
-                    _buildTag('Local Co-Op'),
+                    _buildTag('Local Co-Op', context),
                   ],
                 ),
 
-                const SizedBox(height: 16),
+                SizedBox(height: SizeUtils.pxToDp(context, 40)),
 
                 // Game Description
 
@@ -97,125 +139,117 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                     textAlign: TextAlign.left,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: FontUtils.pxToSp(context, 57),
-                      color: AppColors.text,
+                      fontSize: FontUtils.pxToSp(context, 28),
+                      color: instParaColor,
                       height: 1.5,
                     ),
                   ),
                 ),
 
-                const SizedBox(height: 24),
+                SizedBox(height: SizeUtils.pxToDp(context, 40)),
 
                 // Action Buttons Row
                 Row(
                   children: [
                     SizedBox(
-                      width: SizeUtils.pxToDp(context, 394),
+                      width: SizeUtils.pxToDp(context, 199),
+                      height: SizeUtils.pxToDp(context, 72),
                       child: PrimaryButton(
                         text: 'Play',
+                        textColor: btnText,
                         onPressed: () {},
-                        backgroundColor: AppColors.buttonPrimary,
+                        backgroundColor: textColor,
                         icon: Icons.play_arrow,
+                        iconColor: btnText,
                       ),
                     ),
-                    SizedBox(width: SizeUtils.pxToDp(context, 64)),
+                    SizedBox(width: SizeUtils.pxToDp(context, 32)),
                     SizedBox(
-                      width: SizeUtils.pxToDp(context, 519),
+                      width: SizeUtils.pxToDp(context, 264),
+                      height: SizeUtils.pxToDp(context, 72),
                       child: PrimaryButton(
                         text: 'More Info',
                         onPressed: () {},
-                        isTransparent: true,
+                        backgroundColor: buttonBg2,
+                        textColor: textColor,
                         icon: Icons.info_outline,
+                        iconColor: textColor,
                       ),
                     ),
-                    SizedBox(width: SizeUtils.pxToDp(context, 64)),
+                    SizedBox(width: SizeUtils.pxToDp(context, 32)),
                     SizedBox(
-                      width: SizeUtils.pxToDp(context, 448),
+                      width: SizeUtils.pxToDp(context, 227),
+                      height: SizeUtils.pxToDp(context, 72),
                       child: PrimaryButton(
                         text: 'Follow',
                         onPressed: () {},
-                        isTransparent: true,
-                        icon: Icons.add,
+                        backgroundColor: buttonBg2,
+                        textColor: textColor,
+                        icon: Icons.add_circle_outline,
+                        iconColor: textColor,
                       ),
                     ),
-                    SizedBox(width: SizeUtils.pxToDp(context, 64)),
-                    CircleAvatar(
-                      backgroundColor: Colors.white60,
+                    SizedBox(width: SizeUtils.pxToDp(context, 32)),
+                    RemoteControlWrapper(
+                        child: CircleAvatar(
+                      backgroundColor: buttonBg2,
                       radius: SizeUtils.pxToDp(context, 36),
                       child: IconButton(
-                        icon: Icon(Icons.favorite, color: Colors.white),
+                        icon: Icon(Icons.favorite, color: textColor),
                         onPressed: () {
                           // Your action
                         },
                       ),
-                    ),
+                    ))
                   ],
                 ),
 
-                const SizedBox(height: 24),
+                SizedBox(height: SizeUtils.pxToDp(context, 40)),
 
                 // Friends Playing Section
                 Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.onlineCountBg,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.group,
-                            color: AppColors.text,
-                            size: 18,
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          AppImages.peopleLogoGreyBg,
+                          height: SizeUtils.pxToDp(context, 90),
+                          fit: BoxFit.contain,
+                        ),
+                        SizedBox(width: SizeUtils.pxToDp(context, 19)),
+                        Text(
+                          '86 Friends Play',
+                          style: TextStyle(
+                            color: subText2,
+                            fontSize: FontUtils.pxToSp(context, 48),
+                            fontWeight: FontWeight.w600,
                           ),
-                          const SizedBox(width: 8),
-                          Text(
-                            '86 Friends Play',
-                            style: TextStyle(
-                              color: AppColors.text,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 12),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.onlineCountBg,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: AppColors.onlineIndicator,
-                              shape: BoxShape.circle,
-                            ),
+                    SizedBox(width: SizeUtils.pxToDp(context, 28)),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: SizeUtils.pxToDp(context, 40),
+                          height: SizeUtils.pxToDp(context, 40),
+                          decoration: BoxDecoration(
+                            color: onlineColor,
+                            shape: BoxShape.circle,
                           ),
-                          const SizedBox(width: 8),
-                          Text(
-                            '12 online',
-                            style: TextStyle(
-                              color: AppColors.text,
-                              fontSize: 14,
-                            ),
+                        ),
+                        const SizedBox(width: 19),
+                        Text(
+                          '12 online',
+                          style: TextStyle(
+                            color: subText2,
+                            fontSize: FontUtils.pxToSp(context, 40),
+                            fontWeight: FontWeight.w500,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -227,20 +261,30 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
     );
   }
 
-  Widget _buildTag(String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: AppColors.gameTagBg,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: AppColors.text,
-          fontSize: 14,
+  Widget _buildTag(String text, BuildContext context) {
+    final theme = Theme.of(context).extension<AppTheme>();
+    final textColor = theme?.get('text');
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          text,
+          style: TextStyle(
+            color: textColor,
+            fontSize: FontUtils.pxToSp(context, 24),
+          ),
         ),
-      ),
+        SizedBox(width: SizeUtils.pxToDp(context, 24)),
+        Container(
+          width: SizeUtils.pxToDp(context, 20),
+          height: SizeUtils.pxToDp(context, 20),
+          decoration: BoxDecoration(
+            color: textColor,
+            shape: BoxShape.circle,
+          ),
+        ),
+      ],
     );
   }
 }

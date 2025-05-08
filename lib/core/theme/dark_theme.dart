@@ -5,6 +5,7 @@ import 'package:phynd_app/core/utils/app_theme.dart';
 final darkThemeColors = {
   'bgColor': AppColors.darkBackground,
   'text': AppColors.white,
+  'textLight': AppColors.black,
   'textSecondary': AppColors.textSecondaryDark,
   'primary': AppColors.primaryPurple,
   'secondary': AppColors.secondaryTeal,
@@ -22,7 +23,6 @@ final darkThemeColors = {
   'darkBlueOverlay': AppColors.darkBlueOverlay,
   'iconInactive': AppColors.iconInactive,
   'pillBg': AppColors.pillBackground,
-  'clipTextPrimary': AppColors.clipTextPrimary,
   'clipTextSecondary': AppColors.clipTextSecondary,
   'verifiedBadgeClip': AppColors.verifiedBadgeClip,
 
@@ -42,6 +42,13 @@ final darkThemeColors = {
   'trialAvatarBorder': AppColors.trialAvatarBorder,
   'trialAvatarOverlay': AppColors.trialAvatarOverlay,
   'trialAvatarText': AppColors.trialAvatarText,
+  'instPara': AppColors.softGray,
+  'buttonBg2': AppColors.gray60,
+  'btnText': AppColors.darkCharcoal,
+  'subText2': AppColors.platinum,
+  'onlineIndicator': AppColors.limeGreen,
+  'shadowBlack': AppColors.shadowBlack,
+  'midnightGray': AppColors.midnightGray,
 };
 
 final ThemeData darkTheme = ThemeData(extensions: [
