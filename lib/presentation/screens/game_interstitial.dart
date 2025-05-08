@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/constants/app_images.dart';
-import 'package:phynd_app/core/theme/app_colors.dart';
+import 'package:phynd_app/core/routing/app_routes.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/core/utils/font_utils.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
+import 'package:phynd_app/data/models/response/game_model.dart';
+import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/presentation/widgets/buttons/primary_button.dart';
 import 'package:phynd_app/presentation/widgets/image/image_thumbnail.dart';
+import 'package:phynd_app/presentation/widgets/loader/circular_load.dart';
 import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class GameInterstitialPage extends StatefulWidget {
@@ -16,6 +19,32 @@ class GameInterstitialPage extends StatefulWidget {
 }
 
 class _GameInterstitialPageState extends State<GameInterstitialPage> {
+  final _gameSlug = 'forgotten-playland--1';
+
+  late bool _isLoading = false;
+  GameDetails? _gameDetails;
+  final GameService _gameService = GameService();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchGameDetails();
+  }
+
+  Future<void> _fetchGameDetails() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final details = await _gameService.getGameDetails(gameSlug: _gameSlug);
+
+      setState(() => _gameDetails = details);
+    } catch (e) {
+      print("Error fetching game details: $e");
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final appTheme = Theme.of(context);
@@ -30,6 +59,10 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
     final shadowBlack = theme?.get('shadowBlack');
     final midnightGray = theme?.get('midnightGray');
     final textLight = theme?.get('textLight');
+
+    if (_isLoading) {
+      return const Center(child: CircularLoad());
+    }
 
     return Stack(
       children: [
@@ -116,13 +149,15 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                 // Game Tags
                 Row(
                   children: [
-                    _buildTag('Action', context),
-                    SizedBox(width: SizeUtils.pxToDp(context, 24)),
-                    _buildTag('Adventure', context),
-                    SizedBox(width: SizeUtils.pxToDp(context, 24)),
-                    _buildTag('Racing', context),
-                    SizedBox(width: SizeUtils.pxToDp(context, 24)),
-                    _buildTag('Local Co-Op', context),
+                    ..._gameDetails?.genre
+                            .map((e) => [
+                                  _buildTag(e, context),
+                                  SizedBox(
+                                      width: SizeUtils.pxToDp(context, 24)),
+                                ])
+                            .expand((widgetList) => widgetList)
+                            .toList() ??
+                        [],
                   ],
                 ),
 
@@ -134,7 +169,7 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                   constraints:
                       BoxConstraints(maxWidth: SizeUtils.pxToDp(context, 928)),
                   child: Text(
-                    'A whimsical free-to-play social party game. Set in an isolated and abandoned attic, a group of small plush toy characters known as Plushkyns have been left to their own devices.',
+                    _gameDetails?.shortBio ?? '',
                     maxLines: 3,
                     textAlign: TextAlign.left,
                     overflow: TextOverflow.ellipsis,
@@ -169,7 +204,10 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                       height: SizeUtils.pxToDp(context, 72),
                       child: PrimaryButton(
                         text: 'More Info',
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, AppRoutes.game,
+                              arguments: _gameSlug);
+                        },
                         backgroundColor: buttonBg2,
                         textColor: textColor,
                         icon: Icons.info_outline,
