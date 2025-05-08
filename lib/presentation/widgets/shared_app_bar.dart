@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phynd_app/core/constants/app_images.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/core/utils/font_utils.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
+import 'package:phynd_app/presentation/bloc/auth/auth_bloc.dart';
 import 'package:phynd_app/presentation/widgets/input_fields/search_input_field.dart';
 
 class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -131,6 +133,8 @@ class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   Widget _buildProfileInfo(Color textColor, BuildContext context) {
+    final authState = context.read<AuthBloc>().state;
+
     return Row(
       children: [
         Padding(
@@ -145,7 +149,7 @@ class SharedAppBar extends StatelessWidget implements PreferredSizeWidget {
               SizedBox(width: SizeUtils.pxToDp(context, 32)),
 
               Text(
-                "Gamertag1234",
+                authState.profile?.user.display_name ?? "",
                 style: TextStyle(
                   color: textColor,
                   fontSize: FontUtils.pxToSp(context, 28),

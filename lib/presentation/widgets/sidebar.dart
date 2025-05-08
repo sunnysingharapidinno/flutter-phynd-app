@@ -61,6 +61,12 @@ class Sidebar extends StatelessWidget {
       'route': AppRoutes.account,
       'isDivider': false,
     },
+    {
+      'title': 'Login',
+      'icon': Icons.login,
+      'route': AppRoutes.login,
+      'isDivider': false,
+    },
   ];
 
   @override
