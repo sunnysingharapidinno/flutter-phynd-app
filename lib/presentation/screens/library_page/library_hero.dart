@@ -28,12 +28,8 @@ class LibraryHero extends StatelessWidget {
               title: 'Featured Game',
               description:
                   'Experience the next level of gaming with our featured title',
-              onPlayPressed: () {
-                print('play');
-              },
-              onLearnMorePressed: () {
-                print('learn more');
-              },
+              onPlayPressed: () {},
+              onLearnMorePressed: () {},
             ),
           ),
         ],

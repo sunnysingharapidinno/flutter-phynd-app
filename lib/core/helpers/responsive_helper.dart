@@ -1,9 +1,8 @@
 class ResponsiveHelper {
+  static const List<double> breakpoints = [3840.0, 3200.0, 1920.0, 1440.0];
+
   static double getResponsiveSize(
       double screenWidth, double baseSize, List<double> sizes) {
-    // Fixed breakpoints
-    final breakpoints = [3840.0, 3200.0, 2560.0, 1200.0];
-
     // Find the first breakpoint that matches the screen width
     for (int i = 0; i < breakpoints.length; i++) {
       if (screenWidth >= breakpoints[i]) {
@@ -30,9 +29,6 @@ class ResponsiveHelper {
   /// ```
   static double getResponsiveRatio(
       double screenWidth, double baseRatio, List<double> ratios) {
-    // Fixed breakpoints
-    final breakpoints = [3840.0, 3200.0, 2560.0, 1200.0];
-
     // Find the first breakpoint that matches the screen width
     for (int i = 0; i < breakpoints.length; i++) {
       if (screenWidth >= breakpoints[i]) {

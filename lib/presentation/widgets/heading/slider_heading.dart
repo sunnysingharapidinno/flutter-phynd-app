@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phynd_app/core/helpers/responsive_helper.dart';
 
 class SliderHeading extends StatelessWidget {
   final String text;
@@ -12,20 +13,24 @@ class SliderHeading extends StatelessWidget {
     // Default font size from headlineSmall
     TextStyle baseStyle = Theme.of(context).textTheme.headlineSmall!;
 
-    // Adjust font size based on screen width
-    if (screenWidth >= 2560) {
-      // For 2K screens
-      baseStyle = baseStyle.copyWith(fontSize: 32.0);
-    }
-    if (screenWidth >= 3840) {
-      // For 4K screens
-      baseStyle = baseStyle.copyWith(fontSize: 52.0);
-    }
+    // Get responsive font size
+    final baseFontSize = baseStyle.fontSize ?? 36.0;
+    final fontSizes = [72.0, 64.0, 48.0, 36.0];
+
+    final fontSize = ResponsiveHelper.getResponsiveSize(
+      screenWidth,
+      baseFontSize,
+      fontSizes,
+    );
 
     return Text(
       text,
       style: baseStyle.copyWith(
-          fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'Exo2'),
+        fontSize: fontSize,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+        fontFamily: 'Exo2',
+      ),
     );
   }
 }

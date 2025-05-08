@@ -104,8 +104,8 @@ class Button extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final baseSize = variant == ButtonVariant.icon ? 16.0 : 25.0;
     final sizes = variant == ButtonVariant.icon
-        ? [32.0, 28.0, 24.0, 16.0]
-        : [48.0, 42.0, 36.0, 18.0];
+        ? [42.0, 32.0, 24.0, 16.0]
+        : [42.0, 32.0, 24.0, 18.0];
 
     final fontSize = ResponsiveHelper.getResponsiveSize(
       screenWidth,

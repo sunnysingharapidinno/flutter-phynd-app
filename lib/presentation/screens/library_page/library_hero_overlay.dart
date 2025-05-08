@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/helpers/responsive_helper.dart';
+import 'package:phynd_app/core/utils/font_utils.dart';
+import 'package:phynd_app/core/utils/size_utils.dart';
 import 'package:phynd_app/presentation/widgets/buttons/button.dart';
 import 'package:phynd_app/presentation/widgets/esrb_badge/esrb_badge.dart';
 import 'package:phynd_app/presentation/widgets/verify_badge/verify_badge.dart';
@@ -41,8 +43,10 @@ class LibraryHeroOverlay extends StatelessWidget {
   TextStyle _getGameTitleStyle(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     return TextStyle(
-      fontSize:
-          ResponsiveHelper.getResponsiveSize(screenWidth, 24, [72, 64, 58, 24]),
+      fontSize: FontUtils.pxToSp(
+          context,
+          ResponsiveHelper.getResponsiveSize(
+              screenWidth, 24, [72, 56, 28, 24])),
       fontWeight: FontWeight.w600,
       color: Colors.white,
       height: 1.2,
@@ -85,11 +89,13 @@ class LibraryHeroOverlay extends StatelessWidget {
                 children: [
                   Image.network(
                     'https://images.unsplash.com/photo-1634309490604-1270c0d486e8?q=80&w=3132&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                    height: ResponsiveHelper.getResponsiveRatio(
-                      MediaQuery.of(context).size.width,
-                      250.0,
-                      [460.0, 400.0, 320.0, 250.0],
-                    ),
+                    height: SizeUtils.pxToDp(
+                        context,
+                        ResponsiveHelper.getResponsiveRatio(
+                          MediaQuery.of(context).size.width,
+                          150.0,
+                          [460.0, 400.0, 320.0, 150.0],
+                        )),
                     fit: BoxFit.contain,
                     loadingBuilder: (context, child, loadingProgress) {
                       if (loadingProgress == null) return child;
@@ -177,15 +183,17 @@ class LibraryHeroOverlay extends StatelessWidget {
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
                               fontFamily: "Exo2",
-                              fontSize: ResponsiveHelper.getResponsiveSize(
-                                MediaQuery.of(context).size.width,
-                                Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge
-                                        ?.fontSize ??
-                                    16.0,
-                                [42.0, 38.0, 34.0, 20.0],
-                              ),
+                              fontSize: FontUtils.pxToSp(
+                                  context,
+                                  ResponsiveHelper.getResponsiveSize(
+                                    MediaQuery.of(context).size.width,
+                                    Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge
+                                            ?.fontSize ??
+                                        16.0,
+                                    [42.0, 38.0, 24.0, 20.0],
+                                  )),
                             ),
                       ),
                       SizedBox(width: spacing * 1.5),
@@ -210,8 +218,8 @@ class LibraryHeroOverlay extends StatelessWidget {
                                         .textTheme
                                         .bodyLarge
                                         ?.fontSize ??
-                                    16.0,
-                                [32.0, 28.0, 24.0, 16.0],
+                                    12.0,
+                                [28.0, 22.0, 16.0, 12.0],
                               ),
                             ),
                       ),
