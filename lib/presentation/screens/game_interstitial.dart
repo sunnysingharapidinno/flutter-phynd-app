@@ -135,8 +135,7 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                     SizedBox(width: SizeUtils.pxToDp(context, 48)),
                     // ESRB Rating (also a network image)
                     ImageThumbnail(
-                      imageUrl:
-                          'https://xstrela-uat.s3.us-east-1.amazonaws.com/ESRB/Teen.png',
+                      imageUrl: _gameDetails?.esrbRatingImgUrl,
                       width: SizeUtils.pxToDp(context, 92),
                       height: SizeUtils.pxToDp(context, 111),
                       fit: BoxFit.contain,
