@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phynd_app/core/helpers/responsive_helper.dart';
 
 class VerifiedBadge extends StatelessWidget {
   final double size;
@@ -14,16 +15,23 @@ class VerifiedBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final sizes = [32.0, 28.0, 20.0, 18.0];
+    final actualSize =
+        ResponsiveHelper.getResponsiveSize(screenWidth, size, sizes);
+    final iconSize = actualSize * 0.8; // Icon size is 80% of container size
+
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF7B61FF),
+        color: color,
         shape: BoxShape.circle,
       ),
-      padding: const EdgeInsets.all(4),
-      child: const Icon(
+      padding:
+          EdgeInsets.all(actualSize * 0.25), // Padding is 25% of container size
+      child: Icon(
         Icons.check,
-        color: Colors.white,
-        size: 16,
+        color: iconColor,
+        size: iconSize,
       ),
     );
   }

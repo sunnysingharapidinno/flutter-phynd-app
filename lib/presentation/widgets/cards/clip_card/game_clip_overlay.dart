@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phynd_app/presentation/widgets/esrb_badge/esrb_badge.dart';
+import 'package:phynd_app/core/helpers/responsive_helper.dart';
 
 class GameClipOverlay extends StatelessWidget {
   final String gameName;
@@ -58,12 +59,11 @@ class GameClipOverlay extends StatelessWidget {
                 ],
                 LayoutBuilder(
                   builder: (context, constraints) {
-                    double screenWidth = MediaQuery.of(context).size.width;
+                    final screenWidth = MediaQuery.of(context).size.width;
                     double fontSize = 20.0;
-                    if (screenWidth >= 1200) fontSize = 24.0;
-                    if (screenWidth >= 2560) fontSize = 32.0;
-                    if (screenWidth >= 3200) fontSize = 36.0;
-                    if (screenWidth >= 3840) fontSize = 38.0;
+                    final sizes = [64.0, 58.0, 32.0, 24.0];
+                    fontSize = ResponsiveHelper.getResponsiveSize(
+                        screenWidth, fontSize, sizes);
                     return Text(
                       gameName,
                       style: GoogleFonts.exo2(

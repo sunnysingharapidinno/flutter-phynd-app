@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/helpers/responsive_helper.dart';
 
 class Ratings extends StatelessWidget {
   final double rating; // e.g. 4.5
@@ -18,7 +19,9 @@ class Ratings extends StatelessWidget {
   Widget build(BuildContext context) {
     // Determine star size based on screen width
     final screenWidth = MediaQuery.of(context).size.width;
-    final actualStarSize = screenWidth > 3000 ? 28.0 : starSize;
+    final sizes = [64.0, 58.0, 32.0, 24.0];
+    final actualStarSize =
+        ResponsiveHelper.getResponsiveSize(screenWidth, starSize, sizes);
 
     List<Widget> stars = [];
     int fullStars = rating.floor();
