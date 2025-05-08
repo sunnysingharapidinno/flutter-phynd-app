@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/presentation/widgets/cards/clip_card/game_clip_overlay.dart';
-import 'package:phynd_app/presentation/widgets/cards/clip_card/game_clip_preview.dart';
+import 'package:phynd_app/presentation/widgets/image_video.dart';
 
 class GameClipCard extends StatelessWidget {
   final String imageUrl;
@@ -25,7 +25,7 @@ class GameClipCard extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        GameClipPreview(
+        ImageVideo(
           imageUrl: imageUrl,
           videoUrl: videoUrl,
         ),

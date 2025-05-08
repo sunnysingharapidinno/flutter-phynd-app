@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/helpers/responsive_helper.dart';
 import 'package:phynd_app/presentation/screens/library_page/library_hero_overlay.dart';
-import 'package:phynd_app/presentation/widgets/cards/clip_card/game_clip_preview.dart';
+import 'package:phynd_app/presentation/widgets/image_video.dart';
 
 class LibraryHero extends StatelessWidget {
   const LibraryHero({super.key});
@@ -13,7 +13,7 @@ class LibraryHero extends StatelessWidget {
       color: Colors.black, // fallback background
       child: Stack(
         children: [
-          GameClipPreview(
+          ImageVideo(
             imageUrl:
                 'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
             videoUrl:

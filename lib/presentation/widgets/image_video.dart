@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
-class GameClipPreview extends StatefulWidget {
+class ImageVideo extends StatefulWidget {
   final String imageUrl;
   final String videoUrl;
   final double aspectRatio;
   final BorderRadius? borderRadius;
 
-  const GameClipPreview({
+  const ImageVideo({
     super.key,
     required this.imageUrl,
     required this.videoUrl,
@@ -16,10 +16,10 @@ class GameClipPreview extends StatefulWidget {
   });
 
   @override
-  State<GameClipPreview> createState() => _GameClipPreviewState();
+  State<ImageVideo> createState() => _ImageVideoState();
 }
 
-class _GameClipPreviewState extends State<GameClipPreview> {
+class _ImageVideoState extends State<ImageVideo> {
   bool _isHovered = false;
   late VideoPlayerController _controller;
   bool _initialized = false;
