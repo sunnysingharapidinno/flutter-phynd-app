@@ -3,7 +3,24 @@ import 'package:phynd_app/core/utils/size_utils.dart';
 import 'package:phynd_app/presentation/widgets/hero_game_badge.dart';
 
 class AppIdle extends StatefulWidget {
-  const AppIdle({super.key});
+  final String backgroundImg;
+  final String gameTextImg;
+  final String releaseYear;
+  final String publisherName;
+  final String esrb;
+  final int friendsCount;
+  final int onlineCount;
+
+  const AppIdle({
+    super.key,
+    required this.backgroundImg,
+    required this.gameTextImg,
+    required this.releaseYear,
+    required this.publisherName,
+    required this.esrb,
+    required this.friendsCount,
+    required this.onlineCount,
+  });
 
   @override
   State<AppIdle> createState() => _AppIdleState();
@@ -13,21 +30,24 @@ class _AppIdleState extends State<AppIdle> {
   bool _showBackground = false;
   bool _showContent = false;
   bool _imageLoaded = false;
-  final ImageProvider _backgroundImage = const NetworkImage(
-    'https://xstrela-alpha.s3.us-east-1.amazonaws.com/general/2025/03/16/3bc8bc2f85184505aec7858df30ac041.png',
-  );
+
+  late final ImageProvider _backgroundImage;
 
   @override
   void initState() {
     super.initState();
-    // Preload the image
+    _backgroundImage = NetworkImage(widget.backgroundImg);
+
+    // Preload the background image
     _backgroundImage.resolve(const ImageConfiguration()).addListener(
       ImageStreamListener((info, synchronousCall) {
         if (mounted) {
-          setState(() => _imageLoaded = true);
-          // Start background fade in after image is loaded
-          Future.microtask(() => setState(() => _showBackground = true));
-          // Start content fade in after image is loaded + 2 seconds
+          setState(() {
+            _imageLoaded = true;
+            _showBackground = true;
+          });
+
+          // Fade in content after a delay
           Future.delayed(const Duration(milliseconds: 2000), () {
             if (mounted) {
               setState(() => _showContent = true);
@@ -43,7 +63,7 @@ class _AppIdleState extends State<AppIdle> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        // Background with fade in
+        // Background image
         AnimatedOpacity(
           opacity: _showBackground && _imageLoaded ? 1.0 : 0.0,
           duration: const Duration(milliseconds: 1000),
@@ -57,6 +77,7 @@ class _AppIdleState extends State<AppIdle> {
             ),
           ),
         ),
+
         // Gradient overlay
         AnimatedOpacity(
           opacity: _showBackground && _imageLoaded ? 1.0 : 0.0,
@@ -67,15 +88,17 @@ class _AppIdleState extends State<AppIdle> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
+                stops: [0.5, 1.0193],
                 colors: [
-                  Colors.black.withOpacity(0.6),
-                  Colors.black.withOpacity(0.3),
+                  const Color.fromRGBO(27, 29, 38, 0.0), // transparent
+                  const Color(0xFF1B1D26), // #1B1D26
                 ],
               ),
             ),
           ),
         ),
-        // Content with delayed fade in
+
+        // Content
         Positioned(
           bottom: SizeUtils.pxToDp(context, 100),
           left: SizeUtils.pxToDp(context, 100),
@@ -83,10 +106,11 @@ class _AppIdleState extends State<AppIdle> {
             opacity: _showContent && _imageLoaded ? 1.0 : 0.0,
             duration: const Duration(milliseconds: 1000),
             curve: Curves.easeInOut,
-            child: const HeroGameBadge(
+            child: HeroGameBadge(
               showActionBtns: false,
               onPlayPressed: null,
               onLearnMorePressed: null,
+              // Optional: pass props like gameTextImg, publisherName, etc. if HeroGameBadge supports them
             ),
           ),
         ),
