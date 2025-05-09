@@ -12,12 +12,16 @@ enum ESRBRating {
 
 class ESRBBadge extends StatelessWidget {
   final String? imageUrl;
-  final double? size;
+  final double? height;
+  final double? width;
+  final BoxFit? fit;
 
   const ESRBBadge({
     super.key,
     this.imageUrl,
-    this.size,
+    this.height,
+    this.width,
+    this.fit = BoxFit.contain,
   });
 
   @override

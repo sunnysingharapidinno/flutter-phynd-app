@@ -1,109 +1,85 @@
 import 'package:flutter/material.dart';
+import 'package:phynd_app/presentation/widgets/image/image_thumbnail.dart';
 import 'package:video_player/video_player.dart';
 
 class ImageVideo extends StatefulWidget {
   final String imageUrl;
   final String videoUrl;
-  final double aspectRatio;
-  final BorderRadius? borderRadius;
+  final double? width;
+  final double? height;
 
   const ImageVideo({
-    super.key,
+    Key? key,
     required this.imageUrl,
     required this.videoUrl,
-    this.aspectRatio = 16 / 9,
-    this.borderRadius,
-  });
+    this.width,
+    this.height,
+  }) : super(key: key);
 
   @override
   State<ImageVideo> createState() => _ImageVideoState();
 }
 
 class _ImageVideoState extends State<ImageVideo> {
-  bool _isHovered = false;
-  late VideoPlayerController _controller;
-  bool _initialized = false;
+  late VideoPlayerController _videoController;
+  bool _isFocused = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl))
-      ..setVolume(0.0)
+    _videoController = VideoPlayerController.network(widget.videoUrl)
       ..setLooping(true)
       ..initialize().then((_) {
-        if (mounted) {
-          setState(() {
-            _initialized = true;
-          });
-        }
+        if (mounted) setState(() {});
       });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _videoController.dispose();
     super.dispose();
   }
 
-  void _onHover(bool hover) {
-    if (mounted) {
-      setState(() {
-        _isHovered = hover;
-        if (_initialized) {
-          if (hover) {
-            _controller.play();
-          } else {
-            _controller.pause();
-            _controller.seekTo(Duration.zero);
-          }
-        }
-      });
-    }
+  void _onFocusChanged(bool focused) {
+    setState(() {
+      _isFocused = focused;
+      if (_isFocused) {
+        _videoController.play();
+      } else {
+        _videoController.pause();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) {
-        _onHover(true);
-      },
-      onExit: (_) {
-        _onHover(false);
-      },
-      child: AspectRatio(
-        aspectRatio: widget.aspectRatio,
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.black87,
-            borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
-          ),
-          child: ClipRRect(
-            borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                if (_isHovered && _initialized)
-                  VideoPlayer(_controller)
-                else
-                  Image.network(
-                    widget.imageUrl,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: Colors.grey[800],
-                        child: const Center(
-                          child: Icon(
-                            Icons.error_outline,
-                            color: Colors.white54,
-                            size: 32,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-              ],
+    return GestureDetector(
+      onTapDown: (_) => _onFocusChanged(true),
+      onTapUp: (_) => _onFocusChanged(false),
+      onTapCancel: () => _onFocusChanged(false),
+      child: SizedBox(
+        width: widget.width,
+        height: widget.height,
+        child: Stack(
+          children: [
+            ImageThumbnail(
+              imageUrl: widget.imageUrl,
+              width: widget.width,
+              height: widget.height,
+              fit: BoxFit.cover,
             ),
-          ),
+            if (_videoController.value.isInitialized && _isFocused)
+              Positioned.fill(
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: SizedBox(
+                    width: _videoController.value.size.width,
+                    height: _videoController.value.size.height,
+                    child: VideoPlayer(_videoController),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );

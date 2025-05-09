@@ -28,6 +28,7 @@ class GameClipCard extends StatelessWidget {
         ImageVideo(
           imageUrl: imageUrl,
           videoUrl: videoUrl,
+          width: double.infinity,
         ),
         GameClipOverlay(
           gameName: gameName,
