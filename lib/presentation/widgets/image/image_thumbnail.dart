@@ -3,16 +3,16 @@ import 'package:phynd_app/core/utils/app_theme.dart';
 
 class ImageThumbnail extends StatelessWidget {
   final String? imageUrl;
-  final double width;
-  final double height;
+  final double? width;
+  final double? height;
   final BoxFit? fit;
   final BorderRadius borderRadius;
 
   const ImageThumbnail({
     super.key,
     this.imageUrl,
-    this.width = 80,
-    this.height = 80,
+    this.width,
+    this.height,
     this.fit,
     this.borderRadius = const BorderRadius.all(Radius.circular(0)),
   });

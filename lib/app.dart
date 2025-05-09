@@ -5,7 +5,6 @@ import 'package:phynd_app/core/theme/dark_theme.dart';
 import 'package:phynd_app/data/services/user_service.dart';
 import 'package:phynd_app/presentation/bloc/auth/auth_bloc.dart';
 import 'package:phynd_app/presentation/bloc/auth/auth_event.dart';
-import 'package:phynd_app/presentation/layouts/base_layout.dart';
 
 class MyApp extends StatelessWidget {
   final UserService userService;
