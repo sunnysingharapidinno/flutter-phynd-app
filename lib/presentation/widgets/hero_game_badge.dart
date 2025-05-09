@@ -12,12 +12,24 @@ class HeroGameBadge extends StatelessWidget {
   final VoidCallback? onPlayPressed;
   final VoidCallback? onLearnMorePressed;
   final bool showActionBtns;
+  final String? gameTextImg;
+  final String? releaseYear;
+  final String? publisherName;
+  final String? esrb;
+  final int? friendsCount;
+  final int? onlineCount;
 
   const HeroGameBadge({
     super.key,
     this.onPlayPressed,
     this.onLearnMorePressed,
     this.showActionBtns = true,
+    this.gameTextImg,
+    this.releaseYear,
+    this.publisherName,
+    this.esrb,
+    this.friendsCount,
+    this.onlineCount,
   });
 
   @override
@@ -35,7 +47,7 @@ class HeroGameBadge extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         ImageThumbnail(
-          imageUrl:
+          imageUrl: gameTextImg ??
               'https://www.forgottenplayland.com/_next/image?url=%2Fassets%2Flogo.webp&w=640&q=75',
           height: SizeUtils.pxToDp(context, 146),
           fit: BoxFit.contain,
@@ -46,7 +58,7 @@ class HeroGameBadge extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              '2024',
+              releaseYear ?? '2024',
               style: TextStyle(
                 fontSize: FontUtils.pxToSp(context, 28),
                 color: textColor,
@@ -60,7 +72,7 @@ class HeroGameBadge extends StatelessWidget {
             ),
             SizedBox(width: SizeUtils.pxToDp(context, 19)),
             Text(
-              'Top Secret Games',
+              publisherName ?? 'Top Secret Games',
               style: TextStyle(
                 fontSize: FontUtils.pxToSp(context, 28),
                 color: textColor,
@@ -76,7 +88,7 @@ class HeroGameBadge extends StatelessWidget {
             ),
             SizedBox(width: SizeUtils.pxToDp(context, 19)),
             ESRBBadge(
-              imageUrl:
+              imageUrl: esrb ??
                   'https://xstrela-uat.s3.us-east-1.amazonaws.com/ESRB/everyone.png',
             )
           ],
@@ -95,7 +107,7 @@ class HeroGameBadge extends StatelessWidget {
                 ),
                 SizedBox(width: SizeUtils.pxToDp(context, 9)),
                 Text(
-                  '86 Friends Play',
+                  '${friendsCount ?? '86'} Friends Play',
                   style: TextStyle(
                     color: subText2,
                     fontSize: FontUtils.pxToSp(context, 24),
@@ -118,7 +130,7 @@ class HeroGameBadge extends StatelessWidget {
                 ),
                 const SizedBox(width: 9),
                 Text(
-                  '12 Currently Playing',
+                  '${onlineCount ?? '12'} Currently Playing',
                   style: TextStyle(
                     color: subText2,
                     fontSize: FontUtils.pxToSp(context, 19),
