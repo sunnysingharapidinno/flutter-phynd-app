@@ -195,6 +195,7 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                         backgroundColor: textColor,
                         icon: Icons.play_arrow,
                         iconColor: btnText,
+                        iconSize: SizeUtils.pxToDp(context, 43),
                       ),
                     ),
                     SizedBox(width: SizeUtils.pxToDp(context, 32)),
@@ -211,6 +212,7 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                         textColor: textColor,
                         icon: Icons.info_outline,
                         iconColor: textColor,
+                        iconSize: SizeUtils.pxToDp(context, 43),
                       ),
                     ),
                     SizedBox(width: SizeUtils.pxToDp(context, 32)),
@@ -224,6 +226,7 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                         textColor: textColor,
                         icon: Icons.add_circle_outline,
                         iconColor: textColor,
+                        iconSize: SizeUtils.pxToDp(context, 43),
                       ),
                     ),
                     SizedBox(width: SizeUtils.pxToDp(context, 32)),
@@ -233,6 +236,7 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                       radius: SizeUtils.pxToDp(context, 36),
                       child: IconButton(
                         icon: Icon(Icons.favorite, color: textColor),
+                        iconSize: SizeUtils.pxToDp(context, 43),
                         onPressed: () {
                           // Your action
                         },

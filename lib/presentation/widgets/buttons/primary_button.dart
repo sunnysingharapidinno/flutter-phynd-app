@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
+import 'package:phynd_app/core/utils/font_utils.dart';
+import 'package:phynd_app/core/utils/size_utils.dart';
 import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class PrimaryButton extends StatelessWidget {
@@ -14,6 +16,7 @@ class PrimaryButton extends StatelessWidget {
   final bool isTransparent;
   final IconData? icon;
   final double? iconSize;
+  final double? fontSize;
   final Color? iconColor;
 
   const PrimaryButton({
@@ -28,8 +31,9 @@ class PrimaryButton extends StatelessWidget {
     this.textColor,
     this.isTransparent = false,
     this.icon,
-    this.iconSize = 24,
+    this.iconSize,
     this.iconColor,
+    this.fontSize,
   }) : super(key: key);
 
   @override
@@ -37,25 +41,27 @@ class PrimaryButton extends StatelessWidget {
     final theme = Theme.of(context);
     final appTheme = theme.extension<AppTheme>()!;
 
+    final bgColor = backgroundColor ??
+        (isTransparent ? Colors.transparent : appTheme.get('primary'));
+    final fgColor = textColor ?? appTheme.get('text');
+
     return RemoteControlWrapper(
       onTap: onPressed,
-      child: SizedBox(
-        width: isFullWidth ? double.infinity : width,
-        height: height ?? 48,
-        child: ElevatedButton(
-          onPressed: isLoading ? null : onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: backgroundColor ??
-                (isTransparent ? Colors.transparent : appTheme.get('primary')),
-            foregroundColor: textColor ??
-                (isTransparent ? appTheme.get('text') : appTheme.get('text')),
-            side: isTransparent
-                ? BorderSide(color: appTheme.get('text').withOpacity(0.3))
+      child: InkWell(
+        onTap: isLoading ? null : onPressed,
+        borderRadius: SizeUtils.pxToAllBorderRadius(context, radius: 6),
+        child: Container(
+          width: isFullWidth ? double.infinity : width,
+          height: height ?? 48,
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: SizeUtils.pxToAllBorderRadius(context, radius: 6),
+            border: isTransparent
+                ? Border.all(color: fgColor.withOpacity(0.3))
                 : null,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
           ),
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: isLoading
               ? SizedBox(
                   width: 24,
@@ -63,27 +69,33 @@ class PrimaryButton extends StatelessWidget {
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      isTransparent ? appTheme.get('text') : Colors.white,
+                      isTransparent ? fgColor : Colors.white,
                     ),
                   ),
                 )
               : Row(
+                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (icon != null) ...[
                       Icon(
                         icon,
-                        size: iconSize,
-                        color: iconColor,
+                        size: iconSize ?? SizeUtils.pxToDp(context, 40),
+                        color: iconColor ?? fgColor,
                       ),
                       if (text.isNotEmpty) const SizedBox(width: 8),
                     ],
                     if (text.isNotEmpty)
-                      Text(
-                        text,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                      Flexible(
+                        child: Text(
+                          text,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: fontSize ?? FontUtils.pxToSp(context, 25),
+                            fontWeight: FontWeight.w600,
+                            color: fgColor,
+                            fontFamily: 'Rubik',
+                          ),
                         ),
                       ),
                   ],
