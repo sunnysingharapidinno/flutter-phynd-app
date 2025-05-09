@@ -39,23 +39,29 @@ class GameClipSlider extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 16, bottom: 16),
+          padding: const EdgeInsets.only(bottom: 16),
           child: SliderHeading(title),
         ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: List.generate(
-              cards.length,
-              (index) => Padding(
-                padding: EdgeInsets.only(
-                  left: index == 0 ? 16 : spacing,
-                  right: index == cards.length - 1 ? 16 : 0,
-                ),
-                child: SizedBox(
-                  width: cardWidth,
-                  height: cardHeight,
-                  child: cards[index],
+        SizedBox(
+          width: double.infinity,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: List.generate(
+                cards.length,
+                (index) => Padding(
+                  padding: EdgeInsets.only(
+                    left: index == 0
+                        ? 0
+                        : spacing, // No left padding for first card
+                    right: index == cards.length - 1 ? 16 : 0,
+                  ),
+                  child: SizedBox(
+                    width: cardWidth,
+                    height: cardHeight,
+                    child: cards[index],
+                  ),
                 ),
               ),
             ),

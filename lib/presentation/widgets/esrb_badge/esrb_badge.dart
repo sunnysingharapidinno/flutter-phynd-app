@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phynd_app/core/helpers/responsive_helper.dart';
 
 enum ESRBRating {
   everyone,
@@ -19,72 +20,22 @@ class ESRBBadge extends StatelessWidget {
     this.size,
   });
 
-  double _getResponsiveSize(BuildContext context) {
-    if (size != null) return size!;
-
-    double screenWidth = MediaQuery.of(context).size.width;
-    double imageSize = 36.0; // Base size for mobile
-
-    // Responsive sizes for different screen widths
-    if (screenWidth >= 1200) imageSize = 34.0; // HD
-    if (screenWidth >= 2560) imageSize = 64.0; // 2K
-    if (screenWidth >= 3200) imageSize = 72.0; // 3K
-    if (screenWidth >= 3840) imageSize = 80.0; // 4K
-
-    return imageSize;
-  }
-
   @override
   Widget build(BuildContext context) {
-    final imageSize = _getResponsiveSize(context);
+    if (imageUrl == null) return const SizedBox.shrink();
 
-    if (imageUrl == null) {
-      return SizedBox(
-        width: imageSize,
-        height: imageSize,
-        child: Container(
-          color: Colors.grey[800],
-          child: Center(
-            child: Icon(
-              Icons.error_outline,
-              color: Colors.white54,
-              size: imageSize * 0.5,
-            ),
-          ),
-        ),
-      );
-    }
+    double screenWidth = MediaQuery.of(context).size.width;
 
-    return Container(
+    final imageSize =
+        ResponsiveHelper.getResponsiveSize(screenWidth, 34, [80, 72, 64, 34]);
+
+    return SizedBox(
       width: imageSize,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(0),
-        image: DecorationImage(
-          image: NetworkImage(imageUrl!),
-          fit: BoxFit.contain,
-          onError: (exception, stackTrace) {
-            debugPrint('Error loading ESRB image: $exception');
-          },
-        ),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(0),
-        child: Image.network(
-          imageUrl!,
-          fit: BoxFit.contain,
-          errorBuilder: (context, error, stackTrace) {
-            return Container(
-              color: Colors.grey[800],
-              child: Center(
-                child: Icon(
-                  Icons.error_outline,
-                  color: Colors.white54,
-                  size: imageSize * 0.5,
-                ),
-              ),
-            );
-          },
-        ),
+      height: imageSize,
+      child: Image.network(
+        imageUrl!,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
       ),
     );
   }

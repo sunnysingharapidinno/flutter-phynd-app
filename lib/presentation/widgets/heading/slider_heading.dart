@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/helpers/responsive_helper.dart';
+import 'package:phynd_app/core/utils/font_utils.dart';
 
 class SliderHeading extends StatelessWidget {
   final String text;
@@ -15,7 +16,7 @@ class SliderHeading extends StatelessWidget {
 
     // Get responsive font size
     final baseFontSize = baseStyle.fontSize ?? 36.0;
-    final fontSizes = [72.0, 64.0, 48.0, 36.0];
+    final fontSizes = [64.0, 48.0, 32.0, 36.0];
 
     final fontSize = ResponsiveHelper.getResponsiveSize(
       screenWidth,
@@ -26,7 +27,7 @@ class SliderHeading extends StatelessWidget {
     return Text(
       text,
       style: baseStyle.copyWith(
-        fontSize: fontSize,
+        fontSize: FontUtils.pxToSp(context, fontSize),
         fontWeight: FontWeight.bold,
         color: Colors.white,
         fontFamily: 'Exo2',
