@@ -7,6 +7,7 @@ import 'package:phynd_app/core/utils/api_service.dart';
 import 'package:phynd_app/data/models/payload/game_payload_model.dart';
 import 'package:phynd_app/data/models/response/game_list_model.dart';
 import 'package:phynd_app/data/models/response/game_model.dart';
+import 'package:phynd_app/data/models/response/like_follow_model.dart';
 
 class GameService {
   final String baseURL = ApiBaseUrl.flutterAppGameBaseUrl.url;
@@ -69,6 +70,49 @@ class GameService {
       return (count: data['count'] as int, data: games);
     } catch (e) {
       throw Exception('Failed to fetch marketplace games: $e');
+    }
+  }
+
+  Future<void> followGame({
+    required String gameSlug,
+  }) async {
+    try {
+      await api.post(ServerAPIEndpoints.followGame,
+          body: {
+            'game_slug': gameSlug,
+          },
+          auth: true);
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
+    }
+  }
+
+  Future<void> unFollowGame({
+    required String gameSlug,
+  }) async {
+    try {
+      await api.delete(ServerAPIEndpoints.followGame,
+          body: {
+            'game_slug': gameSlug,
+          },
+          auth: true);
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
+    }
+  }
+
+  Future<LikeFollowStatus> checkLikeFollowGameStatus({
+    required String gameSlug,
+  }) async {
+    try {
+      final url =
+          Uri.parse('${ServerAPIEndpoints.checkLikeFollowGame}/$gameSlug');
+      final response = await api.get(url.toString(), auth: true);
+
+      final data = jsonDecode(response.body);
+      return LikeFollowStatus.fromJson(data);
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
     }
   }
 

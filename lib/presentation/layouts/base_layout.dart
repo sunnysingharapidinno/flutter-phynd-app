@@ -30,7 +30,7 @@ class _BaseLayoutState extends State<BaseLayout> {
   bool _hasContentBeenFocused = false;
 
   Timer? _idleTimer;
-  static const _idleDuration = Duration(seconds: 30);
+  static const _idleDuration = Duration(seconds: 3000);
 
   int _currentIdleIndex = 0;
   Timer? _idleScreenRotationTimer;

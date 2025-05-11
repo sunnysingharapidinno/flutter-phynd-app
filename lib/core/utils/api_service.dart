@@ -52,12 +52,14 @@ class ApiService {
 
   Future<http.Response> delete(
     String endpoint, {
+    Map<String, dynamic>? body,
     Map<String, String>? headers,
     bool auth = false,
   }) async {
     final url = Uri.parse('$baseUrl$endpoint');
     final Map<String, String> finalHeaders = await _buildHeaders(headers, auth);
-    return http.delete(url, headers: finalHeaders);
+    return http.delete(url,
+        headers: finalHeaders, body: jsonEncode(body ?? {}));
   }
 
   Future<Map<String, String>> _buildHeaders(
