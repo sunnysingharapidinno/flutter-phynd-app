@@ -41,6 +41,7 @@ dependencies:
   video_player_tizen: ^2.5.4
   html_unescape: ^2.0.0
   flutter_html: ^3.0.0-beta.2
+  fluttertoast: ^8.2.12
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

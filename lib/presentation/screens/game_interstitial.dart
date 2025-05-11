@@ -9,6 +9,7 @@ import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/presentation/widgets/buttons/primary_button.dart';
 import 'package:phynd_app/presentation/widgets/image/image_thumbnail.dart';
 import 'package:phynd_app/presentation/widgets/loader/circular_load.dart';
+import 'package:phynd_app/presentation/widgets/notifier.dart';
 import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class GameInterstitialPage extends StatefulWidget {
@@ -19,16 +20,32 @@ class GameInterstitialPage extends StatefulWidget {
 }
 
 class _GameInterstitialPageState extends State<GameInterstitialPage> {
-  final _gameSlug = 'forgotten-playland--1';
+  final _gameSlug = 'xst-electric-sheep-9a116e1e';
 
   late bool _isLoading = false;
   GameDetails? _gameDetails;
   final GameService _gameService = GameService();
-
+  bool _checkingFollow = false;
+  bool _isFollowed = false;
   @override
   void initState() {
     super.initState();
     _fetchGameDetails();
+    _checkFollowStatus();
+  }
+
+  Future<void> _checkFollowStatus() async {
+    try {
+      setState(() => _checkingFollow = true);
+      final status =
+          await _gameService.checkLikeFollowGameStatus(gameSlug: _gameSlug);
+
+      setState(() => _isFollowed = status.isFollow ?? false);
+    } catch (e) {
+      debugPrint("Error checking follow status: $e");
+    } finally {
+      setState(() => _checkingFollow = false);
+    }
   }
 
   Future<void> _fetchGameDetails() async {
@@ -39,9 +56,29 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
 
       setState(() => _gameDetails = details);
     } catch (e) {
-      print("Error fetching game details: $e");
+      debugPrint("Error fetching game details: $e");
     } finally {
       setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _handleFollowBtn() async {
+    try {
+      setState(() => _checkingFollow = true);
+      if (_isFollowed) {
+        await _gameService.unFollowGame(gameSlug: _gameSlug);
+      } else {
+        await _gameService.followGame(gameSlug: _gameSlug);
+      }
+
+      Notifier.show(context,
+          '${_gameDetails?.gameTitle ?? "Game"} ${_isFollowed ? 'unfollowed' : 'followed'} successfully');
+      await _checkFollowStatus();
+    } catch (e) {
+      Notifier.show(context,
+          'Error ${_isFollowed ? 'unfollowing' : 'following'} ${_gameDetails?.gameTitle ?? "Game"}');
+    } finally {
+      setState(() => _checkingFollow = false);
     }
   }
 
@@ -217,11 +254,14 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                     ),
                     SizedBox(width: SizeUtils.pxToDp(context, 32)),
                     SizedBox(
-                      width: SizeUtils.pxToDp(context, 227),
+                      width: SizeUtils.pxToDp(context, 240),
                       height: SizeUtils.pxToDp(context, 72),
                       child: PrimaryButton(
-                        text: 'Follow',
-                        onPressed: () {},
+                        text: _isFollowed ? 'Following' : 'Follow',
+                        isLoading: _checkingFollow,
+                        onPressed: () {
+                          _handleFollowBtn();
+                        },
                         backgroundColor: buttonBg2,
                         textColor: textColor,
                         icon: Icons.add_circle_outline,

@@ -153,4 +153,6 @@ class ServerAPIEndpoints {
   static const String getQuests = 'api/v1/users/quests';
   static const String getQuestDetails = 'api/v1/users/quests/details';
   static const String getQuestMissions = 'api/v1/users/quest/missions';
+  static const String followGame = 'api/v1/users/game/follow';
+  static const String checkLikeFollowGame = 'api/v1/users/game/status';
 }
