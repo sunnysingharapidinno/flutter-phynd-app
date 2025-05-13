@@ -43,8 +43,8 @@ class AppRoutes {
     Widget wrap(Widget child) => BaseLayout(child: child);
 
     switch (settings.name) {
-      case home:
-        return MaterialPageRoute(builder: (_) => wrap(const HomePage()));
+      // case home:
+      //   return MaterialPageRoute(builder: (_) => wrap(const HomePage()));
       case gameInterstitial:
         return MaterialPageRoute(
             builder: (_) => wrap(const GameInterstitialPage()));
@@ -61,7 +61,7 @@ class AppRoutes {
         }
         return _errorRoute("Missing or invalid gameSlug");
 
-      case playerProfile:
+      case home:
         return MaterialPageRoute(
           builder: (_) => wrap(PlayerProfilePage(userId: args as String?)),
         );

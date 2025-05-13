@@ -7,6 +7,7 @@ class ImageThumbnail extends StatelessWidget {
   final double? height;
   final BoxFit? fit;
   final BorderRadius borderRadius;
+  final bool isNetwork;
 
   const ImageThumbnail({
     super.key,
@@ -15,30 +16,51 @@ class ImageThumbnail extends StatelessWidget {
     this.height,
     this.fit,
     this.borderRadius = const BorderRadius.all(Radius.circular(0)),
+    this.isNetwork = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: borderRadius,
-      child: Image.network(
+    Widget imageWidget;
+
+    if (isNetwork) {
+      imageWidget = Image.network(
         imageUrl ?? '',
         width: width,
         height: height,
         fit: fit,
-        errorBuilder: (context, error, stackTrace) => Container(
-          width: width,
-          height: height,
-          decoration: BoxDecoration(
-            color: Theme.of(context).extension<AppTheme>()!.get('primary'),
-            borderRadius: borderRadius,
-          ),
-          child: const Icon(
-            Icons.broken_image,
-            size: 40,
-            color: Colors.white,
-          ),
-        ),
+        errorBuilder: (context, error, stackTrace) =>
+            _errorPlaceholder(context),
+      );
+    } else {
+      imageWidget = Image.asset(
+        imageUrl ?? '',
+        width: width,
+        height: height,
+        fit: fit,
+        errorBuilder: (context, error, stackTrace) =>
+            _errorPlaceholder(context),
+      );
+    }
+
+    return ClipRRect(
+      borderRadius: borderRadius,
+      child: imageWidget,
+    );
+  }
+
+  Widget _errorPlaceholder(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: Theme.of(context).extension<AppTheme>()!.get('primary'),
+        borderRadius: borderRadius,
+      ),
+      child: const Icon(
+        Icons.broken_image,
+        size: 40,
+        color: Colors.white,
       ),
     );
   }

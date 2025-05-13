@@ -113,4 +113,5 @@ class AppColors {
   static const Color limeGreen = Color(0xFF63F786);
   static const Color shadowBlack = Color(0x001B1D26);
   static const Color midnightGray = Color(0xBF1B1D26);
+  static const Color darkSlateOverlay = Color.fromRGBO(49, 53, 68, 0.3);
 }

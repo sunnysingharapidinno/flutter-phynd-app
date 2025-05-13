@@ -159,4 +159,5 @@ class ServerAPIEndpoints {
   static const String getFavoriteContent = 'api/v1/users/favorite-content';
   static const String followGame = 'api/v1/users/game/follow';
   static const String checkLikeFollowGame = 'api/v1/users/game/status';
+  static const String favoriteSavedGame = 'api/v1/users/favorite-saved-game';
 }

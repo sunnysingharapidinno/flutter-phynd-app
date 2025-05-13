@@ -49,6 +49,8 @@ final darkThemeColors = {
   'onlineIndicator': AppColors.limeGreen,
   'shadowBlack': AppColors.shadowBlack,
   'midnightGray': AppColors.midnightGray,
+  'profileHeaderOverlay': AppColors.darkSlateOverlay,
+  'favorite': AppColors.clipBadge,
 };
 
 final ThemeData darkTheme = ThemeData(extensions: [

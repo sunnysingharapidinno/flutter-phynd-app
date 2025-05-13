@@ -25,26 +25,28 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
   late bool _isLoading = false;
   GameDetails? _gameDetails;
   final GameService _gameService = GameService();
+  bool _checkingFavorite = false;
   bool _checkingFollow = false;
   bool _isFollowed = false;
+  bool _isFavorite = false;
+
   @override
   void initState() {
     super.initState();
     _fetchGameDetails();
-    _checkFollowStatus();
+    _checkFollowFavoriteStatus();
   }
 
-  Future<void> _checkFollowStatus() async {
+  Future<void> _checkFollowFavoriteStatus() async {
     try {
-      setState(() => _checkingFollow = true);
       final status =
           await _gameService.checkLikeFollowGameStatus(gameSlug: _gameSlug);
-
-      setState(() => _isFollowed = status.isFollow ?? false);
+      setState(
+        () => _isFollowed = status.isFollow ?? false,
+      );
+      setState(() => _isFavorite = status.isFavorite ?? false);
     } catch (e) {
       debugPrint("Error checking follow status: $e");
-    } finally {
-      setState(() => _checkingFollow = false);
     }
   }
 
@@ -62,6 +64,30 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
     }
   }
 
+  Future<void> _handleFavoriteBtn() async {
+    try {
+      setState(() => _checkingFavorite = true);
+
+      if (_isFavorite) {
+        await _gameService.removeFavoriteSaveGame(
+            gameSlug: _gameSlug, favorite: true);
+      } else {
+        await _gameService.favoriteSaveGame(
+            gameSlug: _gameSlug, favorite: true);
+      }
+
+      Notifier.show(context,
+          '${_gameDetails?.gameTitle ?? "Game"} is  ${!_isFavorite ? 'added to' : 'removed from'} favorite successfully');
+
+      await _checkFollowFavoriteStatus();
+    } catch (e) {
+      Notifier.show(context,
+          'Error ${!_isFavorite ? 'adding' : 'removing'} favorite ${_gameDetails?.gameTitle ?? "Game"}');
+    } finally {
+      setState(() => _checkingFavorite = false);
+    }
+  }
+
   Future<void> _handleFollowBtn() async {
     try {
       setState(() => _checkingFollow = true);
@@ -73,7 +99,8 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
 
       Notifier.show(context,
           '${_gameDetails?.gameTitle ?? "Game"} ${_isFollowed ? 'unfollowed' : 'followed'} successfully');
-      await _checkFollowStatus();
+
+      await _checkFollowFavoriteStatus();
     } catch (e) {
       Notifier.show(context,
           'Error ${_isFollowed ? 'unfollowing' : 'following'} ${_gameDetails?.gameTitle ?? "Game"}');
@@ -88,6 +115,7 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
     final theme = appTheme.extension<AppTheme>();
     final instParaColor = theme?.get('instPara');
     final textColor = theme?.get('text');
+    final favoriteColor = theme?.get('favorite');
     final buttonBg2 = theme?.get('buttonBg2');
     final btnText = theme?.get('btnText');
     final subText2 = theme?.get('subText2');
@@ -264,7 +292,7 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                         },
                         backgroundColor: buttonBg2,
                         textColor: textColor,
-                        icon: Icons.add_circle_outline,
+                        icon: _isFollowed ? null : Icons.add_circle_outline,
                         iconColor: textColor,
                         iconSize: SizeUtils.pxToDp(context, 43),
                       ),
@@ -274,13 +302,25 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                         child: CircleAvatar(
                       backgroundColor: buttonBg2,
                       radius: SizeUtils.pxToDp(context, 36),
-                      child: IconButton(
-                        icon: Icon(Icons.favorite, color: textColor),
-                        iconSize: SizeUtils.pxToDp(context, 43),
-                        onPressed: () {
-                          // Your action
-                        },
-                      ),
+                      child: _checkingFavorite
+                          ? SizedBox(
+                              width: SizeUtils.pxToDp(context, 24),
+                              height: SizeUtils.pxToDp(context, 24),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(textColor!),
+                              ),
+                            )
+                          : IconButton(
+                              icon: Icon(Icons.favorite,
+                                  color:
+                                      _isFavorite ? favoriteColor : textColor),
+                              iconSize: SizeUtils.pxToDp(context, 43),
+                              onPressed: () {
+                                _handleFavoriteBtn();
+                              },
+                            ),
                     ))
                   ],
                 ),

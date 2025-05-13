@@ -182,7 +182,6 @@ class _HomePageState extends State<HomePage> {
           // Continue Playing Section
           HomeSection(
             heading: 'Continue Playing',
-            height: 220,
             items: (_trendGamesList ?? [])
                 .map((game) => {
                       'slug': game.slug,
@@ -201,7 +200,7 @@ class _HomePageState extends State<HomePage> {
                       'esrbRating': game.esrbRatingImgUrl ?? '',
                     })
                 .toList(),
-            cardBuilder: (context, game) {
+            cardBuilder: (context, game, _, __) {
               return PlayCard(
                 imageUrl: game['imageUrl'] as String,
                 title: game['title'] as String,
@@ -228,7 +227,6 @@ class _HomePageState extends State<HomePage> {
           // Free to Play Section
           HomeSection(
             heading: 'Free to Play',
-            height: 220,
             items: (_featGamesList ?? [])
                 .map((game) => {
                       'slug': game.slug,
@@ -247,7 +245,7 @@ class _HomePageState extends State<HomePage> {
                       'esrbRating': game.esrbRatingImgUrl ?? '',
                     })
                 .toList(),
-            cardBuilder: (context, game) {
+            cardBuilder: (context, game, _, __) {
               return FreePlayCard(
                 isExclusive: true,
                 imageUrl: game['imageUrl'] as String,
@@ -271,7 +269,6 @@ class _HomePageState extends State<HomePage> {
           // Free Trials Section
           HomeSection(
             heading: 'Free Trials',
-            height: 314,
             items: (_newGamesList ?? [])
                 .map((game) => {
                       'slug': game.slug,
@@ -301,7 +298,7 @@ class _HomePageState extends State<HomePage> {
                       'onlineCount': 15,
                     })
                 .toList(),
-            cardBuilder: (context, game) {
+            cardBuilder: (context, game, _, __) {
               return GameTrialsCard(
                 trialDuration: game['trialDuration'] as String,
                 price: game['price'] as String,
@@ -461,9 +458,8 @@ class _HomePageState extends State<HomePage> {
 
     return HomeSection<Map<String, Object>>(
       heading: 'Latest Activity',
-      height: 290,
       items: activityData,
-      cardBuilder: (context, data) {
+      cardBuilder: (context, data, _, __) {
         return GameActivityCard(
           imageUrl: data['thumbnailUrl'] as String,
           title: data['clipTitle'] as String,
@@ -539,9 +535,8 @@ class _HomePageState extends State<HomePage> {
 
     return HomeSection<Map<String, Object>>(
       heading: 'Clips from Friends',
-      height: 290,
       items: clipsData,
-      cardBuilder: (context, data) {
+      cardBuilder: (context, data, _, __) {
         return GameActivityCard(
           imageUrl: data['thumbnailUrl'] as String,
           title: data['clipTitle'] as String,
@@ -634,9 +629,8 @@ class _HomePageState extends State<HomePage> {
 
     return HomeSection<Map<String, Object>>(
       heading: 'Livestreaming Now',
-      height: 290,
       items: livestreamData,
-      cardBuilder: (context, data) {
+      cardBuilder: (context, data, _, __) {
         return GameActivityCard(
           imageUrl: data['thumbnailUrl'] as String,
           title: data['clipTitle'] as String,
@@ -696,9 +690,8 @@ class _HomePageState extends State<HomePage> {
 
     return HomeSection<Map<String, Object>>(
       heading: 'Shorts',
-      height: 340,
       items: shortsData,
-      cardBuilder: (context, data) {
+      cardBuilder: (context, data, _, __) {
         return ShortsCard(
           thumbnailUrl: data['thumbnailUrl'] as String,
           userName: data['userName'] as String,
