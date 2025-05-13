@@ -46,21 +46,24 @@ class _RemoteControlWrapperState extends State<RemoteControlWrapper> {
         ),
       },
       shortcuts: <LogicalKeySet, Intent>{
-        LogicalKeySet(LogicalKeyboardKey.select): ActivateIntent(),
-        LogicalKeySet(LogicalKeyboardKey.enter): ActivateIntent(),
-        LogicalKeySet(LogicalKeyboardKey.gameButtonA): ActivateIntent(),
+        LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
+        LogicalKeySet(LogicalKeyboardKey.enter): const ActivateIntent(),
+        LogicalKeySet(LogicalKeyboardKey.gameButtonA): const ActivateIntent(),
       },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: _isFocused
-                ? Theme.of(context).colorScheme.primary
-                : Colors.transparent,
-            width: 3,
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: _isFocused
+                  ? Theme.of(context).colorScheme.primary
+                  : Colors.transparent,
+              width: 3,
+            ),
           ),
+          child: widget.child,
         ),
-        child: widget.child,
       ),
     );
   }

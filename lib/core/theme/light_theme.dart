@@ -38,6 +38,7 @@ final lightThemeColors = {
   'midnightGray': AppColors.midnightGray,
   'profileHeaderOverlay': AppColors.darkSlateOverlay,
   'favorite': AppColors.clipBadge,
+  'inActiveTab': AppColors.darkSlate,
 };
 
 final ThemeData lightTheme = ThemeData(extensions: [

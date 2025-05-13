@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:phynd_app/core/routing/app_routes.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/core/utils/font_utils.dart';
+import 'package:phynd_app/presentation/widgets/list/follower_publisher_list.dart';
+import 'package:phynd_app/presentation/widgets/list/friend_list.dart';
+import 'package:phynd_app/presentation/widgets/modals/modal.dart';
 import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class Sidebar extends StatelessWidget {
@@ -23,49 +26,42 @@ class Sidebar extends StatelessWidget {
       'title': 'Profile',
       'icon': Icons.person,
       'route': AppRoutes.playerProfile,
-      'isDivider': false,
     },
     {
       'title': 'Home',
       'icon': Icons.home,
       'route': AppRoutes.home,
-      'isDivider': false,
     },
     {
       'title': 'Search',
       'icon': Icons.search,
       'route': AppRoutes.search,
-      'isDivider': false,
     },
     {
       'title': 'Library',
       'icon': Icons.library_add,
       'route': AppRoutes.library,
-      'isDivider': false,
     },
     {
       'title': 'Friends',
       'icon': Icons.people,
-      'route': AppRoutes.friends,
-      'isDivider': false,
+      'modal': FriendList(),
     },
     {
       'title': 'Following',
       'icon': Icons.list,
       'route': AppRoutes.following,
-      'isDivider': false,
+      'modal': FollowerPublisherList(),
     },
     {
       'title': 'Account',
       'icon': Icons.settings,
       'route': AppRoutes.account,
-      'isDivider': false,
     },
     {
       'title': 'Login',
       'icon': Icons.login,
       'route': AppRoutes.login,
-      'isDivider': false,
     },
   ];
 
@@ -93,8 +89,15 @@ class Sidebar extends StatelessWidget {
                 child: ListTile(
                   contentPadding: EdgeInsets.zero,
                   onTap: () {
-                    Navigator.pushReplacementNamed(
-                        context, item['route'] as String);
+                    if (item['modal'] != null) {
+                      SharedModal.show(
+                        context: context,
+                        child: item['modal']!,
+                      );
+                    } else {
+                      Navigator.pushReplacementNamed(
+                          context, item['route'] as String);
+                    }
                   },
                   title: Row(
                     children: [
