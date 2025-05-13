@@ -11,7 +11,9 @@ class PrimaryButton extends StatelessWidget {
   final bool isFullWidth;
   final double? width;
   final double? height;
+  final double? borderRadius;
   final Color? backgroundColor;
+  final Color? borderColor;
   final Color? textColor;
   final bool isTransparent;
   final IconData? icon;
@@ -34,6 +36,8 @@ class PrimaryButton extends StatelessWidget {
     this.iconSize,
     this.iconColor,
     this.fontSize,
+    this.borderColor,
+    this.borderRadius,
   }) : super(key: key);
 
   @override
@@ -49,23 +53,30 @@ class PrimaryButton extends StatelessWidget {
       onTap: onPressed,
       child: InkWell(
         onTap: isLoading ? null : onPressed,
-        borderRadius: SizeUtils.pxToAllBorderRadius(context, radius: 6),
+        borderRadius:
+            SizeUtils.pxToAllBorderRadius(context, radius: borderRadius ?? 12),
         child: Container(
           width: isFullWidth ? double.infinity : width,
-          height: height ?? 48,
+          height: height ?? SizeUtils.pxToDp(context, 48),
           decoration: BoxDecoration(
             color: bgColor,
-            borderRadius: SizeUtils.pxToAllBorderRadius(context, radius: 6),
+            borderRadius: SizeUtils.pxToAllBorderRadius(context,
+                radius: borderRadius ?? 12),
             border: isTransparent
                 ? Border.all(color: fgColor.withOpacity(0.3))
-                : null,
+                : borderColor != null
+                    ? Border.all(
+                        color: borderColor!,
+                        width: 1,
+                      )
+                    : null,
           ),
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: isLoading
               ? SizedBox(
-                  width: 24,
-                  height: 24,
+                  width: SizeUtils.pxToDp(context, 24),
+                  height: SizeUtils.pxToDp(context, 24),
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
                     valueColor: AlwaysStoppedAnimation<Color>(

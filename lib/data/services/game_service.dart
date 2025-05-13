@@ -87,6 +87,45 @@ class GameService {
     }
   }
 
+  Future<void> favoriteSaveGame({
+    required String gameSlug,
+    bool? favorite,
+    bool? saved,
+  }) async {
+    try {
+      final url = Uri.parse('${ServerAPIEndpoints.favoriteSavedGame}/');
+      await api.post(url.toString(),
+          body: {
+            'game_slug': gameSlug,
+            "favorite": favorite,
+            "saved": saved,
+          },
+          auth: true);
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
+    }
+  }
+
+  Future<void> removeFavoriteSaveGame({
+    required String gameSlug,
+    bool? favorite,
+    bool? saved,
+  }) async {
+    try {
+      final url = Uri.parse('${ServerAPIEndpoints.favoriteSavedGame}/');
+
+      await api.delete(url.toString(),
+          body: {
+            'game_slug': gameSlug,
+            "favorite": favorite,
+            "saved": saved,
+          },
+          auth: true);
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
+    }
+  }
+
   Future<void> unFollowGame({
     required String gameSlug,
   }) async {

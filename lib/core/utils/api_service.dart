@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:phynd_app/core/enums/storage.dart';
 import 'package:phynd_app/core/utils/storage_service.dart';
@@ -15,7 +16,14 @@ class ApiService {
   }) async {
     final url = Uri.parse('$baseUrl$endpoint');
     final Map<String, String> finalHeaders = await _buildHeaders(headers, auth);
-    return http.get(url, headers: finalHeaders);
+
+    try {
+      final response = await http.get(url, headers: finalHeaders);
+      _handleResponse(response);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<http.Response> post(
@@ -27,11 +35,17 @@ class ApiService {
     final url = Uri.parse('$baseUrl$endpoint');
     final Map<String, String> finalHeaders = await _buildHeaders(headers, auth);
 
-    return http.post(
-      url,
-      headers: finalHeaders,
-      body: jsonEncode(body ?? {}),
-    );
+    try {
+      final response = await http.post(
+        url,
+        headers: finalHeaders,
+        body: jsonEncode(body ?? {}),
+      );
+      _handleResponse(response);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<http.Response> put(
@@ -43,11 +57,17 @@ class ApiService {
     final url = Uri.parse('$baseUrl$endpoint');
     final Map<String, String> finalHeaders = await _buildHeaders(headers, auth);
 
-    return http.put(
-      url,
-      headers: finalHeaders,
-      body: jsonEncode(body ?? {}),
-    );
+    try {
+      final response = await http.put(
+        url,
+        headers: finalHeaders,
+        body: jsonEncode(body ?? {}),
+      );
+      _handleResponse(response);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<http.Response> delete(
@@ -58,8 +78,37 @@ class ApiService {
   }) async {
     final url = Uri.parse('$baseUrl$endpoint');
     final Map<String, String> finalHeaders = await _buildHeaders(headers, auth);
-    return http.delete(url,
-        headers: finalHeaders, body: jsonEncode(body ?? {}));
+
+    try {
+      final response = await http.delete(
+        url,
+        headers: finalHeaders,
+        body: jsonEncode(body ?? {}),
+      );
+      _handleResponse(response);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  void _handleResponse(http.Response response) {
+    final statusCode = response.statusCode;
+
+    if (statusCode < 200 || statusCode >= 300) {
+      String message = 'Request failed with status: $statusCode';
+
+      try {
+        final body = jsonDecode(response.body);
+        if (body is Map && body['message'] != null) {
+          message = body['message'];
+        }
+      } catch (_) {
+        // ignore JSON parsing errors
+      }
+
+      throw HttpException(message, uri: response.request?.url);
+    }
   }
 
   Future<Map<String, String>> _buildHeaders(
@@ -82,8 +131,6 @@ class ApiService {
   }
 
   Future<String?> _getAuthToken() async {
-    // Implement your token retrieval logic here
-    // For example, using your StorageService
     final storage = StorageService();
     return await storage.get(StorageType.authToken.value);
   }

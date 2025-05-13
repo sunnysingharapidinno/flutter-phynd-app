@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:phynd_app/core/utils/size_utils.dart';
 import 'package:phynd_app/data/services/user_service.dart';
 import 'package:phynd_app/data/models/response/profile_model.dart';
 import 'package:phynd_app/presentation/bloc/auth/auth_bloc.dart';
+import 'package:phynd_app/presentation/widgets/cards/clip_card/game_clip_card.dart';
+import 'package:phynd_app/presentation/widgets/cards/fav_game_card.dart';
 import 'package:phynd_app/presentation/widgets/profile/achievements_section.dart';
-import 'package:phynd_app/presentation/widgets/profile/favorite_games.dart';
 import 'package:phynd_app/presentation/widgets/profile/profile_header.dart';
 import 'package:phynd_app/presentation/widgets/profile/quests_in_progress.dart';
 import 'package:phynd_app/presentation/widgets/profile/recently_uploaded_clips.dart';
+import 'package:phynd_app/presentation/widgets/ratings/ratings.dart';
+import 'package:phynd_app/presentation/widgets/section/home_section.dart';
 
 class PlayerProfilePage extends StatefulWidget {
   final String? userId;
@@ -24,7 +28,64 @@ class PlayerProfilePage extends StatefulWidget {
 class _PlayerProfilePageState extends State<PlayerProfilePage> {
   final UserService _userService = UserService();
   Profile? _userProfile;
-  bool _isLoading = true;
+  bool _isLoading = false;
+
+  final games = [
+    {
+      'number': 1,
+      'name': 'Grit',
+      'image': 'https://xstrela-alpha.s3.amazonaws.com/images/Grit.png',
+    },
+    {
+      'number': 2,
+      'name': 'Brawl Stars',
+      'image': 'https://xstrela-alpha.s3.amazonaws.com/images/BrawlStars.jpeg',
+    },
+    {
+      'number': 3,
+      'name': 'Fortnite',
+      'image':
+          'https://xstrela-alpha.s3.amazonaws.com/images/fortniteHeros.jpeg',
+    },
+    {
+      'number': 4,
+      'name': 'Neon Racers',
+      'image':
+          'https://xstrela-alpha.s3.amazonaws.com/images/NeonCarsPoster.jpeg',
+    },
+    {
+      'number': 5,
+      'name': 'Mario Kart',
+      'image': 'https://xstrela-alpha.s3.amazonaws.com/images/MarioKarts.png',
+    },
+    {
+      'number': 1,
+      'name': 'Grit',
+      'image': 'https://xstrela-alpha.s3.amazonaws.com/images/Grit.png',
+    },
+    {
+      'number': 2,
+      'name': 'Brawl Stars',
+      'image': 'https://xstrela-alpha.s3.amazonaws.com/images/BrawlStars.jpeg',
+    },
+    {
+      'number': 3,
+      'name': 'Fortnite',
+      'image':
+          'https://xstrela-alpha.s3.amazonaws.com/images/fortniteHeros.jpeg',
+    },
+    {
+      'number': 4,
+      'name': 'Neon Racers',
+      'image':
+          'https://xstrela-alpha.s3.amazonaws.com/images/NeonCarsPoster.jpeg',
+    },
+    {
+      'number': 5,
+      'name': 'Mario Kart',
+      'image': 'https://xstrela-alpha.s3.amazonaws.com/images/MarioKarts.png',
+    },
+  ];
 
   @override
   void initState() {
@@ -35,10 +96,12 @@ class _PlayerProfilePageState extends State<PlayerProfilePage> {
   Future<void> _getUserDetails(String? userId) async {
     try {
       if (userId != null) {
+        setState(() {
+          _isLoading = true;
+        });
         final profile = await _userService.getUserById(userId: userId);
         setState(() {
           _userProfile = profile;
-          _isLoading = false;
         });
       } else {
         // Get current user's profile from AuthBloc
@@ -64,92 +127,97 @@ class _PlayerProfilePageState extends State<PlayerProfilePage> {
 
     return _isLoading
         ? const Center(child: CircularProgressIndicator())
-        : Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ProfileHeader(
-                      username: displayName,
-                      isOnline: true,
-                      avatar: _userProfile?.user.dp_url ??
-                          'https://xstrela-alpha.s3.amazonaws.com/images/GamerAvatar1.jpeg',
-                      bannerImage: _userProfile?.user?.cover_image_url ??
-                          'https://xstrela-alpha.s3.amazonaws.com/images/profileCover.png',
-                      currentlyPlaying: 'Marvel Rivals'),
+        : SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ProfileHeader(
+                  username: displayName,
+                  isOnline: true,
+                  avatar: _userProfile?.user.dp_url,
+                  currentlyPlaying: 'Marvel Rivals',
+                  isOtherProfile: widget.userId != null,
+                ),
 
-                  Container(
-                    color: Colors.black,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                SizedBox(height: SizeUtils.pxToDp(context, 48)),
+
+                // Favorite Games Section
+
+                Padding(
+                    padding: EdgeInsets.fromLTRB(SizeUtils.pxToDp(context, 32),
+                        0, SizeUtils.pxToDp(context, 100), 0),
+                    child: Column(
                       children: [
-                        _buildStat('0', 'Followers'),
-                        _buildDivider(),
-                        _buildStat('0', 'Following'),
-                        _buildDivider(),
-                        _buildStat('11', 'PHYND Coins'),
-                        _buildDivider(),
-                        _buildStat('0', 'Badges'),
-                        _buildDivider(),
-                        _buildStat('0', 'Clips'),
+                        HomeSection(
+                          cardSpacing: 60,
+                          cardsPerView: 5,
+                          heading: 'Favorite Games',
+                          sectionHeight: SizeUtils.pxToDp(context, 740),
+                          items: games,
+                          cardBuilder: (context, game, width, index) {
+                            return FavGameCard(
+                              width: double.infinity,
+                              height: 300,
+                              imageUrl: game['image'] as String,
+                              rank: index + 1,
+                              title: game['name'] as String,
+                            );
+                          },
+                        ),
+                        SizedBox(height: SizeUtils.pxToDp(context, 48)),
+                        HomeSection(
+                          cardSpacing: 20,
+                          cardsPerView: 4,
+                          heading: 'Games Your Mutual Friends Are Playing',
+                          items: games,
+                          sectionHeight: SizeUtils.pxToDp(context, 570),
+                          cardBuilder: (context, game, width, index) {
+                            return GameClipCard(
+                              imageUrl:
+                                  'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
+                              videoUrl:
+                                  'https://cdn.pixabay.com/video/2025/04/29/275633_large.mp4',
+                              gameName: 'Heroes of Mavia',
+                              badge: const Ratings(rating: 1.0),
+                              esrbImageUrl:
+                                  'https://xstrela-uat.s3.us-east-1.amazonaws.com/ESRB/everyone.png',
+                            );
+                          },
+                        ),
+                        SizedBox(height: SizeUtils.pxToDp(context, 48)),
+                        HomeSection(
+                          cardSpacing: 20,
+                          cardsPerView: 4,
+                          heading: 'Games Your Friends Are Playing',
+                          sectionHeight: SizeUtils.pxToDp(context, 470),
+                          items: games,
+                          cardBuilder: (context, game, width, index) {
+                            return GameClipCard(
+                              imageUrl:
+                                  'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
+                              videoUrl:
+                                  'https://cdn.pixabay.com/video/2025/04/29/275633_large.mp4',
+                              gameName: 'Heroes of Mavia',
+                              badge: const Ratings(rating: 1.0),
+                              esrbImageUrl:
+                                  'https://xstrela-uat.s3.us-east-1.amazonaws.com/ESRB/everyone.png',
+                            );
+                          },
+                        ),
+                        SizedBox(height: SizeUtils.pxToDp(context, 80)),
                       ],
-                    ),
-                  ),
+                    )),
 
-                  // Favorite Games Section
-                  const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: SizedBox(
-                      height: 300,
-                      child: FavoriteGames(),
-                    ),
-                  ),
+                // Recently Uploaded Clips Section
+                // const RecentlyUploadedClips(),
 
-                  // Recently Uploaded Clips Section
-                  const RecentlyUploadedClips(),
+                // Achievements Section
+                // const AchievementsSection(),
 
-                  // Achievements Section
-                  const AchievementsSection(),
-
-                  // Quests in Progress Section
-                  const QuestsInProgress(),
-                ],
-              ),
+                // Quests in Progress Section
+                // const QuestsInProgress(),
+              ],
             ),
           );
-  }
-
-  Widget _buildStat(String value, String label) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 14,
-            color: Colors.white,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDivider() {
-    return Container(
-      height: 24,
-      width: 1,
-      color: Colors.deepPurple,
-    );
   }
 }
