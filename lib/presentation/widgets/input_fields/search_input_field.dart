@@ -6,6 +6,9 @@ class SearchInputField extends StatelessWidget {
   final Function(String)? onChanged;
   final String hintText;
   final bool isLoading;
+  final bool showMic;
+  final double borderRadius;
+  final Color? backgroundColor;
 
   const SearchInputField({
     super.key,
@@ -13,11 +16,19 @@ class SearchInputField extends StatelessWidget {
     this.onChanged,
     this.hintText = 'Search...',
     this.isLoading = false,
+    this.showMic = true,
+    this.borderRadius = 12.0,
+    this.backgroundColor,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).extension<AppTheme>()!;
+    final bgColor = backgroundColor ?? theme.get('cardBg');
+    final border = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(borderRadius),
+      borderSide: BorderSide(color: theme.get('borderColor')),
+    );
 
     return TextField(
       controller: controller,
@@ -50,26 +61,20 @@ class SearchInputField extends StatelessWidget {
                   ),
                 ),
               ),
-            SizedBox(width: 12),
-            Icon(
-              Icons.mic,
-              color: theme.get('textSecondary'),
-            ),
-            SizedBox(width: 12),
+            if (isLoading && showMic) const SizedBox(width: 12),
+            if (showMic)
+              Icon(
+                Icons.mic,
+                color: theme.get('textSecondary'),
+              ),
+            if (showMic) const SizedBox(width: 12),
           ],
         ),
         filled: true,
-        fillColor: theme.get('cardBg'),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: theme.get('borderColor')),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: theme.get('borderColor')),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+        fillColor: bgColor,
+        border: border,
+        enabledBorder: border,
+        focusedBorder: border.copyWith(
           borderSide: BorderSide(color: theme.get('primary')),
         ),
       ),

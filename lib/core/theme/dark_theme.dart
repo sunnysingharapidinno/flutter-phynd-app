@@ -51,6 +51,7 @@ final darkThemeColors = {
   'midnightGray': AppColors.midnightGray,
   'profileHeaderOverlay': AppColors.darkSlateOverlay,
   'favorite': AppColors.clipBadge,
+  'inActiveTab': AppColors.darkSlate,
 };
 
 final ThemeData darkTheme = ThemeData(extensions: [

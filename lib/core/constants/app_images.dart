@@ -5,4 +5,5 @@ class AppImages {
   static const String peopleLogoGreyBg = 'assets/logo/people_grey_bg.png';
   static const String profileAvatarGradient =
       'assets/logo/profile_logo_pink_gradient.png';
+  static const String profileAvatarRed = 'assets/logo/profile_logo_red.png';
 }

@@ -15,6 +15,7 @@ class AppColors {
   static const Color offWhite = Color(0xFFF7F7F7);
   static const Color graniteGray = Color(0xFF292D32);
   static const Color platinum = Color(0xFFE0E0E0);
+  static const Color darkSlate = Color(0xFF454B60);
   static const Color darkSlateGray = Color(0xFF313544);
 
   // Purples

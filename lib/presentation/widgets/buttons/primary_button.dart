@@ -26,7 +26,7 @@ class PrimaryButton extends StatelessWidget {
     required this.text,
     this.onPressed,
     this.isLoading = false,
-    this.isFullWidth = true,
+    this.isFullWidth = false,
     this.width,
     this.height,
     this.backgroundColor,
@@ -56,12 +56,14 @@ class PrimaryButton extends StatelessWidget {
         borderRadius:
             SizeUtils.pxToAllBorderRadius(context, radius: borderRadius ?? 12),
         child: Container(
-          width: isFullWidth ? double.infinity : width,
-          height: height ?? SizeUtils.pxToDp(context, 48),
+          width: isFullWidth
+              ? double.infinity
+              : SizeUtils.pxToDp(context, width ?? 350),
+          height: SizeUtils.pxToDp(context, height ?? 48),
           decoration: BoxDecoration(
             color: bgColor,
             borderRadius: SizeUtils.pxToAllBorderRadius(context,
-                radius: borderRadius ?? 12),
+                radius: borderRadius ?? 0),
             border: isTransparent
                 ? Border.all(color: fgColor.withOpacity(0.3))
                 : borderColor != null
