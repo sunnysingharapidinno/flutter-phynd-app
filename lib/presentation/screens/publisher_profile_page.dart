@@ -7,6 +7,7 @@ import 'package:phynd_app/presentation/widgets/buttons/primary_button.dart';
 import 'package:phynd_app/presentation/widgets/cards/clip_card/game_clip_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/event_offer_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/genre_cards.dart';
+import 'package:phynd_app/presentation/widgets/cards/video_cards.dart';
 import 'package:phynd_app/presentation/widgets/image/image_thumbnail.dart';
 import 'package:phynd_app/presentation/widgets/profile/suggested_quest.dart';
 import 'package:phynd_app/presentation/widgets/publisher/publisher_header.dart';
@@ -415,19 +416,21 @@ class PublisherProfilePage extends StatelessWidget {
                   cardSpacing: 20,
                   cardsPerView: 4,
                   heading: 'Latest Updates',
-                  sectionHeight: SizeUtils.pxToDp(context, 520),
+                  sectionHeight: 420,
                   items: games,
                   cardBuilder: (context, game, width, index) {
-                    return GameClipCard(
-                      imageUrl:
-                          'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
-                      videoUrl:
-                          'https://cdn.pixabay.com/video/2025/04/29/275633_large.mp4',
-                      gameName: 'Heroes of Mavia',
-                      badge: const Ratings(rating: 1.0),
-                      esrbImageUrl:
-                          'https://xstrela-uat.s3.us-east-1.amazonaws.com/ESRB/everyone.png',
-                    );
+                    return VideoCard(
+                        thumbnailUrl:
+                            'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/publisher-page-tv-screen/game-genre-action/metal-slug-awakening/metal-slug-awakening.jpg',
+                        height: 227,
+                        timeAgo: '12 hours ago',
+                        duration: '12:00',
+                        title: 'New Trailer for Marvel Rivals',
+                        publisherAvatarUrl:
+                            'https://xstrela-alpha.s3.us-east-1.amazonaws.com/images/temp/DP_IMAGE_URL/PNG/8005f2f1-6d23-4521-84d4-91f16ac200ca',
+                        isVerified: true,
+                        publisherName: 'NetEase Studios',
+                        friendsWatchedCount: 10);
                   },
                 ),
 
