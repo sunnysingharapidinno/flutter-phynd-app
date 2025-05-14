@@ -393,6 +393,9 @@ class PublisherProfilePage extends StatelessWidget {
                   heading: 'Featured Games',
                   sectionHeight: 300,
                   items: games,
+                  onEndOfScroll: () {
+                    print('onEndOfScroll');
+                  },
                   cardBuilder: (context, game, width, index) {
                     return GameClipCard(
                       imageUrl:

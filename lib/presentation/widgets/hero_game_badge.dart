@@ -51,6 +51,7 @@ class HeroGameBadge extends StatelessWidget {
               'https://www.forgottenplayland.com/_next/image?url=%2Fassets%2Flogo.webp&w=640&q=75',
           height: 146,
           fit: BoxFit.contain,
+          width: 380,
         ),
         SizedBox(height: SizeUtils.pxToDp(context, 3)),
         // Info Row

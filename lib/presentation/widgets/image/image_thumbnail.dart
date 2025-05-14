@@ -22,44 +22,49 @@ class ImageThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget imageWidget;
+    // Set default size if not provided
+    final double resolvedWidth = SizeUtils.pxToDp(context, width ?? 100);
+    final double resolvedHeight = SizeUtils.pxToDp(context, height ?? 100);
+    final double resolvedRadius = SizeUtils.pxToDp(context, borderRadius);
 
-    if (isNetwork) {
-      imageWidget = Image.network(
-        imageUrl ?? '',
-        width: SizeUtils.pxToDp(context, width),
-        height: SizeUtils.pxToDp(context, height),
-        fit: fit,
-        errorBuilder: (context, error, stackTrace) =>
-            _errorPlaceholder(context),
-      );
-    } else {
-      imageWidget = Image.asset(
-        imageUrl ?? '',
-        width: SizeUtils.pxToDp(context, width),
-        height: SizeUtils.pxToDp(context, height),
-        fit: fit,
-        errorBuilder: (context, error, stackTrace) =>
-            _errorPlaceholder(context),
-      );
-    }
+    // Determine image widget
+    final Widget imageWidget = isNetwork
+        ? Image.network(
+            imageUrl ?? '',
+            width: resolvedWidth,
+            height: resolvedHeight,
+            fit: fit ?? BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => _errorPlaceholder(
+                context, resolvedWidth, resolvedHeight, resolvedRadius),
+          )
+        : Image.asset(
+            imageUrl ?? '',
+            width: resolvedWidth,
+            height: resolvedHeight,
+            fit: fit ?? BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => _errorPlaceholder(
+                context, resolvedWidth, resolvedHeight, resolvedRadius),
+          );
 
     return ClipRRect(
-      borderRadius:
-          BorderRadius.circular(SizeUtils.pxToDp(context, borderRadius)),
+      borderRadius: BorderRadius.circular(resolvedRadius),
       child: imageWidget,
     );
   }
 
-  Widget _errorPlaceholder(BuildContext context) {
+  Widget _errorPlaceholder(
+      BuildContext context, double width, double height, double radius) {
+    final themeColor =
+        Theme.of(context).extension<AppTheme>()?.get('primary') ?? Colors.grey;
+
     return Container(
-      width: SizeUtils.pxToDp(context, width),
-      height: SizeUtils.pxToDp(context, height),
+      width: width,
+      height: height,
       decoration: BoxDecoration(
-        color: Theme.of(context).extension<AppTheme>()!.get('primary'),
-        borderRadius:
-            BorderRadius.circular(SizeUtils.pxToDp(context, borderRadius)),
+        color: themeColor,
+        borderRadius: BorderRadius.circular(radius),
       ),
+      alignment: Alignment.center,
       child: const Icon(
         Icons.broken_image,
         size: 40,

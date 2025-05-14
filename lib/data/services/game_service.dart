@@ -11,6 +11,7 @@ import 'package:phynd_app/data/models/response/like_follow_model.dart';
 import 'package:phynd_app/data/models/payload/game_payload_model.dart';
 import 'package:phynd_app/data/models/response/game_list_model.dart';
 import 'package:phynd_app/data/models/response/game_model.dart';
+import 'package:phynd_app/data/models/response/like_follow_model.dart';
 
 class GameService {
   final String baseURL = ApiBaseUrl.flutterAppGameBaseUrl.url;
