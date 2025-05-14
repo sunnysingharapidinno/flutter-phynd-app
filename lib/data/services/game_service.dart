@@ -5,10 +5,7 @@ import 'package:phynd_app/core/constants/base_server_endpoints.dart';
 import 'package:phynd_app/core/enums/api_env.dart';
 import 'package:phynd_app/core/utils/api_service.dart';
 import 'package:phynd_app/data/models/payload/game_payload_model.dart';
-import 'package:phynd_app/data/models/response/game_list_model.dart';
-import 'package:phynd_app/data/models/response/game_model.dart';
-import 'package:phynd_app/data/models/response/like_follow_model.dart';
-import 'package:phynd_app/data/models/payload/game_payload_model.dart';
+import 'package:phynd_app/data/models/response/favorite_content_model.dart';
 import 'package:phynd_app/data/models/response/game_list_model.dart';
 import 'package:phynd_app/data/models/response/game_model.dart';
 import 'package:phynd_app/data/models/response/like_follow_model.dart';
@@ -241,7 +238,7 @@ class GameService {
 
   Future<
       ({
-        List<FavoriteGame> data,
+        List<FavoriteContent> data,
         int total,
         int totalPage,
         int currentPage,
@@ -260,11 +257,11 @@ class GameService {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
-        final List<FavoriteGame> games = (responseData['data'] as List)
-            .map((gameJson) => FavoriteGame.fromJson(gameJson))
+        final List<FavoriteContent> content = (responseData['data'] as List)
+            .map((contentJson) => FavoriteContent.fromJson(contentJson))
             .toList();
         return (
-          data: games,
+          data: content,
           total: responseData['total'] as int,
           totalPage: responseData['total_page'] as int,
           currentPage: responseData['current_page'] as int,
@@ -272,16 +269,16 @@ class GameService {
         );
       } else {
         throw Exception(
-            'Failed to fetch favorite games: ${response.statusCode}');
+            'Failed to fetch saved content: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Error fetching favorite games: $e');
+      throw Exception('Error fetching saved content: $e');
     }
   }
 
   Future<
       ({
-        List<FavoriteGame> data,
+        List<FavoriteContent> data,
         int total,
         int totalPage,
         int currentPage,
@@ -300,11 +297,11 @@ class GameService {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
-        final List<FavoriteGame> games = (responseData['data'] as List)
-            .map((gameJson) => FavoriteGame.fromJson(gameJson))
+        final List<FavoriteContent> content = (responseData['data'] as List)
+            .map((contentJson) => FavoriteContent.fromJson(contentJson))
             .toList();
         return (
-          data: games,
+          data: content,
           total: responseData['total'] as int,
           totalPage: responseData['total_page'] as int,
           currentPage: responseData['current_page'] as int,
@@ -312,10 +309,10 @@ class GameService {
         );
       } else {
         throw Exception(
-            'Failed to fetch favorite games: ${response.statusCode}');
+            'Failed to fetch favorite content: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Error fetching favorite games: $e');
+      throw Exception('Error fetching favorite content: $e');
     }
   }
 }

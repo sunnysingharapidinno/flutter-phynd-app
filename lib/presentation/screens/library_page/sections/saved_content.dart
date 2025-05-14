@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:phynd_app/core/enums/media_type.dart';
+import 'package:phynd_app/core/utils/size_utils.dart';
+import 'package:phynd_app/data/models/response/favorite_content_model.dart';
 import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/presentation/widgets/cards/clip_card/game_clip_card.dart';
-import 'package:phynd_app/presentation/widgets/cards/skeleton_loaders/game_clip_card_skeleton.dart';
-import 'package:phynd_app/presentation/widgets/game_clip_slider/game_clip_slider.dart';
-import 'package:phynd_app/presentation/widgets/heading/slider_heading.dart';
-import 'package:phynd_app/presentation/widgets/ratings/ratings.dart';
 import 'package:phynd_app/presentation/widgets/common/no_data_widget.dart';
+import 'package:phynd_app/presentation/widgets/heading/slider_heading.dart';
+import 'package:phynd_app/presentation/widgets/section/home_section.dart';
 
 class SavedContentSection extends StatefulWidget {
   const SavedContentSection({
@@ -18,44 +19,49 @@ class SavedContentSection extends StatefulWidget {
 
 class _FavoriteGameState extends State<SavedContentSection> {
   final GameService _gameService = GameService();
-  List<GameClipCard> _cards = [];
+  List<FavoriteContent> _content = [];
   bool _isLoading = true;
-  final _currentPage = 1;
+  int _currentPage = 1;
   static const int _pageSize = 10;
+  bool _hasMoreContent = true;
 
   @override
   void initState() {
     super.initState();
-    _fetchCards();
+    _fetchContent();
   }
 
-  Future<void> _fetchCards() async {
+  Future<void> _fetchContent() async {
+    if (_currentPage > 1 && (!_hasMoreContent || _isLoading)) return;
+
     try {
+      setState(() {
+        _isLoading = true;
+      });
+
       final result = await _gameService.getSavedContent(
         page: _currentPage,
         limit: _pageSize,
       );
 
-      print('Result: $result');
-
       setState(() {
-        _cards = result.data
-            .map((game) => GameClipCard(
-                  imageUrl: game.imageUrl ?? game.image ?? '',
-                  videoUrl: game.trailerUrl ?? '',
-                  gameName: game.title ?? '',
-                  badge: Ratings(rating: game.rating ?? 0.0),
-                  esrbImageUrl: game.esrbRatingUrl ?? '',
-                ))
-            .toList();
+        if (result.data.isEmpty) {
+          _hasMoreContent = false;
+        } else {
+          if (_currentPage == 1) {
+            _content = result.data;
+          } else {
+            _content.addAll(result.data);
+          }
+          _hasMoreContent = _currentPage < result.totalPage;
+        }
         _isLoading = false;
       });
     } catch (e) {
       setState(() {
         _isLoading = false;
       });
-      // Handle error appropriately
-      print('Error fetching games: $e');
+      debugPrint('Error fetching content: $e');
     }
   }
 
@@ -64,14 +70,8 @@ class _FavoriteGameState extends State<SavedContentSection> {
     return Column(
       children: [
         if (_isLoading)
-          GameClipSlider(
-            title: 'Saved Content',
-            cards: List.generate(
-              3,
-              (index) => const GameClipCardSkeleton(),
-            ),
-          )
-        else if (_cards.isEmpty)
+          const Text('Loading...')
+        else if (_content.isEmpty)
           const Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,9 +86,30 @@ class _FavoriteGameState extends State<SavedContentSection> {
             ],
           )
         else
-          GameClipSlider(
-            title: 'Saved Content',
-            cards: _cards,
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: SizeUtils.pxToDp(context, 56),
+              vertical: SizeUtils.pxToDp(context, 0),
+            ),
+            child: HomeSection(
+              cardSpacing: 20,
+              cardsPerView: 4,
+              heading: 'Saved Content',
+              items: _content,
+              cardBuilder: (context, content, width, index) {
+                return GameClipCard(
+                  imageUrl: content.url,
+                  videoUrl:
+                      content.mediaType == MediaType.video ? content.url : '',
+                  gameName: content.title ?? '',
+                  esrbImageUrl: '',
+                );
+              },
+              onEndOfScroll: () {
+                _fetchContent();
+                _currentPage++;
+              },
+            ),
           ),
         const SizedBox(height: 32),
       ],
