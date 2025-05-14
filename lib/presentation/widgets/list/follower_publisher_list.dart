@@ -124,7 +124,7 @@ class _FollowerPublisherListState extends State<FollowerPublisherList>
       itemCount: games.length,
       itemBuilder: (context, index) {
         return FriendListItem(
-          gamerTag: "Hello Check",
+          gamerTag: games[index],
           isRequest: isRequest,
           isGame: true,
         );

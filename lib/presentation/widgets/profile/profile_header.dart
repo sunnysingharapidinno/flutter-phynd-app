@@ -48,11 +48,10 @@ class ProfileHeader extends StatelessWidget {
                 : CrossAxisAlignment.center,
             children: [
               ImageThumbnail(
-                borderRadius:
-                    BorderRadius.circular(SizeUtils.pxToDp(context, 250)),
+                borderRadius: 250,
                 imageUrl: avatar ?? AppImages.profileAvatarGradient,
-                width: SizeUtils.pxToDp(context, 250),
-                height: SizeUtils.pxToDp(context, 250),
+                width: 250,
+                height: 250,
                 fit: BoxFit.cover,
                 isNetwork: avatar != null,
               ),
@@ -185,13 +184,14 @@ class ProfileHeader extends StatelessWidget {
                     borderColor: textColor,
                     borderRadius: 16,
                     backgroundColor: backgroundColor,
+                    fontSize: 36,
                   ),
                 ),
                 SizedBox(width: SizeUtils.pxToDp(context, 80)),
                 ImageThumbnail(
                   imageUrl: AppImages.peopleLogoGreyBg,
-                  height: SizeUtils.pxToDp(context, 75),
-                  width: SizeUtils.pxToDp(context, 75),
+                  height: 75,
+                  width: 75,
                   fit: BoxFit.contain,
                   isNetwork: false,
                 ),

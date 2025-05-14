@@ -7,10 +7,10 @@ import 'package:phynd_app/core/utils/size_utils.dart';
 import 'package:phynd_app/data/models/response/game_model.dart';
 import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/presentation/widgets/buttons/primary_button.dart';
+import 'package:phynd_app/presentation/widgets/buttons/primary_icon_button.dart';
 import 'package:phynd_app/presentation/widgets/image/image_thumbnail.dart';
 import 'package:phynd_app/presentation/widgets/loader/circular_load.dart';
 import 'package:phynd_app/presentation/widgets/notifier.dart';
-import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class GameInterstitialPage extends StatefulWidget {
   const GameInterstitialPage({super.key});
@@ -250,78 +250,61 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                 // Action Buttons Row
                 Row(
                   children: [
-                    SizedBox(
-                      width: SizeUtils.pxToDp(context, 199),
-                      height: SizeUtils.pxToDp(context, 72),
-                      child: PrimaryButton(
-                        text: 'Play',
-                        textColor: btnText,
-                        onPressed: () {},
-                        backgroundColor: textColor,
-                        icon: Icons.play_arrow,
-                        iconColor: btnText,
-                        iconSize: SizeUtils.pxToDp(context, 43),
-                      ),
+                    PrimaryButton(
+                      text: 'Play',
+                      height: 72,
+                      width: 199,
+                      textColor: btnText,
+                      onPressed: () {},
+                      backgroundColor: textColor,
+                      icon: Icons.play_arrow,
+                      iconColor: btnText,
+                      iconSize: 43,
+                      borderRadius: 6,
                     ),
                     SizedBox(width: SizeUtils.pxToDp(context, 32)),
-                    SizedBox(
-                      width: SizeUtils.pxToDp(context, 264),
-                      height: SizeUtils.pxToDp(context, 72),
-                      child: PrimaryButton(
-                        text: 'More Info',
-                        onPressed: () {
-                          Navigator.pushNamed(context, AppRoutes.game,
-                              arguments: _gameSlug);
-                        },
-                        backgroundColor: buttonBg2,
-                        textColor: textColor,
-                        icon: Icons.info_outline,
-                        iconColor: textColor,
-                        iconSize: SizeUtils.pxToDp(context, 43),
-                      ),
-                    ),
-                    SizedBox(width: SizeUtils.pxToDp(context, 32)),
-                    SizedBox(
-                      width: SizeUtils.pxToDp(context, 240),
-                      height: SizeUtils.pxToDp(context, 72),
-                      child: PrimaryButton(
-                        text: _isFollowed ? 'Following' : 'Follow',
-                        isLoading: _checkingFollow,
-                        onPressed: () {
-                          _handleFollowBtn();
-                        },
-                        backgroundColor: buttonBg2,
-                        textColor: textColor,
-                        icon: _isFollowed ? null : Icons.add_circle_outline,
-                        iconColor: textColor,
-                        iconSize: SizeUtils.pxToDp(context, 43),
-                      ),
-                    ),
-                    SizedBox(width: SizeUtils.pxToDp(context, 32)),
-                    RemoteControlWrapper(
-                        child: CircleAvatar(
+                    PrimaryButton(
+                      text: 'More Info',
+                      width: 264,
+                      height: 72,
+                      borderRadius: 6,
+                      onPressed: () {
+                        Navigator.pushNamed(context, AppRoutes.game,
+                            arguments: _gameSlug);
+                      },
                       backgroundColor: buttonBg2,
-                      radius: SizeUtils.pxToDp(context, 36),
-                      child: _checkingFavorite
-                          ? SizedBox(
-                              width: SizeUtils.pxToDp(context, 24),
-                              height: SizeUtils.pxToDp(context, 24),
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(textColor!),
-                              ),
-                            )
-                          : IconButton(
-                              icon: Icon(Icons.favorite,
-                                  color:
-                                      _isFavorite ? favoriteColor : textColor),
-                              iconSize: SizeUtils.pxToDp(context, 43),
-                              onPressed: () {
-                                _handleFavoriteBtn();
-                              },
-                            ),
-                    ))
+                      textColor: textColor,
+                      icon: Icons.info_outline,
+                      iconColor: textColor,
+                      iconSize: 43,
+                    ),
+                    SizedBox(width: SizeUtils.pxToDp(context, 32)),
+                    PrimaryButton(
+                      width: 240,
+                      height: 72,
+                      borderRadius: 6,
+                      text: _isFollowed ? 'Following' : 'Follow',
+                      isLoading: _checkingFollow,
+                      onPressed: () {
+                        _handleFollowBtn();
+                      },
+                      backgroundColor: buttonBg2,
+                      textColor: textColor,
+                      icon: _isFollowed ? null : Icons.add_circle_outline,
+                      iconColor: textColor,
+                      iconSize: 43,
+                    ),
+                    SizedBox(width: SizeUtils.pxToDp(context, 32)),
+                    PrimaryIconButton(
+                      buttonColor: buttonBg2!,
+                      icon: Icons.favorite,
+                      iconColor: _isFavorite ? favoriteColor : textColor,
+                      isLoading: _checkingFavorite,
+                      iconSize: 43,
+                      onPressed: () {
+                        _handleFavoriteBtn();
+                      },
+                    ),
                   ],
                 ),
 
@@ -333,10 +316,12 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Image.asset(
-                          AppImages.peopleLogoGreyBg,
-                          height: SizeUtils.pxToDp(context, 90),
+                        ImageThumbnail(
+                          imageUrl: AppImages.peopleLogoGreyBg,
+                          width: 90,
+                          height: 90,
                           fit: BoxFit.contain,
+                          isNetwork: false,
                         ),
                         SizedBox(width: SizeUtils.pxToDp(context, 19)),
                         Text(
