@@ -392,20 +392,21 @@ class PublisherProfilePage extends StatelessWidget {
                   cardSpacing: 20,
                   cardsPerView: 4,
                   heading: 'Featured Games',
-                  sectionHeight: 300,
+                  sectionHeight: 350,
                   items: games,
                   onEndOfScroll: () {
                     print('onEndOfScroll');
                   },
                   cardBuilder: (context, game, width, index) {
                     return GameClipCard(
-                      imageUrl:
+                      height: 233,
+                      thumbnailUrl:
                           'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
                       videoUrl:
                           'https://cdn.pixabay.com/video/2025/04/29/275633_large.mp4',
-                      gameName: 'Heroes of Mavia',
-                      badge: const Ratings(rating: 1.0),
-                      esrbImageUrl:
+                      title: 'Heroes of Mavia',
+                      rating: 5,
+                      esrbRatingImageUrl:
                           'https://xstrela-uat.s3.us-east-1.amazonaws.com/ESRB/everyone.png',
                     );
                   },
@@ -475,8 +476,6 @@ class PublisherProfilePage extends StatelessWidget {
                     );
                   },
                 ),
-
-                SizedBox(height: SizeUtils.pxToDp(context, 48)),
               ],
             ),
           ),
