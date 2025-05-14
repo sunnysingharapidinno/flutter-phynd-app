@@ -6,6 +6,7 @@ import 'package:phynd_app/data/models/response/profile_model.dart';
 import 'package:phynd_app/presentation/bloc/auth/auth_bloc.dart';
 import 'package:phynd_app/presentation/widgets/cards/clip_card/game_clip_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/fav_game_card.dart';
+import 'package:phynd_app/presentation/widgets/cards/friends_play_card.dart';
 import 'package:phynd_app/presentation/widgets/profile/achievements_section.dart';
 import 'package:phynd_app/presentation/widgets/profile/profile_header.dart';
 import 'package:phynd_app/presentation/widgets/profile/quests_in_progress.dart';
@@ -168,18 +169,22 @@ class _PlayerProfilePageState extends State<PlayerProfilePage> {
                         HomeSection(
                           cardSpacing: 20,
                           cardsPerView: 4,
-                          heading: 'Games Your Mutual Friends Are Playing',
+                          heading: 'Continue Playing',
+                          sectionHeight: 350,
                           items: games,
-                          sectionHeight: SizeUtils.pxToDp(context, 570),
+                          onEndOfScroll: () {
+                            print('onEndOfScroll');
+                          },
                           cardBuilder: (context, game, width, index) {
                             return GameClipCard(
-                              imageUrl:
+                              height: 233,
+                              thumbnailUrl:
                                   'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
                               videoUrl:
                                   'https://cdn.pixabay.com/video/2025/04/29/275633_large.mp4',
-                              gameName: 'Heroes of Mavia',
-                              badge: const Ratings(rating: 1.0),
-                              esrbImageUrl:
+                              title: 'Heroes of Mavia',
+                              rating: 5,
+                              esrbRatingImageUrl:
                                   'https://xstrela-uat.s3.us-east-1.amazonaws.com/ESRB/everyone.png',
                             );
                           },
@@ -189,22 +194,22 @@ class _PlayerProfilePageState extends State<PlayerProfilePage> {
                           cardSpacing: 20,
                           cardsPerView: 4,
                           heading: 'Games Your Friends Are Playing',
-                          sectionHeight: SizeUtils.pxToDp(context, 470),
+                          sectionHeight: 470,
                           items: games,
                           cardBuilder: (context, game, width, index) {
-                            return GameClipCard(
-                              imageUrl:
+                            return FriendsPlayCard(
+                              gameImageUrl:
                                   'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
-                              videoUrl:
-                                  'https://cdn.pixabay.com/video/2025/04/29/275633_large.mp4',
-                              gameName: 'Heroes of Mavia',
-                              badge: const Ratings(rating: 1.0),
-                              esrbImageUrl:
+                              gameTitle: 'Heroes of Mavia',
+                              esrbRatingImageUrl:
                                   'https://xstrela-uat.s3.us-east-1.amazonaws.com/ESRB/everyone.png',
+                              userAvatarUrl:
+                                  'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
+                              userGamertag: 'Coolgamer123',
+                              currentlyPlayingGame: 'Brawl Stars',
                             );
                           },
                         ),
-                        SizedBox(height: SizeUtils.pxToDp(context, 80)),
                       ],
                     )),
 

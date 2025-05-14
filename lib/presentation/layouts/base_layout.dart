@@ -298,7 +298,11 @@ class _BaseLayoutState extends State<BaseLayout> {
                                   },
                                   child: Container(
                                     color: Colors.transparent,
-                                    child: widget.child,
+                                    child: Padding(
+                                      padding: EdgeInsets.fromLTRB(0, 0, 0,
+                                          SizeUtils.pxToDp(context, 48)),
+                                      child: widget.child,
+                                    ),
                                   ),
                                 ),
                               ),
