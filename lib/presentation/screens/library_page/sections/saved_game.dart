@@ -97,11 +97,12 @@ class _FavoriteGameState extends State<SavedGameSection> {
               items: _games,
               cardBuilder: (context, game, width, index) {
                 return GameClipCard(
-                  imageUrl: game.imageUrl ?? game.image ?? '',
+                  thumbnailUrl: game.imageUrl ?? game.image ?? '',
                   videoUrl: game.trailerUrl ?? '',
-                  gameName: game.title ?? '',
-                  badge: Ratings(rating: game.rating ?? 0.0),
-                  esrbImageUrl: game.esrbRatingUrl ?? '',
+                  title: game.title ?? '',
+                  rating: game.rating ?? 0.0,
+                  maxRating: 5,
+                  esrbRatingImageUrl: game.esrbRatingUrl ?? '',
                 );
               },
               onEndOfScroll: () {

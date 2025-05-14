@@ -98,11 +98,13 @@ class _FavoriteContentState extends State<FavoriteContentSection> {
               items: _content,
               cardBuilder: (context, content, width, index) {
                 return GameClipCard(
-                  imageUrl: content.url,
+                  thumbnailUrl: content.url,
                   videoUrl:
                       content.mediaType == MediaType.video ? content.url : '',
-                  gameName: content.title ?? '',
-                  esrbImageUrl: '',
+                  title: content.title ?? '',
+                  rating: 0.0,
+                  maxRating: 5,
+                  esrbRatingImageUrl: '',
                 );
               },
               onEndOfScroll: () {
