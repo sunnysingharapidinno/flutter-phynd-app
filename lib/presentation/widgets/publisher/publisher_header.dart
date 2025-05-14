@@ -1,183 +1,193 @@
 import 'package:flutter/material.dart';
+import 'package:phynd_app/core/utils/app_theme.dart';
+import 'package:phynd_app/core/utils/font_utils.dart';
+import 'package:phynd_app/core/utils/size_utils.dart';
+import 'package:phynd_app/presentation/widgets/image/image_thumbnail.dart';
+import 'package:phynd_app/presentation/widgets/verify_badge/verify_badge.dart';
 
-class PublisherHeader extends StatelessWidget {
-  final String name;
-  final String profileImageUrl;
-  final String bannerImageUrl;
+class PublisherHeader extends StatefulWidget {
+  final List<String> backgroundImages;
+  final String publisherCircularLogoUrl;
+  final String publisherNameArtUrl;
+  final String followersCount;
+  final String gamesCount;
+  final String upcomingEventsCount;
   final bool isVerified;
-  final Map<String, int> stats;
 
   const PublisherHeader({
     super.key,
-    required this.name,
-    required this.profileImageUrl,
-    required this.bannerImageUrl,
+    required this.backgroundImages,
+    required this.publisherCircularLogoUrl,
+    required this.publisherNameArtUrl,
+    required this.followersCount,
+    required this.gamesCount,
+    required this.upcomingEventsCount,
     this.isVerified = false,
-    required this.stats,
   });
 
   @override
-  Widget build(BuildContext context) {
-    // Get screen height to set banner height to 80% of viewport
-    final screenHeight = MediaQuery.of(context).size.height;
-    final bannerHeight = screenHeight * 0.8;
+  State<PublisherHeader> createState() => _PublisherHeaderState();
+}
 
-    return Container(
-      height: bannerHeight,
-      width: double.infinity,
+class _PublisherHeaderState extends State<PublisherHeader> {
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController.addListener(() {
+      if (_pageController.page?.round() != _currentPage) {
+        setState(() {
+          _currentPage = _pageController.page!.round();
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context).extension<AppTheme>();
+    final bgColor = theme?.get('bgColor');
+    final dotActiveColor = theme?.get('primary');
+    final dotInactiveColor = Colors.grey[600] ?? Colors.grey;
+
+    return SizedBox(
+      height: SizeUtils.pxToDp(context, 565),
       child: Stack(
         children: [
-          // Banner image with gradient overlay
-          Container(
-            height: bannerHeight,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(bannerImageUrl),
+          PageView.builder(
+            controller: _pageController,
+            itemCount: widget.backgroundImages.length,
+            itemBuilder: (context, index) {
+              return ImageThumbnail(
+                imageUrl: widget.backgroundImages[index],
+                width: double.infinity,
+                height: double.infinity,
                 fit: BoxFit.cover,
-              ),
-            ),
-            // Gradient overlay from bottom to middle
-            foregroundDecoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.transparent,
-                  Colors.transparent,
-                  Colors.black.withOpacity(0.7),
-                  Colors.black.withOpacity(0.9),
-                ],
-                stops: const [0.0, 0.5, 0.75, 1.0],
-              ),
-            ),
+              );
+            },
           ),
-
-          // Dot indicators - positioned in banner
-          Positioned(
-            top: 85,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                for (int i = 0; i < 5; i++)
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 5),
-                    width: 10,
-                    height: 10,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: i == 1 ? const Color(0xFF4CD964) : Colors.white,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-
-          // "me to U" text on top left
-          Positioned(
-            left: 35,
-            top: 30,
-            child: const Text(
-              "me to U",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-
-          // Profile picture with publisher name and verification badge
-          Positioned(
-            left: 30,
-            top: bannerHeight * 0.45, // Position at about 45% from the top
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Profile image
-                Container(
-                  width: 120,
-                  height: 120,
-                  margin: const EdgeInsets.only(right: 20),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 3),
-                  ),
-                  child: ClipOval(
-                    child: Image.network(
-                      profileImageUrl,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+          Positioned.fill(
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerRight,
+                  end: Alignment.centerLeft,
+                  colors: [
+                    Color.fromRGBO(27, 29, 38, 0.00),
+                    Color.fromRGBO(27, 29, 38, 0.80),
+                    Color.fromRGBO(27, 29, 38, 0.90),
+                  ],
+                  stops: [0.31, 0.55, 0.80],
                 ),
-
-                // Publisher name with verification badge
-                Column(
+              ),
+            ),
+          ),
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color.fromRGBO(27, 29, 38, 0.00),
+                    bgColor!,
+                  ],
+                  stops: [0.5532, 0.9836],
+                ),
+              ),
+            ),
+          ),
+          if (widget.backgroundImages.length > 1)
+            Positioned(
+              top: SizeUtils.pxToDp(context, 20),
+              left: 0,
+              right: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List<Widget>.generate(widget.backgroundImages.length,
+                    (index) {
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 150),
+                    margin: EdgeInsets.symmetric(
+                        horizontal: SizeUtils.pxToDp(context, 4)),
+                    height: SizeUtils.pxToDp(context, 8),
+                    width: _currentPage == index
+                        ? SizeUtils.pxToDp(context, 24)
+                        : SizeUtils.pxToDp(context, 8),
+                    decoration: BoxDecoration(
+                      color: _currentPage == index
+                          ? dotActiveColor
+                          : dotInactiveColor,
+                      borderRadius:
+                          BorderRadius.circular(SizeUtils.pxToDp(context, 4)),
+                    ),
+                  );
+                }),
+              ),
+            ),
+          Positioned(
+            bottom: SizeUtils.pxToDp(context, 64),
+            left: SizeUtils.pxToDp(context, 56),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        ShaderMask(
-                          shaderCallback: (Rect bounds) {
-                            return const LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [Color(0xFFA2E0E0), Color(0xFF6CACDF)],
-                            ).createShader(bounds);
-                          },
-                          child: Text(
-                            name,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize:
-                                  64, // Slightly smaller to fit with profile pic
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.5,
-                              height: 1.0,
-                            ),
-                          ),
-                        ),
-                        if (isVerified)
-                          Container(
-                            margin: const EdgeInsets.only(left: 12),
-                            width: 45,
-                            height: 45,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Color(0xFF9C5BBF),
-                            ),
-                            child: const Icon(
-                              Icons.check,
-                              color: Colors.white,
-                              size: 28,
-                            ),
-                          ),
-                      ],
+                    ImageThumbnail(
+                      imageUrl: widget.publisherCircularLogoUrl,
+                      height: 200,
+                      width: 200,
+                      fit: BoxFit.cover,
+                      borderRadius: 200,
+                    ),
+                    SizedBox(width: SizeUtils.pxToDp(context, 8)),
+                    if (widget.isVerified)
+                      VerifiedBadge(
+                        size: SizeUtils.pxToDp(context, 42),
+                      ),
+                    SizedBox(width: SizeUtils.pxToDp(context, 24)),
+                    ImageThumbnail(
+                      imageUrl: widget.publisherNameArtUrl,
+                      height: 207,
+                      width: 383,
+                      fit: BoxFit.contain,
+                    ),
+                  ],
+                ),
+                SizedBox(height: SizeUtils.pxToDp(context, 40)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    _buildStatItem(
+                      context,
+                      widget.followersCount,
+                      'Followers',
+                    ),
+                    _buildDivider(context),
+                    _buildStatItem(
+                      context,
+                      widget.gamesCount,
+                      'Games',
+                    ),
+                    _buildDivider(context),
+                    _buildStatItem(
+                      context,
+                      widget.upcomingEventsCount,
+                      'Upcoming Events',
                     ),
                   ],
                 ),
               ],
-            ),
-          ),
-
-          // Stats row at the bottom of the banner
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Container(
-              height: 100,
-              width: double.infinity,
-              color:
-                  Colors.black.withOpacity(0.3), // Semi-transparent background
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: _buildStatsItems(),
-              ),
             ),
           ),
         ],
@@ -185,60 +195,50 @@ class PublisherHeader extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildStatsItems() {
-    List<Widget> items = [];
-
-    final statsList = [
-      {'key': 'Followers', 'value': stats['followers'] ?? 0},
-      {'key': 'Games', 'value': stats['games'] ?? 0},
-      {'key': 'Clans', 'value': stats['clans'] ?? 0},
-      {'key': 'Trials', 'value': stats['trials'] ?? 0},
-      {'key': 'Drops', 'value': stats['drops'] ?? 0},
-      {'key': 'Upcoming Events', 'value': stats['upcomingEvents'] ?? 0},
-      {'key': 'Quests', 'value': stats['quests'] ?? 0},
-    ];
-
-    for (int i = 0; i < statsList.length; i++) {
-      // Add divider before all items except the first one
-      if (i > 0) {
-        items.add(
-          Container(
-            width: 1,
-            height: 50,
-            color: const Color(0xFF5A4EBB),
+  Widget _buildStatItem(
+    BuildContext context,
+    String value,
+    String label,
+  ) {
+    final theme = Theme.of(context).extension<AppTheme>();
+    final textColor = theme?.get('text');
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: SizeUtils.pxToDp(context, 12)),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            value,
+            style: TextStyle(
+              color: textColor,
+              fontSize: FontUtils.pxToSp(context, 22),
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Exo2',
+            ),
           ),
-        );
-      }
-
-      // Add the stat item
-      items.add(
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                statsList[i]['value'].toString(),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                statsList[i]['key'].toString(),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
-            ],
+          Text(
+            label,
+            style: TextStyle(
+              color: textColor,
+              fontSize: FontUtils.pxToSp(context, 20),
+            ),
           ),
-        ),
-      );
-    }
+        ],
+      ),
+    );
+  }
 
-    return items;
+  Widget _buildDivider(
+    BuildContext context,
+  ) {
+    final theme = Theme.of(context).extension<AppTheme>();
+    final dividerColor = theme?.get('primary');
+    return Container(
+      height: SizeUtils.pxToDp(context, 48),
+      width: 1,
+      color: dividerColor,
+      margin: EdgeInsets.symmetric(horizontal: SizeUtils.pxToDp(context, 24)),
+    );
   }
 }

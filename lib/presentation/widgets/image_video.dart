@@ -9,12 +9,12 @@ class ImageVideo extends StatefulWidget {
   final double? height;
 
   const ImageVideo({
-    Key? key,
+    super.key,
     required this.imageUrl,
     required this.videoUrl,
     this.width,
     this.height,
-  }) : super(key: key);
+  });
 
   @override
   State<ImageVideo> createState() => _ImageVideoState();

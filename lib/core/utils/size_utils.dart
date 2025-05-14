@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class SizeUtils {
   /// Converts a px value to logical pixels based on the current devicePixelRatio
-  static double pxToDp(BuildContext context, double px) {
+  static double pxToDp(BuildContext context, double? px) {
     final dpr = MediaQuery.of(context).devicePixelRatio;
-    return px / dpr;
+    return px != null ? px / dpr : 0;
   }
 
   /// Converts a list of pixel values to logical pixels (e.g. EdgeInsets)

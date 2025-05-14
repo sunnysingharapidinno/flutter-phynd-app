@@ -40,10 +40,8 @@ class FavGameCard extends StatelessWidget {
                 borderRadius: SizeUtils.pxToAllBorderRadius(context, radius: 8),
                 child: ImageThumbnail(
                   imageUrl: imageUrl,
-                  height: SizeUtils.pxToDp(
-                      context, height ?? 300), // Adjust as needed
-                  width: SizeUtils.pxToDp(
-                      context, width ?? 260), // Adjust as needed
+                  height: height ?? 300, // Adjust as needed
+                  width: width ?? 260, // Adjust as needed
                   fit: BoxFit.cover,
                 ),
               ),

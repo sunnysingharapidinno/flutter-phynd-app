@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
+import 'package:phynd_app/core/utils/size_utils.dart';
 
 class ImageThumbnail extends StatelessWidget {
   final String? imageUrl;
   final double? width;
   final double? height;
   final BoxFit? fit;
-  final BorderRadius borderRadius;
+  final double borderRadius;
   final bool isNetwork;
 
   const ImageThumbnail({
@@ -15,7 +16,7 @@ class ImageThumbnail extends StatelessWidget {
     this.width,
     this.height,
     this.fit,
-    this.borderRadius = const BorderRadius.all(Radius.circular(0)),
+    this.borderRadius = 0,
     this.isNetwork = true,
   });
 
@@ -26,8 +27,8 @@ class ImageThumbnail extends StatelessWidget {
     if (isNetwork) {
       imageWidget = Image.network(
         imageUrl ?? '',
-        width: width,
-        height: height,
+        width: SizeUtils.pxToDp(context, width),
+        height: SizeUtils.pxToDp(context, height),
         fit: fit,
         errorBuilder: (context, error, stackTrace) =>
             _errorPlaceholder(context),
@@ -35,8 +36,8 @@ class ImageThumbnail extends StatelessWidget {
     } else {
       imageWidget = Image.asset(
         imageUrl ?? '',
-        width: width,
-        height: height,
+        width: SizeUtils.pxToDp(context, width),
+        height: SizeUtils.pxToDp(context, height),
         fit: fit,
         errorBuilder: (context, error, stackTrace) =>
             _errorPlaceholder(context),
@@ -44,18 +45,20 @@ class ImageThumbnail extends StatelessWidget {
     }
 
     return ClipRRect(
-      borderRadius: borderRadius,
+      borderRadius:
+          BorderRadius.circular(SizeUtils.pxToDp(context, borderRadius)),
       child: imageWidget,
     );
   }
 
   Widget _errorPlaceholder(BuildContext context) {
     return Container(
-      width: width,
-      height: height,
+      width: SizeUtils.pxToDp(context, width),
+      height: SizeUtils.pxToDp(context, height),
       decoration: BoxDecoration(
         color: Theme.of(context).extension<AppTheme>()!.get('primary'),
-        borderRadius: borderRadius,
+        borderRadius:
+            BorderRadius.circular(SizeUtils.pxToDp(context, borderRadius)),
       ),
       child: const Icon(
         Icons.broken_image,

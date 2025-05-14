@@ -44,8 +44,8 @@ class ESRBBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return ImageThumbnail(
       imageUrl: imageUrl,
-      height: height ?? SizeUtils.pxToDp(context, 48),
-      width: width ?? SizeUtils.pxToDp(context, 45),
+      height: height ?? 48,
+      width: width ?? 45,
       fit: fit,
     );
   }

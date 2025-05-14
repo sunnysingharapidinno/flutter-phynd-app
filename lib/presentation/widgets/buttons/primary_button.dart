@@ -22,7 +22,7 @@ class PrimaryButton extends StatelessWidget {
   final Color? iconColor;
 
   const PrimaryButton({
-    Key? key,
+    super.key,
     required this.text,
     this.onPressed,
     this.isLoading = false,
@@ -38,7 +38,7 @@ class PrimaryButton extends StatelessWidget {
     this.fontSize,
     this.borderColor,
     this.borderRadius,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +93,7 @@ class PrimaryButton extends StatelessWidget {
                     if (icon != null) ...[
                       Icon(
                         icon,
-                        size: iconSize ?? SizeUtils.pxToDp(context, 40),
+                        size: SizeUtils.pxToDp(context, iconSize ?? 40),
                         color: iconColor ?? fgColor,
                       ),
                       if (text.isNotEmpty) const SizedBox(width: 8),
@@ -104,7 +104,7 @@ class PrimaryButton extends StatelessWidget {
                           text,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: fontSize ?? FontUtils.pxToSp(context, 25),
+                            fontSize: FontUtils.pxToSp(context, fontSize ?? 25),
                             fontWeight: FontWeight.w600,
                             color: fgColor,
                             fontFamily: 'Rubik',

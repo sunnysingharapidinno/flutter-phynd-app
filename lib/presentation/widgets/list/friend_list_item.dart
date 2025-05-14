@@ -74,15 +74,14 @@ class _FriendListItemState extends State<FriendListItem>
     final activeTabColor = theme?.get('subText2');
 
     final double horizontalPadding = SizeUtils.pxToDp(context, 40);
-    final double topPadding = SizeUtils.pxToDp(context, 16);
-    final double bottomPadding = SizeUtils.pxToDp(context, 16);
+    final double verticalPadding = SizeUtils.pxToDp(context, 16);
 
     return RemoteControlWrapper(
       onTap: _toggleRequestOptions,
       child: Container(
         color: cardColor,
-        padding: EdgeInsets.fromLTRB(
-            horizontalPadding, topPadding, horizontalPadding, bottomPadding),
+        padding: EdgeInsets.fromLTRB(horizontalPadding, verticalPadding,
+            horizontalPadding, verticalPadding),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -93,19 +92,17 @@ class _FriendListItemState extends State<FriendListItem>
                     ? ImageThumbnail(
                         imageUrl:
                             'https://xstrela-dev.s3.amazonaws.com/launchpadDisplayImages/images/117145585264201714558527519.png',
-                        height: SizeUtils.pxToDp(context, 100),
-                        width: SizeUtils.pxToDp(context, 157),
+                        height: 100,
+                        width: 157,
                         fit: BoxFit.cover,
-                        borderRadius:
-                            SizeUtils.pxToAllBorderRadius(context, radius: 6),
+                        borderRadius: 6,
                       )
                     : ImageThumbnail(
                         imageUrl: AppImages.profileAvatarRed,
-                        height: SizeUtils.pxToDp(context, 80),
-                        width: SizeUtils.pxToDp(context, 80),
+                        height: 80,
+                        width: 80,
                         fit: BoxFit.contain,
-                        borderRadius:
-                            SizeUtils.pxToAllBorderRadius(context, radius: 200),
+                        borderRadius: 200,
                         isNetwork: false,
                       ),
                 SizedBox(width: SizeUtils.pxToDp(context, 20)),
@@ -136,7 +133,7 @@ class _FriendListItemState extends State<FriendListItem>
                               child: PrimaryButton(
                                 text: 'Accept',
                                 height: 54,
-                                fontSize: FontUtils.pxToSp(context, 28),
+                                fontSize: 28,
                                 textColor: bgColor,
                                 backgroundColor: activeTabColor,
                                 onPressed: widget.onAccept,
@@ -147,7 +144,7 @@ class _FriendListItemState extends State<FriendListItem>
                               child: PrimaryButton(
                                 text: 'Deny',
                                 height: 54,
-                                fontSize: FontUtils.pxToSp(context, 28),
+                                fontSize: 28,
                                 textColor: bgColor,
                                 backgroundColor: activeTabColor,
                                 onPressed: widget.onDecline,

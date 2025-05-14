@@ -124,7 +124,7 @@ class _FriendListState extends State<FriendList>
       itemCount: friends.length,
       itemBuilder: (context, index) {
         return FriendListItem(
-          gamerTag: "Hello Check",
+          gamerTag: friends[index],
           isRequest: isRequest,
         );
       },
