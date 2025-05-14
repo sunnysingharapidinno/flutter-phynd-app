@@ -6,16 +6,16 @@ import 'package:phynd_app/presentation/widgets/common/no_data_widget.dart';
 import 'package:phynd_app/presentation/widgets/heading/slider_heading.dart';
 import 'package:phynd_app/presentation/widgets/section/home_section.dart';
 
-class FavoriteGameSection extends StatefulWidget {
-  const FavoriteGameSection({
+class RecentHistorySection extends StatefulWidget {
+  const RecentHistorySection({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<FavoriteGameSection> createState() => _FavoriteGameState();
+  State<RecentHistorySection> createState() => _RecentHistorySectionState();
 }
 
-class _FavoriteGameState extends State<FavoriteGameSection> {
+class _RecentHistorySectionState extends State<RecentHistorySection> {
   final GameService _gameService = GameService();
   bool _isLoading = true;
   int _currentPage = 1;
@@ -74,11 +74,11 @@ class _FavoriteGameState extends State<FavoriteGameSection> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SliderHeading('Favorited Games'),
+              SliderHeading('Recent History'),
               SizedBox(height: 16),
               NoDataWidget(
-                title: 'No Favorited Games',
-                subtitle: 'You haven\'t favorited any content yet',
+                title: 'No Recent History',
+                subtitle: 'You haven\'t watched any content yet',
                 icon: Icons.bookmark_border,
               ),
             ],
@@ -92,7 +92,7 @@ class _FavoriteGameState extends State<FavoriteGameSection> {
             child: HomeSection(
               cardSpacing: 20,
               cardsPerView: 4,
-              heading: 'Favorited Games',
+              heading: 'Recent History',
               items: _games,
               cardBuilder: (context, game, width, index) {
                 return GameClipCard(

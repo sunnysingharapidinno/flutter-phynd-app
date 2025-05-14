@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:phynd_app/core/enums/media_type.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
 import 'package:phynd_app/data/models/response/favorite_content_model.dart';
 import 'package:phynd_app/data/services/game_service.dart';
-import 'package:phynd_app/presentation/widgets/cards/clip_card/game_clip_card.dart';
+import 'package:phynd_app/presentation/widgets/cards/video_cards.dart';
 import 'package:phynd_app/presentation/widgets/common/no_data_widget.dart';
 import 'package:phynd_app/presentation/widgets/heading/slider_heading.dart';
 import 'package:phynd_app/presentation/widgets/section/home_section.dart';
 
-class FavoriteContentSection extends StatefulWidget {
-  const FavoriteContentSection({
+class SavedVideoSection extends StatefulWidget {
+  const SavedVideoSection({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<FavoriteContentSection> createState() => _FavoriteContentState();
+  State<SavedVideoSection> createState() => _SavedVideoState();
 }
 
-class _FavoriteContentState extends State<FavoriteContentSection> {
+class _SavedVideoState extends State<SavedVideoSection> {
   final GameService _gameService = GameService();
   List<FavoriteContent> _content = [];
   bool _isLoading = true;
@@ -39,7 +38,7 @@ class _FavoriteContentState extends State<FavoriteContentSection> {
         _isLoading = true;
       });
 
-      final result = await _gameService.getFavoriteContent(
+      final result = await _gameService.getSavedContent(
         page: _currentPage,
         limit: _pageSize,
       );
@@ -76,11 +75,11 @@ class _FavoriteContentState extends State<FavoriteContentSection> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SliderHeading('Favorited Content'),
+              SliderHeading('Saved Videos'),
               SizedBox(height: 16),
               NoDataWidget(
-                title: 'No Favorited Content',
-                subtitle: 'You haven\'t favorited any content yet',
+                title: 'No Saved Videos',
+                subtitle: 'You haven\'t saved any videos yet',
                 icon: Icons.bookmark_border,
               ),
             ],
@@ -94,17 +93,20 @@ class _FavoriteContentState extends State<FavoriteContentSection> {
             child: HomeSection(
               cardSpacing: 20,
               cardsPerView: 4,
-              heading: 'Favorited Content',
+              heading: 'Saved Videos',
               items: _content,
               cardBuilder: (context, content, width, index) {
-                return GameClipCard(
+                return VideoCard(
                   thumbnailUrl: content.url,
-                  videoUrl:
-                      content.mediaType == MediaType.video ? content.url : '',
+                  height: 250,
+                  timeAgo: content.createdAt.toString(),
+                  duration: '12:00',
                   title: content.title ?? '',
-                  rating: 0.0,
-                  maxRating: 5,
-                  esrbRatingImageUrl: '',
+                  publisherAvatarUrl:
+                      'https://xstrela-alpha.s3.us-east-1.amazonaws.com/images/temp/DP_IMAGE_URL/PNG/8005f2f1-6d23-4521-84d4-91f16ac200ca',
+                  isVerified: true,
+                  publisherName: 'NetEase Studios',
+                  friendsWatchedCount: 10,
                 );
               },
               onEndOfScroll: () {
