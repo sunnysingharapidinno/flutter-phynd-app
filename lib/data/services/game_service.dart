@@ -246,10 +246,11 @@ class GameService {
       })> getSavedContent({
     int page = 1,
     int limit = 10,
+    String? contentType,
   }) async {
     try {
       final url = Uri.parse(
-          '${ServerAPIEndpoints.getSavedContent}?page=$page&limit=$limit');
+          '${ServerAPIEndpoints.getSavedContent}?page=$page&limit=$limit&content_type=$contentType');
       final response = await api.get(
         url.toString(),
         auth: true,
@@ -286,10 +287,11 @@ class GameService {
       })> getFavoriteContent({
     int page = 1,
     int limit = 10,
+    String? contentType,
   }) async {
     try {
       final url = Uri.parse(
-          '${ServerAPIEndpoints.getFavoriteContent}?page=$page&limit=$limit');
+          '${ServerAPIEndpoints.getFavoriteContent}?page=$page&limit=$limit&content_type=$contentType');
       final response = await api.get(
         url.toString(),
         auth: true,

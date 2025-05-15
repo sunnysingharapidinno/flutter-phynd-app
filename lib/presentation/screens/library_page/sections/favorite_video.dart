@@ -41,6 +41,7 @@ class _FavoriteVideoState extends State<FavoriteVideoSection> {
       final result = await _gameService.getFavoriteContent(
         page: _currentPage,
         limit: _pageSize,
+        contentType: 'VIDEO',
       );
 
       setState(() {

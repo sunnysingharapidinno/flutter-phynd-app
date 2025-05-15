@@ -39,9 +39,7 @@ class _SavedVideoState extends State<SavedVideoSection> {
       });
 
       final result = await _gameService.getSavedContent(
-        page: _currentPage,
-        limit: _pageSize,
-      );
+          page: _currentPage, limit: _pageSize, contentType: 'VIDEO');
 
       setState(() {
         if (result.data.isEmpty) {
