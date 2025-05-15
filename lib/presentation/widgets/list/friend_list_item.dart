@@ -3,24 +3,31 @@ import 'package:phynd_app/core/constants/app_images.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/core/utils/font_utils.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
+import 'package:phynd_app/data/services/user_service.dart';
 import 'package:phynd_app/presentation/widgets/buttons/primary_button.dart';
 import 'package:phynd_app/presentation/widgets/image/image_thumbnail.dart';
 import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class FriendListItem extends StatefulWidget {
   final String gamerTag;
+  final String? profileImage;
   final bool isRequest;
-  final VoidCallback? onAccept;
-  final VoidCallback? onDecline;
+  final String? requestId;
+  final Future<void> Function()? onAccept;
+  final Future<void> Function()? onDecline;
+  final VoidCallback? onActionCompleted;
   final bool? isGame;
 
   const FriendListItem({
     super.key,
     required this.gamerTag,
+    this.profileImage,
     this.isRequest = false,
     this.onAccept,
     this.onDecline,
+    this.onActionCompleted,
     this.isGame = false,
+    this.requestId,
   });
 
   @override
@@ -32,6 +39,9 @@ class _FriendListItemState extends State<FriendListItem>
   bool _requestOptionOpen = false;
   late AnimationController _controller;
   late Animation<double> _animation;
+
+  bool _isAccepting = false;
+  bool _isDeclining = false;
 
   @override
   void initState() {
@@ -98,12 +108,17 @@ class _FriendListItemState extends State<FriendListItem>
                         borderRadius: 6,
                       )
                     : ImageThumbnail(
-                        imageUrl: AppImages.profileAvatarRed,
+                        imageUrl:
+                            widget.profileImage ?? AppImages.profileAvatarRed,
                         height: 80,
                         width: 80,
-                        fit: BoxFit.contain,
+                        fit: widget.profileImage == null
+                            ? BoxFit.contain
+                            : BoxFit.cover,
                         borderRadius: 200,
-                        isNetwork: false,
+                        isNetwork: widget.profileImage == null ? false : true,
+                        borderColor: textColor,
+                        borderWidth: 1,
                       ),
                 SizedBox(width: SizeUtils.pxToDp(context, 20)),
                 Expanded(
@@ -136,7 +151,25 @@ class _FriendListItemState extends State<FriendListItem>
                                 fontSize: 28,
                                 textColor: bgColor,
                                 backgroundColor: activeTabColor,
-                                onPressed: widget.onAccept,
+                                isLoading: _isAccepting,
+                                onPressed: () async {
+                                  try {
+                                    setState(() {
+                                      _isAccepting = true;
+                                    });
+                                    await widget.onAccept?.call();
+                                  } catch (e) {
+                                    throw Exception(
+                                        'Error accepting request: $e');
+                                  } finally {
+                                    if (mounted) {
+                                      setState(() {
+                                        _isAccepting = false;
+                                      });
+                                    }
+                                    widget.onActionCompleted?.call();
+                                  }
+                                },
                               ),
                             ),
                             SizedBox(width: SizeUtils.pxToDp(context, 16)),
@@ -146,8 +179,26 @@ class _FriendListItemState extends State<FriendListItem>
                                 height: 54,
                                 fontSize: 28,
                                 textColor: bgColor,
+                                isLoading: _isDeclining,
                                 backgroundColor: activeTabColor,
-                                onPressed: widget.onDecline,
+                                onPressed: () async {
+                                  try {
+                                    setState(() {
+                                      _isDeclining = true;
+                                    });
+                                    await widget.onDecline?.call();
+                                  } catch (e) {
+                                    throw Exception(
+                                        'Error declining request: $e');
+                                  } finally {
+                                    if (mounted) {
+                                      setState(() {
+                                        _isDeclining = false;
+                                      });
+                                    }
+                                    widget.onActionCompleted?.call();
+                                  }
+                                },
                               ),
                             ),
                           ],

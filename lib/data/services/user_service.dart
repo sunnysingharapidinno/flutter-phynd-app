@@ -1,10 +1,13 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:phynd_app/config/app_config.dart';
 import 'package:phynd_app/core/constants/base_server_endpoints.dart';
 import 'package:phynd_app/core/enums/api_env.dart';
 import 'package:phynd_app/core/enums/storage.dart';
 import 'package:phynd_app/core/utils/api_service.dart';
 import 'package:phynd_app/core/utils/storage_service.dart';
+import 'package:phynd_app/data/models/response/friend_item.dart';
 import 'package:phynd_app/data/models/response/profile_model.dart';
 import 'package:phynd_app/data/models/response/terms_and_conditions_model.dart';
 
@@ -35,9 +38,6 @@ class UserService {
         body: {'email': userId, 'password': password},
       );
 
-      // print('Response status code: ${response.statusCode}');
-      // print('Response body: ${response.body}');
-
       if (response.body.isEmpty) {
         throw Exception('Empty response from server');
       }
@@ -53,7 +53,6 @@ class UserService {
 
       if (statusCode == 200) {
         // Save the token if login is successful
-        print(data['jwt_token']);
         if (data['jwt_token'] != null) {
           final storage = StorageService();
           await storage.set(StorageType.authToken.value, data['jwt_token']);
@@ -85,7 +84,7 @@ class UserService {
             data['message'] ?? 'Login failed with status code: $statusCode');
       }
     } catch (e) {
-      print('Error during login: $e');
+      debugPrint('Error during login: $e');
       rethrow;
     }
   }
@@ -113,7 +112,7 @@ class UserService {
         throw Exception('Failed to fetch user details: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error fetching user details: $e');
+      debugPrint('Error fetching user details: $e');
       rethrow;
     }
   }
@@ -125,14 +124,14 @@ class UserService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        print('Data: $data');
+        debugPrint('Data: $data');
         var profile = Profile.fromJson(data);
         return profile;
       } else {
         throw Exception('Failed to fetch user details: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error fetching user details: $e');
+      debugPrint('Error fetching user details: $e');
       rethrow;
     }
   }
@@ -157,8 +156,83 @@ class UserService {
             'Failed to fetch terms and conditions: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error fetching terms and conditions: $e');
+      debugPrint('Error fetching terms and conditions: $e');
       rethrow;
+    }
+  }
+
+  Future<({int count, List<FriendItem> data})> getFriendsList({
+    int page = 1,
+    int limit = AppConfig.pageLimit,
+    String? search,
+  }) async {
+    try {
+      final response = await api
+          .get(ServerAPIEndpoints.getMyFriends, auth: true, queryParams: {
+        'page': page.toString(),
+        'limit': limit.toString(),
+        'search': search ?? '',
+      });
+
+      final data = jsonDecode(response.body);
+
+      final List<FriendItem> friendList = (data['data'] as List)
+          .map((gameJson) => FriendItem.fromJson(gameJson))
+          .toList();
+
+      return (count: data['total'] as int, data: friendList);
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
+    }
+  }
+
+  Future<({int count, List<FriendItem> data})> getFriendRequestList({
+    int page = 1,
+    int limit = AppConfig.pageLimit,
+    String? search,
+  }) async {
+    try {
+      final response = await api.get(ServerAPIEndpoints.getFriendRequestList,
+          auth: true,
+          queryParams: {
+            'page': page.toString(),
+            'limit': limit.toString(),
+            'search': search ?? '',
+          });
+
+      final data = jsonDecode(response.body);
+
+      final List<FriendItem> friendList = (data['data'] as List)
+          .map((gameJson) => FriendItem.fromJson(gameJson))
+          .toList();
+
+      return (count: data['total'] as int, data: friendList);
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
+    }
+  }
+
+  Future<void> acceptFriendRequest({required String requestId}) async {
+    try {
+      await api.post(
+        ServerAPIEndpoints.acceptFriendRequest
+            .replaceAll('{request_id}', requestId),
+        auth: true,
+      );
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
+    }
+  }
+
+  Future<void> rejectFriendRequest({required String requestId}) async {
+    try {
+      await api.post(
+        ServerAPIEndpoints.rejectFriendRequest
+            .replaceAll('{request_id}', requestId),
+        auth: true,
+      );
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
     }
   }
 }

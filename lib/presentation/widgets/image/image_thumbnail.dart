@@ -9,6 +9,8 @@ class ImageThumbnail extends StatelessWidget {
   final BoxFit? fit;
   final double borderRadius;
   final bool isNetwork;
+  final Color? borderColor;
+  final double borderWidth;
 
   const ImageThumbnail({
     super.key,
@@ -18,6 +20,8 @@ class ImageThumbnail extends StatelessWidget {
     this.fit,
     this.borderRadius = 0,
     this.isNetwork = true,
+    this.borderColor,
+    this.borderWidth = 1.0, // Default border width
   });
 
   @override
@@ -46,10 +50,28 @@ class ImageThumbnail extends StatelessWidget {
                 context, resolvedWidth, resolvedHeight, resolvedRadius),
           );
 
-    return ClipRRect(
+    Widget imageContainer = ClipRRect(
       borderRadius: BorderRadius.circular(resolvedRadius),
       child: imageWidget,
     );
+
+    if (borderColor != null) {
+      imageContainer = Container(
+        width: resolvedWidth,
+        height: resolvedHeight,
+        decoration: BoxDecoration(
+          color: Colors.transparent, // To ensure image is visible
+          border: Border.all(
+            color: borderColor!,
+            width: SizeUtils.pxToDp(context, borderWidth),
+          ),
+          borderRadius: BorderRadius.circular(resolvedRadius),
+        ),
+        child: imageContainer, // The ClipRRect with the image
+      );
+    }
+
+    return imageContainer;
   }
 
   Widget _errorPlaceholder(

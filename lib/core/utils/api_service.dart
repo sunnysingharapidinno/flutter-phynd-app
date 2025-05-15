@@ -12,13 +12,15 @@ class ApiService {
   Future<http.Response> get(
     String endpoint, {
     Map<String, String>? headers,
+    Map<String, String>? queryParams,
     bool auth = false,
   }) async {
-    final url = Uri.parse('$baseUrl$endpoint');
+    final uri =
+        Uri.parse('$baseUrl$endpoint').replace(queryParameters: queryParams);
     final Map<String, String> finalHeaders = await _buildHeaders(headers, auth);
 
     try {
-      final response = await http.get(url, headers: finalHeaders);
+      final response = await http.get(uri, headers: finalHeaders);
       _handleResponse(response);
       return response;
     } catch (e) {

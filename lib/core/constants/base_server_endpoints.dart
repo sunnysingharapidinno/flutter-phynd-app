@@ -156,4 +156,11 @@ class ServerAPIEndpoints {
   static const String followGame = 'api/v1/users/game/follow';
   static const String checkLikeFollowGame = 'api/v1/users/game/status';
   static const String favoriteSavedGame = 'api/v1/users/favorite-saved-game';
+  static const String getMyFriends = 'api/v1/me/friends';
+  static const String getFriendRequestList =
+      'api/v1/me/friends/requests/pending/received';
+  static const String acceptFriendRequest =
+      'api/v1/me/friends/requests/{request_id}/accept';
+  static const String rejectFriendRequest =
+      'api/v1/me/friends/requests/{request_id}/reject';
 }

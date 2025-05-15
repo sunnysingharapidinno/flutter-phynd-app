@@ -423,6 +423,8 @@ class PublisherProfilePage extends StatelessWidget {
                     return VideoCard(
                         thumbnailUrl:
                             'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/publisher-page-tv-screen/game-genre-action/metal-slug-awakening/metal-slug-awakening.jpg',
+                        videoUrl:
+                            'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
                         height: 227,
                         timeAgo: '12 hours ago',
                         duration: '12:00',
