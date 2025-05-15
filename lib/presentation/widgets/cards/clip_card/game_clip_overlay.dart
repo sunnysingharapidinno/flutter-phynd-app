@@ -64,7 +64,9 @@ class GameClipOverlay extends StatelessWidget {
                     fontSize = ResponsiveHelper.getResponsiveSize(
                         screenWidth, fontSize, sizes);
                     return Text(
-                      gameName,
+                      gameName.length > 20
+                          ? '${gameName.substring(0, 20)}...'
+                          : gameName,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: fontSize,

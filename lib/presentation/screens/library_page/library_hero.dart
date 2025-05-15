@@ -15,7 +15,7 @@ class LibraryHero extends StatelessWidget {
       child: Stack(
         children: [
           // ImageVideo at the background, with full width and height
-          ImageVideo(
+          const ImageVideo(
             imageUrl:
                 'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
             videoUrl:

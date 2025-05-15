@@ -536,3 +536,63 @@ class Game {
     };
   }
 }
+
+class FavoriteGame {
+  final String gameSlug;
+  final DateTime createdAt;
+  final String? title;
+  final String? description;
+  final String? imageUrl;
+  final String? companyName;
+  final String? image;
+  final String? organizationId;
+  final String? trailerUrl;
+  final double? rating;
+  final String? esrbRatingUrl;
+
+  FavoriteGame({
+    required this.gameSlug,
+    required this.createdAt,
+    this.title,
+    this.description,
+    this.imageUrl,
+    this.companyName,
+    this.image,
+    this.organizationId,
+    this.trailerUrl,
+    this.rating,
+    this.esrbRatingUrl,
+  });
+
+  factory FavoriteGame.fromJson(Map<String, dynamic> json) {
+    return FavoriteGame(
+      gameSlug: json['game_slug'] as String,
+      createdAt: DateTime.parse(json['created_at'] as String),
+      title: json['title'] as String?,
+      description: json['description'] as String?,
+      imageUrl: json['image_url'] as String?,
+      companyName: json['company_name'] as String?,
+      image: json['image'] as String?,
+      organizationId: json['organization_id'] as String?,
+      trailerUrl: json['trailer_url'] as String?,
+      rating: (json['rating'] as num?)?.toDouble(),
+      esrbRatingUrl: json['esrb'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'game_slug': gameSlug,
+      'created_at': createdAt.toIso8601String(),
+      'title': title,
+      'description': description,
+      'image_url': imageUrl,
+      'company_name': companyName,
+      'image': image,
+      'organization_id': organizationId,
+      'trailer_url': trailerUrl,
+      'rating': rating,
+      'esrb': esrbRatingUrl,
+    };
+  }
+}

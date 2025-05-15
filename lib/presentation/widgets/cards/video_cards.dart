@@ -199,7 +199,7 @@ class VideoCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(SizeUtils.pxToDp(context, 4)),
-        border: Border.all(color: textColor!),
+        border: Border.all(color: textColor ?? Colors.transparent),
       ),
       child: Text(
         text,

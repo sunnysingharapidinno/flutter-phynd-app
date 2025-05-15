@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:phynd_app/core/utils/size_utils.dart';
 import 'package:phynd_app/presentation/widgets/image/image_thumbnail.dart';
 
 enum ESRBRating {
