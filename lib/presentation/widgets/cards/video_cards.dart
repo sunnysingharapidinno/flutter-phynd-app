@@ -3,11 +3,13 @@ import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/core/utils/font_utils.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
 import 'package:phynd_app/presentation/widgets/image/image_thumbnail.dart';
+import 'package:phynd_app/presentation/widgets/image_video.dart';
 import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 import 'package:phynd_app/presentation/widgets/verify_badge/verify_badge.dart';
 
 class VideoCard extends StatelessWidget {
   final String? thumbnailUrl;
+  final String? videoUrl;
   final String? timeAgo;
   final String? duration;
   final String? title;
@@ -22,6 +24,7 @@ class VideoCard extends StatelessWidget {
   const VideoCard({
     super.key,
     this.thumbnailUrl,
+    this.videoUrl,
     this.timeAgo,
     this.duration,
     this.title,
@@ -50,12 +53,13 @@ class VideoCard extends StatelessWidget {
           // Thumbnail Section with Overlays
           Stack(
             children: [
-              ImageThumbnail(
+              ImageVideo(
                 imageUrl: thumbnailUrl,
+                videoUrl: videoUrl,
                 height: thumbnailHeight,
                 width: double.infinity,
-                fit: BoxFit.cover,
                 borderRadius: 12,
+                fit: BoxFit.cover,
               ),
 
               Positioned.fill(
