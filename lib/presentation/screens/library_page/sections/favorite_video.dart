@@ -98,7 +98,9 @@ class _FavoriteVideoState extends State<FavoriteVideoSection> {
               items: _content,
               cardBuilder: (context, content, width, index) {
                 return VideoCard(
-                  thumbnailUrl: content.url,
+                  thumbnailUrl:
+                      'https://xstrela-dev.s3.us-east-1.amazonaws.com/general/22_05_2024/65ecb31b797e4e1aba1ff46fd30eeb3b.png',
+                  videoUrl: content.url,
                   height: 250,
                   timeAgo: content.createdAt.toString(),
                   duration: '12:00',
