@@ -8,14 +8,15 @@ import 'package:phynd_app/presentation/widgets/image/image_thumbnail.dart';
 import 'package:phynd_app/presentation/widgets/section/home_section.dart';
 
 class FavoriteImagesSection extends StatefulWidget {
-  const FavoriteImagesSection({super.key});
+  final GameService? gameService;
+  const FavoriteImagesSection({super.key, this.gameService});
 
   @override
   State<FavoriteImagesSection> createState() => _FavoriteImagesSectionState();
 }
 
 class _FavoriteImagesSectionState extends State<FavoriteImagesSection> {
-  final GameService _gameService = GameService();
+  late final GameService _gameService;
   List<FavoriteContent> _content = [];
   bool _isLoading = true;
   int _currentPage = 1;
@@ -25,6 +26,7 @@ class _FavoriteImagesSectionState extends State<FavoriteImagesSection> {
   @override
   void initState() {
     super.initState();
+    _gameService = widget.gameService ?? GameService();
     _fetchContent();
   }
 

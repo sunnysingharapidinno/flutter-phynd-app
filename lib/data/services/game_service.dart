@@ -9,6 +9,7 @@ import 'package:phynd_app/data/models/response/favorite_content_model.dart';
 import 'package:phynd_app/data/models/response/game_list_model.dart';
 import 'package:phynd_app/data/models/response/game_model.dart';
 import 'package:phynd_app/data/models/response/like_follow_model.dart';
+import 'package:phynd_app/data/models/response/video_model.dart';
 
 class GameService {
   final String baseURL = ApiBaseUrl.flutterAppGameBaseUrl.url;
@@ -315,6 +316,85 @@ class GameService {
       }
     } catch (e) {
       throw Exception('Error fetching favorite content: $e');
+    }
+  }
+
+  Future<
+      ({
+        List<FavoriteVideo> data,
+        int total,
+        int totalPage,
+        int currentPage,
+        int remainingPages
+      })> getFavoriteVideos({
+    int page = 1,
+    int limit = 10,
+  }) async {
+    try {
+      final url = Uri.parse(
+          '${ServerAPIEndpoints.getFavoriteContent}?page=$page&limit=$limit');
+      final response = await api.get(
+        url.toString(),
+        auth: true,
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final List<FavoriteVideo> videos = (responseData['data'] as List)
+            .map((videoJson) => FavoriteVideo.fromJson(videoJson))
+            .toList();
+        return (
+          data: videos,
+          total: responseData['total'] as int,
+          totalPage: responseData['total_page'] as int,
+          currentPage: responseData['current_page'] as int,
+          remainingPages: responseData['remaining_pages'] as int
+        );
+      } else {
+        throw Exception(
+            'Failed to fetch favorite videos: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching favorite videos: $e');
+    }
+  }
+
+  Future<
+      ({
+        List<FavoriteVideo> data,
+        int total,
+        int totalPage,
+        int currentPage,
+        int remainingPages
+      })> getSavedVideos({
+    int page = 1,
+    int limit = 10,
+  }) async {
+    try {
+      final url = Uri.parse(
+          '${ServerAPIEndpoints.getSavedContent}?page=$page&limit=$limit&content_type=VIDEO');
+      final response = await api.get(
+        url.toString(),
+        auth: true,
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final List<FavoriteVideo> videos = (responseData['data'] as List)
+            .map((videoJson) => FavoriteVideo.fromJson(videoJson))
+            .toList();
+        return (
+          data: videos,
+          total: responseData['total'] as int,
+          totalPage: responseData['total_page'] as int,
+          currentPage: responseData['current_page'] as int,
+          remainingPages: responseData['remaining_pages'] as int
+        );
+      } else {
+        throw Exception('Failed to fetch saved videos: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching saved videos: $e');
     }
   }
 }

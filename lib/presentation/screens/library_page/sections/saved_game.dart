@@ -4,12 +4,13 @@ import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/presentation/widgets/cards/clip_card/game_clip_card.dart';
 import 'package:phynd_app/presentation/widgets/common/no_data_widget.dart';
 import 'package:phynd_app/presentation/widgets/heading/slider_heading.dart';
-import 'package:phynd_app/presentation/widgets/ratings/ratings.dart';
 import 'package:phynd_app/presentation/widgets/section/home_section.dart';
 
 class SavedGameSection extends StatefulWidget {
+  final GameService? gameService;
   const SavedGameSection({
     Key? key,
+    this.gameService,
   }) : super(key: key);
 
   @override
@@ -17,7 +18,7 @@ class SavedGameSection extends StatefulWidget {
 }
 
 class _FavoriteGameState extends State<SavedGameSection> {
-  final GameService _gameService = GameService();
+  late final GameService _gameService;
   List<dynamic> _games = [];
   bool _isLoading = true;
   int _currentPage = 1;
@@ -27,6 +28,7 @@ class _FavoriteGameState extends State<SavedGameSection> {
   @override
   void initState() {
     super.initState();
+    _gameService = widget.gameService ?? GameService();
     _fetchCards();
   }
 

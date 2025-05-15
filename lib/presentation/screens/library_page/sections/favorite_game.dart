@@ -7,16 +7,15 @@ import 'package:phynd_app/presentation/widgets/heading/slider_heading.dart';
 import 'package:phynd_app/presentation/widgets/section/home_section.dart';
 
 class FavoriteGameSection extends StatefulWidget {
-  const FavoriteGameSection({
-    Key? key,
-  }) : super(key: key);
+  final GameService? gameService;
+  const FavoriteGameSection({super.key, this.gameService});
 
   @override
   State<FavoriteGameSection> createState() => _FavoriteGameState();
 }
 
 class _FavoriteGameState extends State<FavoriteGameSection> {
-  final GameService _gameService = GameService();
+  late final GameService _gameService;
   bool _isLoading = true;
   int _currentPage = 1;
   static const int _pageSize = 10;
@@ -26,6 +25,7 @@ class _FavoriteGameState extends State<FavoriteGameSection> {
   @override
   void initState() {
     super.initState();
+    _gameService = widget.gameService ?? GameService();
     _fetchCards();
   }
 
