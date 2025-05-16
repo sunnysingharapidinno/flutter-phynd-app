@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/constants/ui_constants.dart';
+import 'package:phynd_app/data/models/response/recent_history_model.dart';
 import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/presentation/widgets/cards/clip_card/game_clip_card.dart';
 import 'package:phynd_app/presentation/widgets/section/home_section.dart';
@@ -18,7 +19,7 @@ class _RecentHistorySectionState extends State<RecentHistorySection> {
   bool _isLoading = true;
   int _currentPage = UIConstants.initialPage;
   bool _hasMoreContent = true;
-  List<dynamic> _games = [];
+  List<RecentHistory> _games = [];
 
   @override
   void initState() {
@@ -34,7 +35,7 @@ class _RecentHistorySectionState extends State<RecentHistorySection> {
         _isLoading = true;
       });
 
-      final result = await _gameService.getFavoriteGames(
+      final result = await _gameService.getRecentHistory(
         page: _currentPage,
         limit: UIConstants.defaultPageSize,
       );
@@ -70,11 +71,10 @@ class _RecentHistorySectionState extends State<RecentHistorySection> {
       cardBuilder: (context, game, width, index) {
         return GameClipCard(
           thumbnailUrl: game.imageUrl ?? '',
-          videoUrl: game.trailerUrl ?? '',
           title: game.title ?? '',
           rating: game.rating ?? 0.0,
           maxRating: 5,
-          esrbRatingImageUrl: game.esrbRatingUrl ?? '',
+          esrbRatingImageUrl: game.esrb ?? '',
         );
       },
       onEndOfScroll: () {

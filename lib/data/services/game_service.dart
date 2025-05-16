@@ -10,6 +10,7 @@ import 'package:phynd_app/data/models/response/game_list_model.dart';
 import 'package:phynd_app/data/models/response/game_model.dart';
 import 'package:phynd_app/data/models/response/like_follow_model.dart';
 import 'package:phynd_app/data/models/response/video_model.dart';
+import 'package:phynd_app/data/models/response/recent_history_model.dart';
 
 class GameService {
   final String baseURL = ApiBaseUrl.flutterAppGameBaseUrl.url;
@@ -395,6 +396,46 @@ class GameService {
       }
     } catch (e) {
       throw Exception('Error fetching saved videos: $e');
+    }
+  }
+
+  Future<
+      ({
+        List<RecentHistory> data,
+        int total,
+        int totalPage,
+        int currentPage,
+        int remainingPages
+      })> getRecentHistory({
+    int page = 1,
+    int limit = 10,
+  }) async {
+    try {
+      final url = Uri.parse(
+          '${ServerAPIEndpoints.getRecentHistory}?page=$page&limit=$limit');
+      final response = await api.get(
+        url.toString(),
+        auth: true,
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final List<RecentHistory> games = (responseData['data'] as List)
+            .map((gameJson) => RecentHistory.fromJson(gameJson))
+            .toList();
+        return (
+          data: games,
+          total: responseData['total'] as int,
+          totalPage: responseData['total_page'] as int,
+          currentPage: responseData['current_page'] as int,
+          remainingPages: responseData['remaining_pages'] as int
+        );
+      } else {
+        throw Exception(
+            'Failed to fetch recent history: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching recent history: $e');
     }
   }
 }
