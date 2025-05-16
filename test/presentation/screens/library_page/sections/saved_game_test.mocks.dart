@@ -14,6 +14,8 @@ import 'package:phynd_app/data/models/response/favorite_content_model.dart'
 import 'package:phynd_app/data/models/response/game_list_model.dart' as _i8;
 import 'package:phynd_app/data/models/response/game_model.dart' as _i3;
 import 'package:phynd_app/data/models/response/like_follow_model.dart' as _i4;
+import 'package:phynd_app/data/models/response/recent_history_model.dart'
+    as _i12;
 import 'package:phynd_app/data/models/response/video_model.dart' as _i11;
 import 'package:phynd_app/data/services/game_service.dart' as _i5;
 
@@ -318,7 +320,7 @@ class MockGameService extends _i1.Mock implements _i5.GameService {
       })> getSavedContent({
     int? page = 1,
     int? limit = 10,
-    String? contentType,
+    required String? contentType,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -364,7 +366,7 @@ class MockGameService extends _i1.Mock implements _i5.GameService {
       })> getFavoriteContent({
     int? page = 1,
     int? limit = 10,
-    required String contentType,
+    required String? contentType,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -438,6 +440,94 @@ class MockGameService extends _i1.Mock implements _i5.GameService {
           ({
             int currentPage,
             List<_i11.FavoriteVideo> data,
+            int remainingPages,
+            int total,
+            int totalPage
+          })>);
+
+  @override
+  _i7.Future<
+      ({
+        int currentPage,
+        List<_i11.FavoriteVideo> data,
+        int remainingPages,
+        int total,
+        int totalPage
+      })> getSavedVideos({
+    int? page = 1,
+    int? limit = 10,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getSavedVideos,
+          [],
+          {
+            #page: page,
+            #limit: limit,
+          },
+        ),
+        returnValue: _i7.Future<
+            ({
+              int currentPage,
+              List<_i11.FavoriteVideo> data,
+              int remainingPages,
+              int total,
+              int totalPage
+            })>.value((
+          currentPage: 0,
+          data: <_i11.FavoriteVideo>[],
+          remainingPages: 0,
+          total: 0,
+          totalPage: 0
+        )),
+      ) as _i7.Future<
+          ({
+            int currentPage,
+            List<_i11.FavoriteVideo> data,
+            int remainingPages,
+            int total,
+            int totalPage
+          })>);
+
+  @override
+  _i7.Future<
+      ({
+        int currentPage,
+        List<_i12.RecentHistory> data,
+        int remainingPages,
+        int total,
+        int totalPage
+      })> getRecentHistory({
+    int? page = 1,
+    int? limit = 10,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getRecentHistory,
+          [],
+          {
+            #page: page,
+            #limit: limit,
+          },
+        ),
+        returnValue: _i7.Future<
+            ({
+              int currentPage,
+              List<_i12.RecentHistory> data,
+              int remainingPages,
+              int total,
+              int totalPage
+            })>.value((
+          currentPage: 0,
+          data: <_i12.RecentHistory>[],
+          remainingPages: 0,
+          total: 0,
+          totalPage: 0
+        )),
+      ) as _i7.Future<
+          ({
+            int currentPage,
+            List<_i12.RecentHistory> data,
             int remainingPages,
             int total,
             int totalPage
