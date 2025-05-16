@@ -4,7 +4,7 @@ import 'package:phynd_app/core/enums/media_type.dart';
 import 'package:phynd_app/data/models/response/favorite_content_model.dart';
 import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/presentation/widgets/cards/event_offer_card.dart';
-import 'package:phynd_app/presentation/widgets/section/home_section.dart';
+import 'package:phynd_app/presentation/widgets/carousel/carousel_row.dart';
 
 class SavedEventsSection extends StatefulWidget {
   final GameService? gameService;
@@ -65,7 +65,7 @@ class _SavedEventsSectionState extends State<SavedEventsSection> {
 
   @override
   Widget build(BuildContext context) {
-    return HomeSection(
+    return CarouselRow(
       cardSpacing: UIConstants.cardSpacing,
       cardsPerView: 2,
       heading: 'Saved Events and Offers',

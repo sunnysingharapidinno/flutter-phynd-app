@@ -3,7 +3,7 @@ import 'package:phynd_app/core/constants/ui_constants.dart';
 import 'package:phynd_app/data/models/response/recent_history_model.dart';
 import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/presentation/widgets/cards/clip_card/game_clip_card.dart';
-import 'package:phynd_app/presentation/widgets/section/home_section.dart';
+import 'package:phynd_app/presentation/widgets/carousel/carousel_row.dart';
 
 class RecentHistorySection extends StatefulWidget {
   const RecentHistorySection({
@@ -63,7 +63,7 @@ class _RecentHistorySectionState extends State<RecentHistorySection> {
 
   @override
   Widget build(BuildContext context) {
-    return HomeSection(
+    return CarouselRow(
       cardSpacing: UIConstants.cardSpacing,
       cardsPerView: UIConstants.defaultCardsPerView,
       heading: 'Recent History',

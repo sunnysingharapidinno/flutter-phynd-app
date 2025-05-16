@@ -8,7 +8,7 @@ import 'package:phynd_app/data/models/response/game_list_model.dart';
 import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/presentation/widgets/buttons/primary_button.dart';
 import 'package:phynd_app/presentation/widgets/loader/circular_load.dart';
-import 'package:phynd_app/presentation/widgets/section/home_section.dart';
+import 'package:phynd_app/presentation/widgets/carousel/carousel_row.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/presentation/widgets/banners/game_banner.dart';
 import 'package:phynd_app/presentation/widgets/cards/game_activity_card.dart';
@@ -214,7 +214,7 @@ class _HomePageState extends State<HomePage> {
           //     }),
 
           // Continue Playing Section
-          HomeSection(
+          CarouselRow(
             heading: 'Continue Playing',
             items: (_trendGamesList ?? [])
                 .map((game) => {
@@ -259,7 +259,7 @@ class _HomePageState extends State<HomePage> {
           _buildClipsFromFriendsSection(context),
 
           // Free to Play Section
-          HomeSection(
+          CarouselRow(
             heading: 'Free to Play',
             items: (_featGamesList ?? [])
                 .map((game) => {
@@ -301,7 +301,7 @@ class _HomePageState extends State<HomePage> {
           ),
 
           // Free Trials Section
-          HomeSection(
+          CarouselRow(
             heading: 'Free Trials',
             items: (_newGamesList ?? [])
                 .map((game) => {
@@ -490,7 +490,7 @@ class _HomePageState extends State<HomePage> {
       },
     ];
 
-    return HomeSection<Map<String, Object>>(
+    return CarouselRow<Map<String, Object>>(
       heading: 'Latest Activity',
       items: activityData,
       cardBuilder: (context, data, _, __) {
@@ -567,7 +567,7 @@ class _HomePageState extends State<HomePage> {
       },
     ];
 
-    return HomeSection<Map<String, Object>>(
+    return CarouselRow<Map<String, Object>>(
       heading: 'Clips from Friends',
       items: clipsData,
       cardBuilder: (context, data, _, __) {
@@ -661,7 +661,7 @@ class _HomePageState extends State<HomePage> {
       },
     ];
 
-    return HomeSection<Map<String, Object>>(
+    return CarouselRow<Map<String, Object>>(
       heading: 'Livestreaming Now',
       items: livestreamData,
       cardBuilder: (context, data, _, __) {
@@ -722,7 +722,7 @@ class _HomePageState extends State<HomePage> {
       },
     ];
 
-    return HomeSection<Map<String, Object>>(
+    return CarouselRow<Map<String, Object>>(
       heading: 'Shorts',
       items: shortsData,
       cardBuilder: (context, data, _, __) {

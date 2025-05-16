@@ -18,7 +18,7 @@ import 'package:phynd_app/presentation/widgets/profile/profile_header.dart';
 import 'package:phynd_app/presentation/widgets/profile/quests_in_progress.dart';
 import 'package:phynd_app/presentation/widgets/profile/recently_uploaded_clips.dart';
 import 'package:phynd_app/presentation/widgets/ratings/ratings.dart';
-import 'package:phynd_app/presentation/widgets/section/home_section.dart';
+import 'package:phynd_app/presentation/widgets/carousel/carousel_row.dart';
 
 class PlayerProfilePage<T> extends StatefulWidget {
   final String? userId;
@@ -310,7 +310,7 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
                   SizeUtils.pxToDp(context, 100), 0),
               child: Column(
                 children: [
-                  HomeSection(
+                  CarouselRow(
                     cardSpacing: 60,
                     cardsPerView: 5,
                     heading: 'Favorite Games',
@@ -329,7 +329,7 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
                   ),
                   SizedBox(height: SizeUtils.pxToDp(context, 48)),
                   if (_isCurrentUser) ...[
-                    HomeSection(
+                    CarouselRow(
                       cardSpacing: UIConstants.cardSpacing,
                       cardsPerView: UIConstants.defaultCardsPerView,
                       heading: 'Continue Playing',
@@ -353,7 +353,7 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
                     ),
                     SizedBox(height: SizeUtils.pxToDp(context, 48)),
                   ],
-                  HomeSection(
+                  CarouselRow(
                     cardSpacing: UIConstants.cardSpacing,
                     cardsPerView: UIConstants.defaultCardsPerView,
                     heading: 'Games Your Friends Are Playing',

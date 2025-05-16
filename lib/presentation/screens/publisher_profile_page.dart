@@ -16,7 +16,7 @@ import 'package:phynd_app/presentation/widgets/publisher/latest_updates_section.
 import 'package:phynd_app/presentation/widgets/publisher/trending_games_section.dart';
 import 'package:phynd_app/presentation/widgets/publisher/featured_games_section.dart';
 import 'package:phynd_app/presentation/widgets/ratings/ratings.dart';
-import 'package:phynd_app/presentation/widgets/section/home_section.dart';
+import 'package:phynd_app/presentation/widgets/carousel/carousel_row.dart';
 
 class PublisherProfilePage extends StatelessWidget {
   const PublisherProfilePage({super.key});
@@ -389,7 +389,7 @@ class PublisherProfilePage extends StatelessWidget {
                 ),
 
                 SizedBox(height: SizeUtils.pxToDp(context, 48)),
-                HomeSection(
+                CarouselRow(
                   cardSpacing: UIConstants.cardSpacing,
                   cardsPerView: UIConstants.defaultCardsPerView,
                   heading: 'Featured Games',
@@ -414,7 +414,7 @@ class PublisherProfilePage extends StatelessWidget {
                 ),
 
                 SizedBox(height: SizeUtils.pxToDp(context, 48)),
-                HomeSection(
+                CarouselRow(
                   cardSpacing: UIConstants.cardSpacing,
                   cardsPerView: UIConstants.defaultCardsPerView,
                   heading: 'Latest Updates',
@@ -440,7 +440,7 @@ class PublisherProfilePage extends StatelessWidget {
 
                 // Events and Offers Section
                 SizedBox(height: SizeUtils.pxToDp(context, 48)),
-                HomeSection(
+                CarouselRow(
                   cardSpacing: UIConstants.cardSpacing,
                   cardsPerView: 2,
                   heading: 'Events and Offers',
@@ -464,7 +464,7 @@ class PublisherProfilePage extends StatelessWidget {
                 ),
 
                 SizedBox(height: SizeUtils.pxToDp(context, 48)),
-                HomeSection(
+                CarouselRow(
                   cardSpacing: UIConstants.cardSpacing,
                   cardsPerView: 5,
                   heading: 'Genres',

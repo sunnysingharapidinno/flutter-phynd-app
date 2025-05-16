@@ -3,7 +3,7 @@ import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/core/utils/font_utils.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
 
-class HomeSection<T> extends StatefulWidget {
+class CarouselRow<T> extends StatefulWidget {
   final String heading;
   final List<T> items;
   final Widget Function(BuildContext, T, double, int) cardBuilder;
@@ -14,7 +14,7 @@ class HomeSection<T> extends StatefulWidget {
   final bool isLoading;
   final bool isLoadingMore;
 
-  const HomeSection({
+  const CarouselRow({
     super.key,
     required this.heading,
     required this.items,
@@ -28,10 +28,10 @@ class HomeSection<T> extends StatefulWidget {
   });
 
   @override
-  State<HomeSection<T>> createState() => _HomeSectionState<T>();
+  State<CarouselRow<T>> createState() => _CarouselRowState<T>();
 }
 
-class _HomeSectionState<T> extends State<HomeSection<T>> {
+class _CarouselRowState<T> extends State<CarouselRow<T>> {
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
   int _lastFetchItemsCount = 0;
@@ -54,7 +54,7 @@ class _HomeSectionState<T> extends State<HomeSection<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant HomeSection<T> oldWidget) {
+  void didUpdateWidget(covariant CarouselRow<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.items.length > _lastFetchItemsCount) {
       setState(() {

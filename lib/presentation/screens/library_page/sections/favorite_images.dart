@@ -4,7 +4,7 @@ import 'package:phynd_app/core/enums/media_type.dart';
 import 'package:phynd_app/data/models/response/favorite_content_model.dart';
 import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/presentation/widgets/image/image_thumbnail.dart';
-import 'package:phynd_app/presentation/widgets/section/home_section.dart';
+import 'package:phynd_app/presentation/widgets/carousel/carousel_row.dart';
 
 class FavoriteImagesSection extends StatefulWidget {
   final GameService? gameService;
@@ -65,7 +65,7 @@ class _FavoriteImagesSectionState extends State<FavoriteImagesSection> {
 
   @override
   Widget build(BuildContext context) {
-    return HomeSection(
+    return CarouselRow(
       cardSpacing: UIConstants.cardSpacing,
       cardsPerView: UIConstants.defaultCardsPerView,
       heading: 'Favorited Images',
