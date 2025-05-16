@@ -318,7 +318,7 @@ class MockGameService extends _i1.Mock implements _i5.GameService {
       })> getSavedContent({
     int? page = 1,
     int? limit = 10,
-    String? contentType,
+    required String contentType,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -364,7 +364,7 @@ class MockGameService extends _i1.Mock implements _i5.GameService {
       })> getFavoriteContent({
     int? page = 1,
     int? limit = 10,
-    String? contentType,
+    required String contentType,
   }) =>
       (super.noSuchMethod(
         Invocation.method(

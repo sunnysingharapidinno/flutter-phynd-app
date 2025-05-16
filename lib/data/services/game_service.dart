@@ -247,7 +247,7 @@ class GameService {
       })> getSavedContent({
     int page = 1,
     int limit = 10,
-    String? contentType,
+    required String contentType,
   }) async {
     try {
       final url = Uri.parse(
@@ -288,7 +288,7 @@ class GameService {
       })> getFavoriteContent({
     int page = 1,
     int limit = 10,
-    String? contentType,
+    required String contentType,
   }) async {
     try {
       final url = Uri.parse(

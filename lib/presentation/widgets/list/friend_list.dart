@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phynd_app/core/constants/ui_constants.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
 import 'package:phynd_app/data/models/response/friend_item.dart';
@@ -25,7 +26,7 @@ class _FriendListState extends State<FriendList>
   List<FriendItem> _myFriends = [];
   bool _isFriendsLoading = false;
   bool _isFetchingMore = false;
-  int _currentPage = 1;
+  int _currentPage = UIConstants.initialPage;
   bool _hasMoreFriends = true;
 
   List<FriendItem> _friendRequests = [];

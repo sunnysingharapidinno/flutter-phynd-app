@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:phynd_app/core/utils/size_utils.dart';
+import 'package:phynd_app/core/constants/ui_constants.dart';
 import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/presentation/widgets/cards/clip_card/game_clip_card.dart';
-import 'package:phynd_app/presentation/widgets/common/no_data_widget.dart';
-import 'package:phynd_app/presentation/widgets/heading/slider_heading.dart';
 import 'package:phynd_app/presentation/widgets/section/home_section.dart';
 
 class RecentHistorySection extends StatefulWidget {
@@ -18,8 +16,7 @@ class RecentHistorySection extends StatefulWidget {
 class _RecentHistorySectionState extends State<RecentHistorySection> {
   final GameService _gameService = GameService();
   bool _isLoading = true;
-  int _currentPage = 1;
-  static const int _pageSize = 10;
+  int _currentPage = UIConstants.initialPage;
   bool _hasMoreContent = true;
   List<dynamic> _games = [];
 
@@ -39,7 +36,7 @@ class _RecentHistorySectionState extends State<RecentHistorySection> {
 
       final result = await _gameService.getFavoriteGames(
         page: _currentPage,
-        limit: _pageSize,
+        limit: UIConstants.defaultPageSize,
       );
 
       setState(() {
@@ -65,53 +62,27 @@ class _RecentHistorySectionState extends State<RecentHistorySection> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        if (_isLoading)
-          const Text('Loading...')
-        else if (_games.isEmpty)
-          const Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SliderHeading('Recent History'),
-              SizedBox(height: 16),
-              NoDataWidget(
-                title: 'No Recent History',
-                subtitle: 'You haven\'t watched any content yet',
-                icon: Icons.bookmark_border,
-              ),
-            ],
-          )
-        else
-          Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: SizeUtils.pxToDp(context, 56),
-              vertical: SizeUtils.pxToDp(context, 0),
-            ),
-            child: HomeSection(
-              cardSpacing: 20,
-              cardsPerView: 4,
-              heading: 'Recent History',
-              items: _games,
-              cardBuilder: (context, game, width, index) {
-                return GameClipCard(
-                  thumbnailUrl: game.imageUrl ?? '',
-                  videoUrl: game.trailerUrl ?? '',
-                  title: game.title ?? '',
-                  rating: game.rating ?? 0.0,
-                  maxRating: 5,
-                  esrbRatingImageUrl: game.esrbRatingUrl ?? '',
-                );
-              },
-              onEndOfScroll: () {
-                _fetchCards();
-                _currentPage++;
-              },
-            ),
-          ),
-        const SizedBox(height: 32),
-      ],
+    return HomeSection(
+      cardSpacing: UIConstants.cardSpacing,
+      cardsPerView: UIConstants.defaultCardsPerView,
+      heading: 'Recent History',
+      items: _games,
+      cardBuilder: (context, game, width, index) {
+        return GameClipCard(
+          thumbnailUrl: game.imageUrl ?? '',
+          videoUrl: game.trailerUrl ?? '',
+          title: game.title ?? '',
+          rating: game.rating ?? 0.0,
+          maxRating: 5,
+          esrbRatingImageUrl: game.esrbRatingUrl ?? '',
+        );
+      },
+      onEndOfScroll: () {
+        _currentPage++;
+        _fetchCards();
+      },
+      isLoading: _isLoading,
+      isLoadingMore: _isLoading,
     );
   }
 }

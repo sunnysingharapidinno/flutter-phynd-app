@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/constants/app_images.dart';
+import 'package:phynd_app/core/constants/ui_constants.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/core/utils/font_utils.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
@@ -389,8 +390,8 @@ class PublisherProfilePage extends StatelessWidget {
 
                 SizedBox(height: SizeUtils.pxToDp(context, 48)),
                 HomeSection(
-                  cardSpacing: 20,
-                  cardsPerView: 4,
+                  cardSpacing: UIConstants.cardSpacing,
+                  cardsPerView: UIConstants.defaultCardsPerView,
                   heading: 'Featured Games',
                   sectionHeight: 350,
                   items: games,
@@ -414,8 +415,8 @@ class PublisherProfilePage extends StatelessWidget {
 
                 SizedBox(height: SizeUtils.pxToDp(context, 48)),
                 HomeSection(
-                  cardSpacing: 20,
-                  cardsPerView: 4,
+                  cardSpacing: UIConstants.cardSpacing,
+                  cardsPerView: UIConstants.defaultCardsPerView,
                   heading: 'Latest Updates',
                   sectionHeight: 420,
                   items: games,
@@ -440,7 +441,7 @@ class PublisherProfilePage extends StatelessWidget {
                 // Events and Offers Section
                 SizedBox(height: SizeUtils.pxToDp(context, 48)),
                 HomeSection(
-                  cardSpacing: 20,
+                  cardSpacing: UIConstants.cardSpacing,
                   cardsPerView: 2,
                   heading: 'Events and Offers',
                   sectionHeight: 510,
@@ -464,7 +465,7 @@ class PublisherProfilePage extends StatelessWidget {
 
                 SizedBox(height: SizeUtils.pxToDp(context, 48)),
                 HomeSection(
-                  cardSpacing: 20,
+                  cardSpacing: UIConstants.cardSpacing,
                   cardsPerView: 5,
                   heading: 'Genres',
                   sectionHeight: 200,

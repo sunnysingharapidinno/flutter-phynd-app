@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:phynd_app/core/utils/size_utils.dart';
+import 'package:phynd_app/core/constants/ui_constants.dart';
+import 'package:phynd_app/core/enums/media_type.dart';
 import 'package:phynd_app/data/models/response/favorite_content_model.dart';
 import 'package:phynd_app/data/services/game_service.dart';
-import 'package:phynd_app/presentation/widgets/common/no_data_widget.dart';
-import 'package:phynd_app/presentation/widgets/heading/slider_heading.dart';
 import 'package:phynd_app/presentation/widgets/image/image_thumbnail.dart';
 import 'package:phynd_app/presentation/widgets/section/home_section.dart';
 
@@ -19,8 +18,7 @@ class _FavoriteImagesSectionState extends State<FavoriteImagesSection> {
   late final GameService _gameService;
   List<FavoriteContent> _content = [];
   bool _isLoading = true;
-  int _currentPage = 1;
-  static const int _pageSize = 10;
+  int _currentPage = UIConstants.initialPage;
   bool _hasMoreContent = true;
 
   @override
@@ -40,8 +38,8 @@ class _FavoriteImagesSectionState extends State<FavoriteImagesSection> {
 
       final result = await _gameService.getFavoriteContent(
         page: _currentPage,
-        limit: _pageSize,
-        contentType: 'IMAGE',
+        limit: UIConstants.defaultPageSize,
+        contentType: MediaType.image.value,
       );
 
       setState(() {
@@ -67,49 +65,23 @@ class _FavoriteImagesSectionState extends State<FavoriteImagesSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        if (_isLoading)
-          const Text('Loading...')
-        else if (_content.isEmpty)
-          const Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SliderHeading('Favorited Images'),
-              SizedBox(height: 16),
-              NoDataWidget(
-                title: 'No Favorited Images',
-                subtitle: 'You haven\'t favorited any images yet',
-                icon: Icons.bookmark_border,
-              ),
-            ],
-          )
-        else
-          Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: SizeUtils.pxToDp(context, 56),
-              vertical: SizeUtils.pxToDp(context, 0),
-            ),
-            child: HomeSection(
-              cardSpacing: 20,
-              cardsPerView: 4,
-              heading: 'Favorited Images',
-              items: _content,
-              cardBuilder: (context, content, width, index) {
-                return ImageThumbnail(
-                  imageUrl: content.url,
-                  height: 200,
-                );
-              },
-              onEndOfScroll: () {
-                _fetchContent();
-                _currentPage++;
-              },
-            ),
-          ),
-        const SizedBox(height: 32),
-      ],
+    return HomeSection(
+      cardSpacing: UIConstants.cardSpacing,
+      cardsPerView: UIConstants.defaultCardsPerView,
+      heading: 'Favorited Images',
+      items: _content,
+      cardBuilder: (context, content, width, index) {
+        return ImageThumbnail(
+          imageUrl: content.url,
+          height: 200,
+        );
+      },
+      onEndOfScroll: () {
+        _currentPage++;
+        _fetchContent();
+      },
+      isLoading: _isLoading,
+      isLoadingMore: _isLoading,
     );
   }
 }

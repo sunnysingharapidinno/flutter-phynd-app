@@ -111,7 +111,7 @@ class EventOfferCard extends StatelessWidget {
               children: [
                 PrimaryButton(
                   text: 'Save',
-                  icon: Icons.bookmark_border, // Or Icons.bookmark for filled
+                  icon: Icons.bookmark, // Or Icons.bookmark for filled
                   onPressed: onSavePressed,
                   iconColor: textColor,
                   fontSize: 24,
