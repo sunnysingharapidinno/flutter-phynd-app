@@ -11,6 +11,8 @@ class HomeSection<T> extends StatefulWidget {
   final double cardsPerView;
   final double sectionHeight;
   final VoidCallback? onEndOfScroll;
+  final bool isLoading;
+  final bool isLoadingMore;
 
   const HomeSection({
     super.key,
@@ -21,6 +23,8 @@ class HomeSection<T> extends StatefulWidget {
     this.cardsPerView = 5,
     this.sectionHeight = 550,
     this.onEndOfScroll,
+    this.isLoading = false,
+    this.isLoadingMore = false,
   });
 
   @override
