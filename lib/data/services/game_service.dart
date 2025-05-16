@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:phynd_app/config/app_config.dart';
 import 'package:phynd_app/core/constants/base_server_endpoints.dart';
 import 'package:phynd_app/core/enums/api_env.dart';
@@ -151,6 +152,7 @@ class GameService {
       final response = await api.get(url.toString(), auth: true);
 
       final data = jsonDecode(response.body);
+      debugPrint("data: ${data}");
       return LikeFollowStatus.fromJson(data);
     } catch (e) {
       throw Exception('Invalid response format: $e');

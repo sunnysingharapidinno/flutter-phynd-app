@@ -1,21 +1,31 @@
 class LikeFollowStatus {
-  String? gameSlug;
-  bool? isFavorite;
-  bool? isFollow;
+  final String gameSlug;
+  final bool isFavorite;
+  final bool isFollow;
+  final int friendsCount;
 
-  LikeFollowStatus({this.gameSlug, this.isFavorite, this.isFollow});
+  LikeFollowStatus({
+    required this.gameSlug,
+    required this.isFavorite,
+    required this.isFollow,
+    required this.friendsCount,
+  });
 
-  LikeFollowStatus.fromJson(Map<String, dynamic> json) {
-    gameSlug = json['game_slug'];
-    isFavorite = json['is_favourite'];
-    isFollow = json['is_follow'];
+  factory LikeFollowStatus.fromJson(Map<String, dynamic> json) {
+    return LikeFollowStatus(
+      gameSlug: json['game_slug'],
+      isFavorite: json['is_favourite'],
+      isFollow: json['is_follow'],
+      friendsCount: json['friends_count'],
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['game_slug'] = this.gameSlug;
-    data['is_favourite'] = this.isFavorite;
-    data['is_follow'] = this.isFollow;
-    return data;
+    return {
+      'game_slug': gameSlug,
+      'is_favourite': isFavorite,
+      'is_follow': isFollow,
+      'friends_count': friendsCount,
+    };
   }
 }

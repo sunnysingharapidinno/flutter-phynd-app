@@ -173,6 +173,11 @@ class GameDetails {
   final String? pegiRatingImgUrl;
   final String? rainwayGameId;
 
+  final String? thumbnail;
+  final String? gameTextImageURL;
+  final String? publisherDisplayNameSlug;
+  final String? parentCompanyDisplayNameSlug;
+
   GameDetails({
     required this.gameSlug,
     required this.gameTitle,
@@ -227,6 +232,10 @@ class GameDetails {
     this.esrbRatingImgUrl,
     this.pegiRatingImgUrl,
     this.rainwayGameId,
+    this.thumbnail,
+    this.gameTextImageURL,
+    this.publisherDisplayNameSlug,
+    this.parentCompanyDisplayNameSlug,
   });
 
   factory GameDetails.fromJson(Map<String, dynamic> json) {
@@ -293,7 +302,73 @@ class GameDetails {
       esrbRatingImgUrl: json['esrb_rating_img_url'],
       pegiRatingImgUrl: json['pegi_rating_img_url'],
       rainwayGameId: json['rainway_game_id'],
+      thumbnail: json['thumbnail'],
+      gameTextImageURL: json['game_text_img_url'],
+      publisherDisplayNameSlug: json['publisher_display_name_slug'],
+      parentCompanyDisplayNameSlug: json['parent_company_display_name_slug'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'game_slug': gameSlug,
+      'game_title': gameTitle,
+      'short_bio': shortBio,
+      'developers': developers,
+      'is_browser_based_game': isBrowserBasedGame,
+      'download_url': downloadUrl,
+      'launcher_url': launcherUrl,
+      'release_date': releaseDate,
+      'start_date': startDate,
+      'end_date': endDate,
+      'is_blockchain_supported': isBlockchainSupported,
+      'blockchain_platform': blockchainPlatform,
+      'genre': genre,
+      'sub_genre': subGenre,
+      'ad_supported': adSupported,
+      'content_rating': contentRating,
+      'age_restricted': ageRestricted,
+      'cost': cost,
+      'rental_duration': rentalDuration,
+      'syndicated': syndicated,
+      'website_url': websiteUrl,
+      'twitter_link': twitterLink,
+      'discord_link': discordLink,
+      'white_paper_link': whitePaperLink,
+      'telegram_link': telegramLink,
+      'language_supported': languageSupported,
+      'modes': modes,
+      'platforms': platforms.map((p) => p.toMap()).toList(),
+      'controllers': controllers.map((c) => c.toMap()).toList(),
+      'browser_support': browserSupport,
+      'tags': tags,
+      'storage_requirements': storageRequirements,
+      'ram_requirements': ramRequirements,
+      'processor_requirements': processorRequirements,
+      'os_requirements': osRequirements,
+      'game_media': gameMedia.map((m) => m.toJson()).toList(),
+      'game_screenshots': gameScreenshots.map((s) => s.toJson()).toList(),
+      'game_play_modes': gamePlayModes,
+      'in_app_purchases': inAppPurchases,
+      'is_game_featured': isGameFeatured,
+      'is_from_verified_publisher': isFromVerifiedPublisher,
+      'game_franchise': gameFranchise,
+      'iframable': iframable,
+      'publisher_id': publisherId,
+      'publisher_display_name': publisherDisplayName,
+      'publisher_type': publisherType,
+      'parent_company_id': parentCompanyId,
+      'parent_company_name': parentCompanyName,
+      'parent_company_display_name': parentCompanyDisplayName,
+      'parent_company_type': parentCompanyType,
+      'esrb_rating_img_url': esrbRatingImgUrl,
+      'pegi_rating_img_url': pegiRatingImgUrl,
+      'rainway_game_id': rainwayGameId,
+      'thumbnail': thumbnail,
+      'game_text_img_url': gameTextImageURL,
+      'publisher_display_name_slug': publisherDisplayNameSlug,
+      'parent_company_display_name_slug': parentCompanyDisplayNameSlug,
+    };
   }
 }
 
@@ -352,6 +427,11 @@ class Game {
   final String? pegiRatingImgUrl;
   final String? rainwayGameId;
 
+  final String? thumbnail;
+  final String? gameTextImageURL;
+  final String? publisherDisplayNameSlug;
+  final String? parentCompanyDisplayNameSlug;
+
   Game({
     required this.gameSlug,
     required this.gameTitle,
@@ -406,6 +486,10 @@ class Game {
     this.esrbRatingImgUrl,
     this.pegiRatingImgUrl,
     this.rainwayGameId,
+    this.thumbnail,
+    this.gameTextImageURL,
+    this.publisherDisplayNameSlug,
+    this.parentCompanyDisplayNameSlug,
   });
 
   factory Game.fromJson(Map<String, dynamic> json) {
@@ -475,6 +559,10 @@ class Game {
       esrbRatingImgUrl: json['esrb_rating_img_url'],
       pegiRatingImgUrl: json['pegi_rating_img_url'],
       rainwayGameId: json['rainway_game_id'],
+      thumbnail: json['thumbnail'],
+      gameTextImageURL: json['game_text_img_url'],
+      publisherDisplayNameSlug: json['publisher_display_name_slug'],
+      parentCompanyDisplayNameSlug: json['parent_company_display_name_slug'],
     );
   }
 
@@ -533,6 +621,10 @@ class Game {
       'esrb_rating_img_url': esrbRatingImgUrl,
       'pegi_rating_img_url': pegiRatingImgUrl,
       'rainway_game_id': rainwayGameId,
+      'thumbnail': thumbnail,
+      'game_text_img_url': gameTextImageURL,
+      'publisher_display_name_slug': publisherDisplayNameSlug,
+      'parent_company_display_name_slug': parentCompanyDisplayNameSlug,
     };
   }
 }

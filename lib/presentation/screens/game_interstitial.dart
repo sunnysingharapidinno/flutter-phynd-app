@@ -9,6 +9,7 @@ import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/presentation/widgets/buttons/primary_button.dart';
 import 'package:phynd_app/presentation/widgets/buttons/primary_icon_button.dart';
 import 'package:phynd_app/presentation/widgets/image/image_thumbnail.dart';
+import 'package:phynd_app/presentation/widgets/image_video.dart';
 import 'package:phynd_app/presentation/widgets/loader/circular_load.dart';
 import 'package:phynd_app/presentation/widgets/notifier.dart';
 
@@ -29,6 +30,7 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
   bool _checkingFollow = false;
   bool _isFollowed = false;
   bool _isFavorite = false;
+  int _friendsCount = 0;
 
   @override
   void initState() {
@@ -45,6 +47,7 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
         () => _isFollowed = status.isFollow ?? false,
       );
       setState(() => _isFavorite = status.isFavorite ?? false);
+      setState(() => _friendsCount = status.friendsCount ?? 0);
     } catch (e) {
       debugPrint("Error checking follow status: $e");
     }
@@ -120,9 +123,6 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
     final btnText = theme?.get('btnText');
     final subText2 = theme?.get('subText2');
     final onlineColor = theme?.get('onlineIndicator');
-    final bgColor = theme?.get('bgColor');
-    final shadowBlack = theme?.get('shadowBlack');
-    final midnightGray = theme?.get('midnightGray');
     final textLight = theme?.get('textLight');
 
     if (_isLoading) {
@@ -137,36 +137,16 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
           height: double.infinity,
           child: Stack(
             children: [
-              // Image background with gradient
-              Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(
-                      'https://xstrela-alpha.s3.us-east-1.amazonaws.com/general/2025/03/16/3bc8bc2f85184505aec7858df30ac041.png',
-                    ),
-                    fit: BoxFit.cover,
-                  ),
-                  gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    stops: [0.3613, 0.5962, 0.8327],
-                    colors: [
-                      shadowBlack!,
-                      midnightGray!,
-                      bgColor!,
-                    ],
-                  ),
-                ),
-              ),
               // Color filter with darken effect
               ColorFiltered(
                 colorFilter: ColorFilter.mode(
                   textLight?.withOpacity(0.5) ?? Colors.black.withOpacity(0.5),
                   BlendMode.darken,
                 ),
-                child: ImageThumbnail(
-                  imageUrl:
-                      'https://xstrela-alpha.s3.us-east-1.amazonaws.com/general/2025/03/16/3bc8bc2f85184505aec7858df30ac041.png',
+                child: ImageVideo(
+                  imageUrl: _gameDetails?.thumbnail,
+                  videoUrl:
+                      'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
                   width: double.infinity,
                   height: double.infinity,
                   fit: BoxFit.cover,
@@ -191,8 +171,7 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                   children: [
                     // Game Logo (network image)
                     ImageThumbnail(
-                      imageUrl:
-                          'https://www.forgottenplayland.com/_next/image?url=%2Fassets%2Flogo.webp&w=640&q=75',
+                      imageUrl: _gameDetails?.gameTextImageURL,
                       width: SizeUtils.pxToDp(context, 606),
                       height: SizeUtils.pxToDp(context, 238),
                       fit: BoxFit.contain,
@@ -316,7 +295,7 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        ImageThumbnail(
+                        const ImageThumbnail(
                           imageUrl: AppImages.peopleLogoGreyBg,
                           width: 90,
                           height: 90,
@@ -325,7 +304,7 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                         ),
                         SizedBox(width: SizeUtils.pxToDp(context, 19)),
                         Text(
-                          '86 Friends Play',
+                          '$_friendsCount Friends Play',
                           style: TextStyle(
                             color: subText2,
                             fontSize: FontUtils.pxToSp(context, 48),
