@@ -23,17 +23,18 @@ class BaseLayout extends StatefulWidget {
 class _BaseLayoutState extends State<BaseLayout> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isSidebarExpanded = false;
-  bool _showIdleScreen = false;
+  // bool _showIdleScreen = false; // No longer needed for overlay approach
 
   final FocusNode _sidebarFocusNode = FocusNode();
   final FocusNode _contentFocusNode = FocusNode();
   bool _hasContentBeenFocused = false;
 
   Timer? _idleTimer;
-  static const _idleDuration = Duration(seconds: 3000);
+  static const _idleDuration = Duration(seconds: 30);
 
   int _currentIdleIndex = 0;
   Timer? _idleScreenRotationTimer;
+  OverlayEntry? _appIdleOverlayEntry; // For managing the AppIdle overlay
 
   final List<Map<String, dynamic>> mockGameData = [
     {
@@ -93,62 +94,107 @@ class _BaseLayoutState extends State<BaseLayout> {
     },
   ];
 
-  void _startIdleTimer() {
-    _idleTimer?.cancel();
-    _idleTimer = Timer(_idleDuration, () {
-      setState(() {
-        _showIdleScreen = true;
-        _currentIdleIndex = 0;
-      });
+  void _showAppIdleOverlay() {
+    if (_appIdleOverlayEntry != null) return;
+    print("BaseLayout: Showing AppIdle overlay."); // Added for debugging
 
-      _idleScreenRotationTimer?.cancel();
-      _idleScreenRotationTimer =
-          Timer.periodic(const Duration(seconds: 30), (timer) {
+    _currentIdleIndex = 0;
+    _appIdleOverlayEntry = OverlayEntry(
+      builder: (context) {
+        return Material(
+          type: MaterialType.transparency,
+          child: AppIdle(
+            key: ValueKey(_currentIdleIndex),
+            backgroundImg: mockGameData[_currentIdleIndex]['backgroundImg'],
+            esrb: mockGameData[_currentIdleIndex]['esrb'],
+            friendsCount: mockGameData[_currentIdleIndex]['friendsCount'],
+            gameTextImg: mockGameData[_currentIdleIndex]['gameTextImg'],
+            onlineCount: mockGameData[_currentIdleIndex]['onlineCount'],
+            publisherName: mockGameData[_currentIdleIndex]['publisherName'],
+            releaseYear: mockGameData[_currentIdleIndex]['releaseYear'],
+          ),
+        );
+      },
+    );
+    Overlay.of(context).insert(_appIdleOverlayEntry!);
+
+    _idleScreenRotationTimer?.cancel();
+    _idleScreenRotationTimer =
+        Timer.periodic(const Duration(seconds: 30), (timer) {
+      if (mounted && _appIdleOverlayEntry != null) {
+        // print("BaseLayout: Rotating idle screen content."); // Optional: for very verbose logging
         setState(() {
           _currentIdleIndex = (_currentIdleIndex + 1) % mockGameData.length;
         });
-      });
+        _appIdleOverlayEntry?.markNeedsBuild();
+      } else {
+        timer.cancel();
+      }
+    });
+  }
+
+  void _removeAppIdleOverlay() {
+    print("BaseLayout: _removeAppIdleOverlay called"); // Debug print
+    _appIdleOverlayEntry?.remove();
+    _appIdleOverlayEntry = null;
+    _idleScreenRotationTimer?.cancel();
+  }
+
+  void _startIdleTimer() {
+    _idleTimer?.cancel();
+    _idleTimer = Timer(_idleDuration, () {
+      print("BaseLayout: Idle timer expired."); // Debug print
+      if (mounted) {
+        _showAppIdleOverlay();
+      }
     });
   }
 
   @override
   void initState() {
     super.initState();
+    print("BaseLayout: initState - starting idle timer."); // Debug print
     _startIdleTimer();
 
     _sidebarFocusNode.addListener(() {
+      // print("Sidebar focus: ${_sidebarFocusNode.hasFocus}"); // Debug focus changes
       if (_sidebarFocusNode.hasFocus && _hasContentBeenFocused) {
-        setState(() {
-          _isSidebarExpanded = true;
-        });
+        if (mounted) {
+          setState(() {
+            _isSidebarExpanded = true;
+          });
+        }
       }
     });
 
     _contentFocusNode.addListener(() {
+      // print("Content focus: ${_contentFocusNode.hasFocus}"); // Debug focus changes
       if (_contentFocusNode.hasFocus) {
         _hasContentBeenFocused = true;
-        setState(() {
-          _isSidebarExpanded = false;
-        });
+        if (mounted) {
+          setState(() {
+            _isSidebarExpanded = false;
+          });
+        }
       }
     });
   }
 
   @override
   void dispose() {
+    print("BaseLayout: dispose called."); // Debug print
     _idleTimer?.cancel();
-    _idleScreenRotationTimer?.cancel();
+    _removeAppIdleOverlay();
     _sidebarFocusNode.dispose();
     _contentFocusNode.dispose();
     super.dispose();
   }
 
   void _onUserInteraction() {
+    print("BaseLayout: _onUserInteraction triggered!"); // Debug print
     _startIdleTimer();
-    if (_showIdleScreen) {
-      setState(() {
-        _showIdleScreen = false;
-      });
+    if (_appIdleOverlayEntry != null) {
+      _removeAppIdleOverlay();
     }
   }
 
@@ -156,164 +202,135 @@ class _BaseLayoutState extends State<BaseLayout> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context).extension<AppTheme>();
     final backgroundColor = theme?.get('bgColor') ?? Colors.black;
-
     final double minExpWidth = SizeUtils.pxToDp(context, 100);
     final double maxExpWidth = SizeUtils.pxToDp(context, 400);
 
-    // if (_showIdleScreen) {
-    //   return Scaffold(
-    //       backgroundColor: backgroundColor,
-    //       body: AppIdle(
-    //         key:
-    //             ValueKey(_currentIdleIndex), // forces rebuild when data changes
-    //         backgroundImg: mockGameData[_currentIdleIndex]['backgroundImg'],
-    //         esrb: mockGameData[_currentIdleIndex]['esrb'],
-    //         friendsCount: mockGameData[_currentIdleIndex]['friendsCount'],
-    //         gameTextImg: mockGameData[_currentIdleIndex]['gameTextImg'],
-    //         onlineCount: mockGameData[_currentIdleIndex]['onlineCount'],
-    //         publisherName: mockGameData[_currentIdleIndex]['publisherName'],
-    //         releaseYear: mockGameData[_currentIdleIndex]['releaseYear'],
-    //       ));
-    // }
-
     return Listener(
-      onPointerDown: (_) => _onUserInteraction(),
-      onPointerMove: (_) => _onUserInteraction(),
-      onPointerHover: (_) => _onUserInteraction(),
+      onPointerDown: (_) =>
+          _onUserInteraction(), // Only listen to onPointerDown for now
+      // onPointerMove: (_) => _onUserInteraction(), // Temporarily disable
+      // onPointerHover: (_) => _onUserInteraction(), // Temporarily disable
       child: KeyboardListener(
         focusNode: FocusNode(),
         onKeyEvent: (_) => _onUserInteraction(),
-        child: _showIdleScreen
-            ? Scaffold(
-                backgroundColor: backgroundColor,
-                body: AppIdle(
-                  key: ValueKey(
-                      _currentIdleIndex), // forces rebuild when data changes
-                  backgroundImg: mockGameData[_currentIdleIndex]
-                      ['backgroundImg'],
-                  esrb: mockGameData[_currentIdleIndex]['esrb'],
-                  friendsCount: mockGameData[_currentIdleIndex]['friendsCount'],
-                  gameTextImg: mockGameData[_currentIdleIndex]['gameTextImg'],
-                  onlineCount: mockGameData[_currentIdleIndex]['onlineCount'],
-                  publisherName: mockGameData[_currentIdleIndex]
-                      ['publisherName'],
-                  releaseYear: mockGameData[_currentIdleIndex]['releaseYear'],
-                ))
-            : Scaffold(
-                key: _scaffoldKey,
-                backgroundColor: backgroundColor,
-                appBar: SharedAppBar(),
-                body: Stack(
-                  children: [
-                    Row(
-                      children: [
-                        // Sidebar
-                        FocusTraversalGroup(
-                          child: KeyboardListener(
-                            focusNode: FocusNode(),
-                            onKeyEvent: (KeyEvent event) {
-                              if (event is KeyDownEvent &&
-                                  event.logicalKey ==
-                                      LogicalKeyboardKey.arrowRight &&
-                                  !_isSidebarExpanded) {
-                                FocusScope.of(context)
-                                    .requestFocus(_contentFocusNode);
-                              }
-                            },
-                            child: Focus(
-                              focusNode: _sidebarFocusNode,
-                              autofocus: true,
-                              child: Shortcuts(
-                                shortcuts: {
-                                  LogicalKeySet(LogicalKeyboardKey.select):
-                                      ActivateIntent(),
-                                  LogicalKeySet(LogicalKeyboardKey.enter):
-                                      ActivateIntent(),
-                                  LogicalKeySet(LogicalKeyboardKey.gameButtonA):
-                                      ActivateIntent(),
+        child: Scaffold(
+          // Removed the conditional logic for _showIdleScreen
+          key: _scaffoldKey,
+          backgroundColor: backgroundColor,
+          appBar: SharedAppBar(),
+          body: Stack(
+            children: [
+              Row(
+                children: [
+                  // Sidebar
+                  FocusTraversalGroup(
+                    child: KeyboardListener(
+                      focusNode: FocusNode(),
+                      onKeyEvent: (KeyEvent event) {
+                        if (event is KeyDownEvent &&
+                            event.logicalKey == LogicalKeyboardKey.arrowRight &&
+                            !_isSidebarExpanded) {
+                          FocusScope.of(context)
+                              .requestFocus(_contentFocusNode);
+                        }
+                      },
+                      child: Focus(
+                        focusNode: _sidebarFocusNode,
+                        autofocus: true,
+                        child: Shortcuts(
+                          shortcuts: {
+                            LogicalKeySet(LogicalKeyboardKey.select):
+                                ActivateIntent(),
+                            LogicalKeySet(LogicalKeyboardKey.enter):
+                                ActivateIntent(),
+                            LogicalKeySet(LogicalKeyboardKey.gameButtonA):
+                                ActivateIntent(),
+                          },
+                          child: Actions(
+                            actions: {
+                              ActivateIntent: CallbackAction<Intent>(
+                                onInvoke: (_) {
+                                  if (mounted) {
+                                    setState(() {
+                                      _isSidebarExpanded = !_isSidebarExpanded;
+                                    });
+                                  }
+                                  return null;
                                 },
-                                child: Actions(
-                                  actions: {
-                                    ActivateIntent: CallbackAction<Intent>(
-                                      onInvoke: (_) {
-                                        setState(() {
-                                          _isSidebarExpanded =
-                                              !_isSidebarExpanded;
-                                        });
-                                        return null;
-                                      },
-                                    ),
-                                  },
-                                  child: RemoteControlWrapper(
-                                    onTap: () {
-                                      setState(() {
-                                        _isSidebarExpanded =
-                                            !_isSidebarExpanded;
-                                      });
-                                    },
-                                    child: AnimatedContainer(
-                                      duration:
-                                          const Duration(milliseconds: 200),
-                                      width: _isSidebarExpanded
-                                          ? maxExpWidth
-                                          : minExpWidth,
-                                      child: Sidebar(
-                                        isSidebarExpanded: _isSidebarExpanded,
-                                        maxExpWidth: maxExpWidth,
-                                        minExpWidth: minExpWidth,
-                                        onFocus: (focused) {
-                                          if (focused && !_isSidebarExpanded) {
-                                            setState(() {
-                                              _isSidebarExpanded = true;
-                                            });
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                        // Main content
-                        Expanded(
-                          child: SafeArea(
-                            child: KeyboardListener(
-                              focusNode: FocusNode(),
-                              onKeyEvent: (KeyEvent event) {
-                                if (event is KeyDownEvent &&
-                                    event.logicalKey ==
-                                        LogicalKeyboardKey.arrowLeft) {
-                                  FocusScope.of(context)
-                                      .requestFocus(_sidebarFocusNode);
+                            },
+                            child: RemoteControlWrapper(
+                              onTap: () {
+                                if (mounted) {
+                                  setState(() {
+                                    _isSidebarExpanded = !_isSidebarExpanded;
+                                  });
                                 }
                               },
-                              child: Focus(
-                                focusNode: _contentFocusNode,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    FocusScope.of(context)
-                                        .requestFocus(_contentFocusNode);
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                width: _isSidebarExpanded
+                                    ? maxExpWidth
+                                    : minExpWidth,
+                                child: Sidebar(
+                                  isSidebarExpanded: _isSidebarExpanded,
+                                  maxExpWidth: maxExpWidth,
+                                  minExpWidth: minExpWidth,
+                                  onFocus: (focused) {
+                                    if (focused && !_isSidebarExpanded) {
+                                      if (mounted) {
+                                        setState(() {
+                                          _isSidebarExpanded = true;
+                                        });
+                                      }
+                                    }
                                   },
-                                  child: Container(
-                                    color: Colors.transparent,
-                                    child: Padding(
-                                      padding: EdgeInsets.fromLTRB(0, 0, 0,
-                                          SizeUtils.pxToDp(context, 48)),
-                                      child: widget.child,
-                                    ),
-                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ],
-                ),
+                  ),
+                  // Main content
+                  Expanded(
+                    child: SafeArea(
+                      child: KeyboardListener(
+                        focusNode: FocusNode(),
+                        onKeyEvent: (KeyEvent event) {
+                          if (event is KeyDownEvent &&
+                              event.logicalKey ==
+                                  LogicalKeyboardKey.arrowLeft) {
+                            FocusScope.of(context)
+                                .requestFocus(_sidebarFocusNode);
+                          }
+                        },
+                        child: Focus(
+                          focusNode: _contentFocusNode,
+                          child: GestureDetector(
+                            onTap: () {
+                              FocusScope.of(context)
+                                  .requestFocus(_contentFocusNode);
+                            },
+                            child: Container(
+                              color: Colors.transparent,
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(
+                                    0, 0, 0, SizeUtils.pxToDp(context, 48)),
+                                child: widget.child,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
+            ],
+          ),
+        ),
       ),
     );
   }
