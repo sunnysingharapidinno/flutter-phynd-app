@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:phynd_app/config/app_config.dart';
 import 'package:phynd_app/core/constants/base_server_endpoints.dart';
 import 'package:phynd_app/core/enums/api_env.dart';
+import 'package:phynd_app/core/enums/player_profile_section_type.dart';
 import 'package:phynd_app/core/utils/api_service.dart';
 import 'package:phynd_app/data/models/payload/game_payload_model.dart';
 import 'package:phynd_app/data/models/response/favorite_content_model.dart';
 import 'package:phynd_app/data/models/response/game_list_model.dart';
 import 'package:phynd_app/data/models/response/game_model.dart';
 import 'package:phynd_app/data/models/response/like_follow_model.dart';
+import 'package:phynd_app/data/models/response/player_profile_game.dart';
 import 'package:phynd_app/data/models/response/video_model.dart';
 
 class GameService {
@@ -397,6 +399,38 @@ class GameService {
       }
     } catch (e) {
       throw Exception('Error fetching saved videos: $e');
+    }
+  }
+
+  Future<({int count, List<PlayerProfileGame> data})>
+      getPlayerProfileSectionGames({
+    int page = 1,
+    int limit = AppConfig.pageLimit,
+    required PlayerProfileSectionType sectionType,
+    required String userId,
+    String? search,
+  }) async {
+    try {
+      final response = await api.get(
+          ServerAPIEndpoints.getPlayerProfileSectionGames,
+          auth: true,
+          queryParams: {
+            'page': page.toString(),
+            'limit': limit.toString(),
+            'section': sectionType.value,
+            'user_id': userId,
+            "search": search,
+          });
+
+      final data = jsonDecode(response.body);
+
+      final List<PlayerProfileGame> gameList = (data['data'] as List)
+          .map((gameJson) => PlayerProfileGame.fromJson(gameJson))
+          .toList();
+      debugPrint("data: ${data}");
+      return (count: data['total'] as int, data: gameList);
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
     }
   }
 }

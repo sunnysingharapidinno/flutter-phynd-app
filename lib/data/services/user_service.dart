@@ -8,6 +8,7 @@ import 'package:phynd_app/core/enums/storage.dart';
 import 'package:phynd_app/core/utils/api_service.dart';
 import 'package:phynd_app/core/utils/storage_service.dart';
 import 'package:phynd_app/data/models/response/friend_item.dart';
+import 'package:phynd_app/data/models/response/player_profile_stats.dart';
 import 'package:phynd_app/data/models/response/profile_model.dart';
 import 'package:phynd_app/data/models/response/terms_and_conditions_model.dart';
 
@@ -231,6 +232,23 @@ class UserService {
             .replaceAll('{request_id}', requestId),
         auth: true,
       );
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
+    }
+  }
+
+  Future<PlayerProfileStats> getPlayerProfileStats({
+    required String userId,
+  }) async {
+    try {
+      final response = await api.get(
+        ServerAPIEndpoints.getPlayerProfileStats.replaceAll('{userid}', userId),
+        auth: true,
+      );
+
+      final data = jsonDecode(response.body);
+
+      return PlayerProfileStats.fromJson(data);
     } catch (e) {
       throw Exception('Invalid response format: $e');
     }

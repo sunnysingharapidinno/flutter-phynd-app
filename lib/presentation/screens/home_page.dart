@@ -6,6 +6,7 @@ import 'package:phynd_app/core/routing/app_routes.dart';
 import 'package:phynd_app/data/models/payload/game_payload_model.dart';
 import 'package:phynd_app/data/models/response/game_list_model.dart';
 import 'package:phynd_app/data/services/game_service.dart';
+import 'package:phynd_app/presentation/widgets/buttons/primary_button.dart';
 import 'package:phynd_app/presentation/widgets/loader/circular_load.dart';
 import 'package:phynd_app/presentation/widgets/section/home_section.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
@@ -201,6 +202,16 @@ class _HomePageState extends State<HomePage> {
 
           // Latest Activity Section
           _buildLatestActivitySection(context),
+
+          // PrimaryButton(
+          //     text: "Show User",
+          //     onPressed: () {
+          //       Navigator.pushNamed(
+          //         context,
+          //         AppRoutes.playerProfile,
+          //         arguments: 'd63d26db-08b6-4bbf-bbcc-7169cca6d275',
+          //       );
+          //     }),
 
           // Continue Playing Section
           HomeSection(

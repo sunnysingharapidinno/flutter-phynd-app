@@ -40,14 +40,16 @@ class AppRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;
 
-    Widget wrap(Widget child) => BaseLayout(child: child);
+    Widget wrap(Widget child, {bool? isFullScreen}) =>
+        BaseLayout(child: child, isFullScreen: isFullScreen ?? false);
 
     switch (settings.name) {
       case home:
         return MaterialPageRoute(builder: (_) => wrap(const HomePage()));
       case gameInterstitial:
         return MaterialPageRoute(
-            builder: (_) => wrap(const GameInterstitialPage()));
+            builder: (_) =>
+                wrap(const GameInterstitialPage(), isFullScreen: true));
       case login:
         return MaterialPageRoute(builder: (_) => wrap(const LoginPage()));
       case registration:

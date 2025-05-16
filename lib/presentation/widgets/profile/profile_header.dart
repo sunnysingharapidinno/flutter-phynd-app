@@ -13,6 +13,9 @@ class ProfileHeader extends StatelessWidget {
 
   final String? currentlyPlaying;
   final bool isOtherProfile;
+  final int? friendsCount;
+  final int? followingCount;
+  final int? mutualFriendsCount;
 
   const ProfileHeader({
     super.key,
@@ -21,6 +24,9 @@ class ProfileHeader extends StatelessWidget {
     this.avatar,
     this.currentlyPlaying,
     this.isOtherProfile = false,
+    this.friendsCount,
+    this.followingCount,
+    this.mutualFriendsCount,
   });
 
   @override
@@ -120,7 +126,7 @@ class ProfileHeader extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "1.4K",
+                            "${friendsCount ?? 0}",
                             style: TextStyle(
                               fontSize: FontUtils.pxToSp(context, 24),
                               fontWeight: FontWeight.w600,
@@ -148,7 +154,7 @@ class ProfileHeader extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "680",
+                            "${followingCount ?? 0}",
                             style: TextStyle(
                               fontSize: FontUtils.pxToSp(context, 24),
                               fontWeight: FontWeight.w600,
@@ -188,7 +194,7 @@ class ProfileHeader extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: SizeUtils.pxToDp(context, 80)),
-                ImageThumbnail(
+                const ImageThumbnail(
                   imageUrl: AppImages.peopleLogoGreyBg,
                   height: 75,
                   width: 75,
@@ -197,7 +203,7 @@ class ProfileHeader extends StatelessWidget {
                 ),
                 SizedBox(width: SizeUtils.pxToDp(context, 16)),
                 Text(
-                  '34 Mutual Friends ',
+                  '$mutualFriendsCount Mutual Friends ',
                   style: TextStyle(
                     color: subText2,
                     fontSize: FontUtils.pxToSp(context, 36),

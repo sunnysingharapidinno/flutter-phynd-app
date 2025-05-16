@@ -59,7 +59,7 @@ class _RemoteControlWrapperState extends State<RemoteControlWrapper> {
               color: _isFocused
                   ? Theme.of(context).colorScheme.primary
                   : Colors.transparent,
-              width: 3,
+              width: 1,
             ),
           ),
           child: widget.child,

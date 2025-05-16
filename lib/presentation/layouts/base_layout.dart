@@ -10,10 +10,12 @@ import 'package:phynd_app/presentation/widgets/sidebar.dart';
 
 class BaseLayout extends StatefulWidget {
   final Widget child;
+  final bool isFullScreen;
 
   const BaseLayout({
     super.key,
     required this.child,
+    this.isFullScreen = false,
   });
 
   @override
@@ -315,7 +317,14 @@ class _BaseLayoutState extends State<BaseLayout> {
                             },
                             child: Container(
                               color: Colors.transparent,
-                              child: widget.child,
+                              child: widget.isFullScreen
+                                  ? widget.child
+                                  : Padding(
+                                      padding: EdgeInsets.only(
+                                          bottom:
+                                              SizeUtils.pxToDp(context, 40)),
+                                      child: widget.child,
+                                    ),
                             ),
                           ),
                         ),

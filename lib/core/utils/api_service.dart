@@ -12,11 +12,17 @@ class ApiService {
   Future<http.Response> get(
     String endpoint, {
     Map<String, String>? headers,
-    Map<String, String>? queryParams,
+    Map<String, String?>? queryParams,
     bool auth = false,
   }) async {
-    final uri =
-        Uri.parse('$baseUrl$endpoint').replace(queryParameters: queryParams);
+    Map<String, String?>? filteredQueryParams;
+    if (queryParams != null) {
+      filteredQueryParams = Map.from(queryParams)
+        ..removeWhere((key, value) => value == null);
+    }
+
+    final uri = Uri.parse('$baseUrl$endpoint')
+        .replace(queryParameters: filteredQueryParams);
     final Map<String, String> finalHeaders = await _buildHeaders(headers, auth);
 
     try {
@@ -37,11 +43,17 @@ class ApiService {
     final url = Uri.parse('$baseUrl$endpoint');
     final Map<String, String> finalHeaders = await _buildHeaders(headers, auth);
 
+    Map<String, dynamic>? filteredBody;
+    if (body != null) {
+      filteredBody =
+          Map.fromEntries(body.entries.where((entry) => entry.value != null));
+    }
+
     try {
       final response = await http.post(
         url,
         headers: finalHeaders,
-        body: jsonEncode(body ?? {}),
+        body: jsonEncode(filteredBody ?? {}),
       );
       _handleResponse(response);
       return response;
@@ -59,11 +71,17 @@ class ApiService {
     final url = Uri.parse('$baseUrl$endpoint');
     final Map<String, String> finalHeaders = await _buildHeaders(headers, auth);
 
+    Map<String, dynamic>? filteredBody;
+    if (body != null) {
+      filteredBody =
+          Map.fromEntries(body.entries.where((entry) => entry.value != null));
+    }
+
     try {
       final response = await http.put(
         url,
         headers: finalHeaders,
-        body: jsonEncode(body ?? {}),
+        body: jsonEncode(filteredBody ?? {}),
       );
       _handleResponse(response);
       return response;
@@ -81,11 +99,17 @@ class ApiService {
     final url = Uri.parse('$baseUrl$endpoint');
     final Map<String, String> finalHeaders = await _buildHeaders(headers, auth);
 
+    Map<String, dynamic>? filteredBody;
+    if (body != null) {
+      filteredBody =
+          Map.fromEntries(body.entries.where((entry) => entry.value != null));
+    }
+
     try {
       final response = await http.delete(
         url,
         headers: finalHeaders,
-        body: jsonEncode(body ?? {}),
+        body: jsonEncode(filteredBody ?? {}),
       );
       _handleResponse(response);
       return response;

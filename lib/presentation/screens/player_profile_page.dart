@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phynd_app/core/constants/ui_constants.dart';
+import 'package:phynd_app/core/enums/player_profile_section_type.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
+import 'package:phynd_app/data/models/response/player_profile_game.dart';
+import 'package:phynd_app/data/models/response/player_profile_stats.dart';
+import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/data/services/user_service.dart';
 import 'package:phynd_app/data/models/response/profile_model.dart';
 import 'package:phynd_app/presentation/bloc/auth/auth_bloc.dart';
+import 'package:phynd_app/presentation/bloc/auth/auth_state.dart';
 import 'package:phynd_app/presentation/widgets/cards/clip_card/game_clip_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/fav_game_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/friends_play_card.dart';
@@ -15,7 +20,7 @@ import 'package:phynd_app/presentation/widgets/profile/recently_uploaded_clips.d
 import 'package:phynd_app/presentation/widgets/ratings/ratings.dart';
 import 'package:phynd_app/presentation/widgets/section/home_section.dart';
 
-class PlayerProfilePage extends StatefulWidget {
+class PlayerProfilePage<T> extends StatefulWidget {
   final String? userId;
 
   const PlayerProfilePage({
@@ -27,203 +32,350 @@ class PlayerProfilePage extends StatefulWidget {
   State<PlayerProfilePage> createState() => _PlayerProfilePageState();
 }
 
-class _PlayerProfilePageState extends State<PlayerProfilePage> {
+class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
   final UserService _userService = UserService();
   Profile? _userProfile;
   bool _isLoading = false;
+  final GameService _gameService = GameService();
 
-  final games = [
-    {
-      'number': 1,
-      'name': 'Grit',
-      'image': 'https://xstrela-alpha.s3.amazonaws.com/images/Grit.png',
-    },
-    {
-      'number': 2,
-      'name': 'Brawl Stars',
-      'image': 'https://xstrela-alpha.s3.amazonaws.com/images/BrawlStars.jpeg',
-    },
-    {
-      'number': 3,
-      'name': 'Fortnite',
-      'image':
-          'https://xstrela-alpha.s3.amazonaws.com/images/fortniteHeros.jpeg',
-    },
-    {
-      'number': 4,
-      'name': 'Neon Racers',
-      'image':
-          'https://xstrela-alpha.s3.amazonaws.com/images/NeonCarsPoster.jpeg',
-    },
-    {
-      'number': 5,
-      'name': 'Mario Kart',
-      'image': 'https://xstrela-alpha.s3.amazonaws.com/images/MarioKarts.png',
-    },
-    {
-      'number': 1,
-      'name': 'Grit',
-      'image': 'https://xstrela-alpha.s3.amazonaws.com/images/Grit.png',
-    },
-    {
-      'number': 2,
-      'name': 'Brawl Stars',
-      'image': 'https://xstrela-alpha.s3.amazonaws.com/images/BrawlStars.jpeg',
-    },
-    {
-      'number': 3,
-      'name': 'Fortnite',
-      'image':
-          'https://xstrela-alpha.s3.amazonaws.com/images/fortniteHeros.jpeg',
-    },
-    {
-      'number': 4,
-      'name': 'Neon Racers',
-      'image':
-          'https://xstrela-alpha.s3.amazonaws.com/images/NeonCarsPoster.jpeg',
-    },
-    {
-      'number': 5,
-      'name': 'Mario Kart',
-      'image': 'https://xstrela-alpha.s3.amazonaws.com/images/MarioKarts.png',
-    },
-  ];
+  bool _favoriteGamesLoading = false;
+  List<PlayerProfileGame> _favoriteGames = [];
+  bool _continuePlayingGamesLoading = false;
+  List<PlayerProfileGame> _continuePlayingGames = [];
+  bool _friendGamesLoading = false;
+  List<PlayerProfileGame> _friendGames = [];
+  PlayerProfileStats? _profileStats;
+  bool _profileStatsLoading = false;
+
+  bool _isCurrentUser = false;
+  Profile? _currentUserProfileFromAuth;
 
   @override
   void initState() {
     super.initState();
-    _getUserDetails(widget.userId);
+    _isCurrentUser = widget.userId == null;
+
+    if (!_isCurrentUser) {
+      _fetchUserProfileById(widget.userId!);
+    }
   }
 
-  Future<void> _getUserDetails(String? userId) async {
+  Future<void> _fetchUserProfileById(String userId) async {
     try {
-      if (userId != null) {
+      setState(() {
+        _isLoading = true;
+      });
+      final profile = await _userService.getUserById(userId: userId);
+      setState(() {
+        _userProfile = profile;
+        _isLoading = false;
+      });
+      if (mounted) {
+        _loadAssociatedPlayerData(profile.user.id);
+      }
+    } catch (e) {
+      if (mounted) {
         setState(() {
-          _isLoading = true;
-        });
-        final profile = await _userService.getUserById(userId: userId);
-        setState(() {
-          _userProfile = profile;
-        });
-      } else {
-        // Get current user's profile from AuthBloc
-        final authState = context.read<AuthBloc>().state;
-        setState(() {
-          _userProfile = authState.profile;
           _isLoading = false;
         });
       }
-    } catch (e) {
+      debugPrint('Error fetching profile by ID: $e');
+      // Handle error, e.g., show a snackbar or error message
+    }
+  }
+
+  Future<void> _loadAssociatedPlayerData(String profileUserId) async {
+    if (profileUserId.isEmpty) {
+      debugPrint("Cannot load associated player data: profileUserId is empty.");
+      return;
+    }
+    debugPrint("Loading associated player data for user id: ${profileUserId}");
+    // Trigger all loads, they manage their own loading states
+    _getPlayerStats(profileUserId);
+    _getPlayerFavoriteGames(profileUserId);
+    if (_isCurrentUser) {
+      _getPlayerContinuePlayingGames(profileUserId);
+    }
+    _getPlayerFriendsGames(profileUserId);
+  }
+
+  Future<void> _getPlayerStats(String userId) async {
+    try {
       setState(() {
-        _isLoading = false;
+        _profileStatsLoading = true;
       });
-      // Handle error
+      final response = await _userService.getPlayerProfileStats(
+        userId: userId,
+      );
+
+      setState(() {
+        _profileStats = response;
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      setState(() {
+        _profileStatsLoading = false;
+      });
+    }
+  }
+
+  Future<void> _getPlayerFavoriteGames(String userId) async {
+    try {
+      setState(() {
+        _favoriteGamesLoading = true;
+      });
+      final response = await _gameService.getPlayerProfileSectionGames(
+        sectionType: PlayerProfileSectionType.favoriteDesc,
+        userId: userId,
+      );
+
+      setState(() {
+        _favoriteGames = response.data;
+      });
+      print("favorite games: ${_favoriteGames}");
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      setState(() {
+        _favoriteGamesLoading = false;
+      });
+    }
+  }
+
+  Future<void> _getPlayerContinuePlayingGames(String userId) async {
+    try {
+      setState(() {
+        _continuePlayingGamesLoading = true;
+      });
+      final response = await _gameService.getPlayerProfileSectionGames(
+        sectionType: PlayerProfileSectionType.continuePlayingDesc,
+        userId: userId,
+      );
+
+      setState(() {
+        _continuePlayingGames = response.data;
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      setState(() {
+        _continuePlayingGamesLoading = false;
+      });
+    }
+  }
+
+  Future<void> _getPlayerFriendsGames(String userId) async {
+    try {
+      setState(() {
+        _friendGamesLoading = true;
+      });
+      final response = await _gameService.getPlayerProfileSectionGames(
+        sectionType: _isCurrentUser
+            ? PlayerProfileSectionType.friendGameDesc
+            : PlayerProfileSectionType.continuePlayingMutualDesc,
+        userId: userId,
+      );
+
+      print("friend games: ${response.data}");
+
+      setState(() {
+        _friendGames = response.data;
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      setState(() {
+        _friendGamesLoading = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isCurrentUser) {
+      return BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, authState) {
+          if (authState.status == AuthStatus.authenticated &&
+              authState.profile != null) {
+            if (_currentUserProfileFromAuth == null ||
+                _currentUserProfileFromAuth!.user.id !=
+                    authState.profile!.user.id) {
+              if (mounted) {
+                setState(() {
+                  _userProfile = authState.profile;
+                  _currentUserProfileFromAuth = authState.profile;
+                  _isLoading = false;
+                });
+                _loadAssociatedPlayerData(authState.profile!.user.id);
+              }
+            }
+          } else if (authState.status == AuthStatus.unauthenticated) {
+            if (mounted) {
+              setState(() {
+                _userProfile = null;
+                _currentUserProfileFromAuth = null;
+                _isLoading = false;
+                _favoriteGames = [];
+                _continuePlayingGames = [];
+                _friendGames = [];
+              });
+            }
+          } else if (authState.status == AuthStatus.loading) {
+            if (mounted) {
+              setState(() {
+                _isLoading = true;
+              });
+            }
+          } else if (authState.status == AuthStatus.error) {
+            if (mounted) {
+              setState(() {
+                _isLoading = false;
+                _userProfile = null;
+                _currentUserProfileFromAuth = null;
+              });
+            }
+          }
+        },
+        builder: (context, authState) {
+          if (authState.status == AuthStatus.loading ||
+              (authState.status == AuthStatus.initial &&
+                  _userProfile == null)) {
+            return const Center(
+                child:
+                    CircularProgressIndicator(key: ValueKey("auth_loading")));
+          }
+
+          if (authState.status == AuthStatus.authenticated &&
+              _userProfile != null) {
+            return _buildProfileContent();
+          } else if (authState.status == AuthStatus.unauthenticated) {
+            return const Center(
+                child: Text("User not authenticated. Please login."));
+          } else if (authState.status == AuthStatus.error) {
+            return Center(
+                child: Text(
+                    "Authentication error: ${authState.errorMessage ?? 'Unknown error'}"));
+          } else if (_isLoading) {
+            return const Center(
+                child: CircularProgressIndicator(
+                    key: ValueKey("auth_fallback_loading")));
+          }
+          return const Center(child: Text("Profile not available."));
+        },
+      );
+    } else {
+      return _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(
+                  key: ValueKey("other_user_loading")))
+          : _userProfile != null
+              ? _buildProfileContent()
+              : const Center(child: Text("User profile not found."));
+    }
+  }
+
+  Widget _buildProfileContent() {
     final String displayName = _userProfile != null
         ? "${_userProfile!.user.first_name} ${_userProfile!.user.last_name}"
         : "User";
 
-    return _isLoading
-        ? const Center(child: CircularProgressIndicator())
-        : SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ProfileHeader(
-                  username: displayName,
-                  isOnline: true,
-                  avatar: _userProfile?.user.dp_url,
-                  currentlyPlaying: 'Marvel Rivals',
-                  isOtherProfile: widget.userId != null,
-                ),
+    if (_isLoading && !_isCurrentUser) {
+      return const Center(
+          child: CircularProgressIndicator(
+              key: ValueKey("profile_content_outer_loading")));
+    }
 
-                SizedBox(height: SizeUtils.pxToDp(context, 48)),
+    if (_userProfile == null) {
+      return const Center(child: Text("Profile data is unavailable."));
+    }
 
-                // Favorite Games Section
-
-                Padding(
-                    padding: EdgeInsets.fromLTRB(SizeUtils.pxToDp(context, 32),
-                        0, SizeUtils.pxToDp(context, 100), 0),
-                    child: Column(
-                      children: [
-                        HomeSection(
-                          cardSpacing: 60,
-                          cardsPerView: 5,
-                          heading: 'Favorite Games',
-                          sectionHeight: SizeUtils.pxToDp(context, 740),
-                          items: games,
-                          cardBuilder: (context, game, width, index) {
-                            return FavGameCard(
-                              width: double.infinity,
-                              height: 300,
-                              imageUrl: game['image'] as String,
-                              rank: index + 1,
-                              title: game['name'] as String,
-                            );
-                          },
-                        ),
-                        SizedBox(height: SizeUtils.pxToDp(context, 48)),
-                        HomeSection(
-                          cardSpacing: UIConstants.cardSpacing,
-                          cardsPerView: UIConstants.defaultCardsPerView,
-                          heading: 'Continue Playing',
-                          sectionHeight: 350,
-                          items: games,
-                          onEndOfScroll: () {
-                            print('onEndOfScroll');
-                          },
-                          cardBuilder: (context, game, width, index) {
-                            return GameClipCard(
-                              height: 233,
-                              thumbnailUrl:
-                                  'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
-                              videoUrl:
-                                  'https://cdn.pixabay.com/video/2025/04/29/275633_large.mp4',
-                              title: 'Heroes of Mavia',
-                              rating: 5,
-                              esrbRatingImageUrl:
-                                  'https://xstrela-uat.s3.us-east-1.amazonaws.com/ESRB/everyone.png',
-                            );
-                          },
-                        ),
-                        SizedBox(height: SizeUtils.pxToDp(context, 48)),
-                        HomeSection(
-                          cardSpacing: UIConstants.cardSpacing,
-                          cardsPerView: UIConstants.defaultCardsPerView,
-                          heading: 'Games Your Friends Are Playing',
-                          sectionHeight: 470,
-                          items: games,
-                          cardBuilder: (context, game, width, index) {
-                            return FriendsPlayCard(
-                              gameImageUrl:
-                                  'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
-                              gameTitle: 'Heroes of Mavia',
-                              esrbRatingImageUrl:
-                                  'https://xstrela-uat.s3.us-east-1.amazonaws.com/ESRB/everyone.png',
-                              userAvatarUrl:
-                                  'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
-                              userGamertag: 'Coolgamer123',
-                              currentlyPlayingGame: 'Brawl Stars',
-                            );
-                          },
-                        ),
-                      ],
-                    )),
-
-                // Recently Uploaded Clips Section
-                // const RecentlyUploadedClips(),
-
-                // Achievements Section
-                // const AchievementsSection(),
-
-                // Quests in Progress Section
-                // const QuestsInProgress(),
-              ],
-            ),
-          );
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ProfileHeader(
+            username: displayName,
+            isOnline: true,
+            avatar: _userProfile?.user.dp_url,
+            currentlyPlaying: 'Marvel Rivals',
+            isOtherProfile: widget.userId != null,
+            friendsCount: _profileStats?.friendCount,
+            followingCount: _profileStats?.userFollowings,
+            mutualFriendsCount: _profileStats?.mutualFriendCount,
+          ),
+          SizedBox(height: SizeUtils.pxToDp(context, 48)),
+          Padding(
+              padding: EdgeInsets.fromLTRB(SizeUtils.pxToDp(context, 32), 0,
+                  SizeUtils.pxToDp(context, 100), 0),
+              child: Column(
+                children: [
+                  HomeSection(
+                    cardSpacing: 60,
+                    cardsPerView: 5,
+                    heading: 'Favorite Games',
+                    sectionHeight: 470,
+                    items: _favoriteGames,
+                    isLoading: _favoriteGamesLoading,
+                    cardBuilder: (context, game, width, index) {
+                      return FavGameCard(
+                        width: double.infinity,
+                        height: 300,
+                        imageUrl: game.thumbnail ?? '',
+                        rank: index + 1,
+                        title: game.name ?? 'N/A',
+                      );
+                    },
+                  ),
+                  SizedBox(height: SizeUtils.pxToDp(context, 48)),
+                  if (_isCurrentUser) ...[
+                    HomeSection(
+                      cardSpacing: UIConstants.cardSpacing,
+                      cardsPerView: UIConstants.defaultCardsPerView,
+                      heading: 'Continue Playing',
+                      sectionHeight: 350,
+                      items: _continuePlayingGames,
+                      isLoading: _continuePlayingGamesLoading,
+                      onEndOfScroll: () {
+                        print('onEndOfScroll');
+                      },
+                      cardBuilder: (context, game, width, index) {
+                        return GameClipCard(
+                          height: 233,
+                          thumbnailUrl: game.thumbnail,
+                          videoUrl:
+                              'https://cdn.pixabay.com/video/2025/04/29/275633_large.mp4',
+                          title: game.name,
+                          rating: 5,
+                          esrbRatingImageUrl: game.esrbRatingImgUrl,
+                        );
+                      },
+                    ),
+                    SizedBox(height: SizeUtils.pxToDp(context, 48)),
+                  ],
+                  HomeSection(
+                    cardSpacing: UIConstants.cardSpacing,
+                    cardsPerView: UIConstants.defaultCardsPerView,
+                    heading: 'Games Your Friends Are Playing',
+                    sectionHeight: 350,
+                    items: _friendGames,
+                    isLoading: _friendGamesLoading,
+                    cardBuilder: (context, game, width, index) {
+                      return GameClipCard(
+                        height: 233,
+                        thumbnailUrl: game.thumbnail,
+                        videoUrl:
+                            'https://cdn.pixabay.com/video/2025/04/29/275633_large.mp4',
+                        title: game.name,
+                        rating: 5,
+                        esrbRatingImageUrl: game.esrbRatingImgUrl,
+                      );
+                    },
+                  ),
+                ],
+              )),
+        ],
+      ),
+    );
   }
 }

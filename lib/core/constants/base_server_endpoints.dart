@@ -167,4 +167,7 @@ class ServerAPIEndpoints {
       'api/v1/me/friends/requests/{request_id}/accept';
   static const String rejectFriendRequest =
       'api/v1/me/friends/requests/{request_id}/reject';
+  static const String getPlayerProfileSectionGames = 'api/v1/users/games';
+  static const String getPlayerProfileStats =
+      'api/v1/users/profile-details/stats/{userid}';
 }
