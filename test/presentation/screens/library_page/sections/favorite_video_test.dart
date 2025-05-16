@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:phynd_app/core/enums/media_type.dart';
 import 'package:phynd_app/data/models/response/favorite_content_model.dart';
 import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/presentation/screens/library_page/sections/favorite_video.dart';
@@ -23,7 +24,7 @@ void main() {
     when(mockGameService.getFavoriteContent(
       page: 1,
       limit: 10,
-      contentType: 'VIDEO',
+      contentType: MediaType.video.value,
     )).thenAnswer((_) async => (
           data: <FavoriteContent>[],
           currentPage: 1,
@@ -47,7 +48,7 @@ void main() {
       when(mockGameService.getFavoriteContent(
         page: 1,
         limit: 10,
-        contentType: 'VIDEO',
+        contentType: MediaType.video.value,
       )).thenAnswer((_) async => (
             data: <FavoriteContent>[],
             currentPage: 1,
@@ -88,7 +89,7 @@ void main() {
     //   when(mockGameService.getFavoriteContent(
     //     page: 1,
     //     limit: 10,
-    //     contentType: 'VIDEO',
+    //     contentType: MediaType.video.value,
     //   )).thenAnswer((_) async => (
     //         data: mockContent,
     //         currentPage: 1,
@@ -109,7 +110,7 @@ void main() {
       when(mockGameService.getFavoriteContent(
         page: 1,
         limit: 10,
-        contentType: 'VIDEO',
+        contentType: MediaType.video.value,
       )).thenThrow(Exception('Network error'));
 
       await tester.pumpWidget(createWidgetUnderTest());

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:phynd_app/core/utils/size_utils.dart';
+import 'package:phynd_app/core/constants/ui_constants.dart';
+import 'package:phynd_app/core/enums/media_type.dart';
 import 'package:phynd_app/data/models/response/favorite_content_model.dart';
 import 'package:phynd_app/data/services/game_service.dart';
-import 'package:phynd_app/presentation/widgets/common/no_data_widget.dart';
-import 'package:phynd_app/presentation/widgets/heading/slider_heading.dart';
-import 'package:phynd_app/presentation/widgets/publisher/events_offers_section.dart';
+import 'package:phynd_app/presentation/widgets/cards/event_offer_card.dart';
 import 'package:phynd_app/presentation/widgets/section/home_section.dart';
 
 class SavedEventsSection extends StatefulWidget {
@@ -19,8 +18,7 @@ class _SavedEventsSectionState extends State<SavedEventsSection> {
   late final GameService _gameService;
   List<FavoriteContent> _content = [];
   bool _isLoading = true;
-  int _currentPage = 1;
-  static const int _pageSize = 10;
+  int _currentPage = UIConstants.initialPage;
   bool _hasMoreContent = true;
 
   @override
@@ -40,8 +38,8 @@ class _SavedEventsSectionState extends State<SavedEventsSection> {
 
       final result = await _gameService.getSavedContent(
         page: _currentPage,
-        limit: _pageSize,
-        contentType: 'IMAGE',
+        limit: UIConstants.defaultPageSize,
+        contentType: MediaType.image.value,
       );
 
       setState(() {
@@ -67,56 +65,30 @@ class _SavedEventsSectionState extends State<SavedEventsSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        if (_isLoading)
-          const Text('Loading...')
-        else if (_content.isEmpty)
-          const Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SliderHeading('Saved Events and Offers'),
-              SizedBox(height: 16),
-              NoDataWidget(
-                title: 'No Saved Events',
-                subtitle: 'You haven\'t saved any events yet',
-                icon: Icons.bookmark_border,
-              ),
-            ],
-          )
-        else
-          Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: SizeUtils.pxToDp(context, 56),
-              vertical: SizeUtils.pxToDp(context, 0),
-            ),
-            child: HomeSection(
-              cardSpacing: 20,
-              cardsPerView: 2,
-              heading: 'Saved Events and Offers',
-              items: _content,
-              sectionHeight: 600,
-              cardBuilder: (context, content, width, index) {
-                return EventOfferCard(
-                  imageUrl: content.url,
-                  title: 'Test Event',
-                  friendsCount: 10,
-                  friendAvatars: [],
-                  actionText: 'Save',
-                  isEvent: true,
-                  primaryColor: Colors.blue,
-                  textColor: Colors.white,
-                );
-              },
-              onEndOfScroll: () {
-                _fetchContent();
-                _currentPage++;
-              },
-            ),
-          ),
-        const SizedBox(height: 32),
-      ],
+    return HomeSection(
+      cardSpacing: UIConstants.cardSpacing,
+      cardsPerView: 2,
+      heading: 'Saved Events and Offers',
+      items: _content,
+      sectionHeight: 700,
+      cardBuilder: (context, content, width, index) {
+        return EventOfferCard(
+          backgroundImageUrl: content.url,
+          publisherLogoUrl:
+              "https://xstrela-alpha.s3.us-east-1.amazonaws.com/images/temp/DP_IMAGE_URL/PNG/8005f2f1-6d23-4521-84d4-91f16ac200ca",
+          gameTitle: "Valorant",
+          isVerified: true,
+          friendsSavedCount: 86,
+          width: double.infinity,
+          height: 400,
+        );
+      },
+      onEndOfScroll: () {
+        _currentPage++;
+        _fetchContent();
+      },
+      isLoading: _isLoading,
+      isLoadingMore: _isLoading,
     );
   }
 }

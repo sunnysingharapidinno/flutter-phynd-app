@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:phynd_app/core/constants/ui_constants.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
 import 'package:phynd_app/data/services/user_service.dart';
 import 'package:phynd_app/data/models/response/profile_model.dart';
@@ -167,8 +168,8 @@ class _PlayerProfilePageState extends State<PlayerProfilePage> {
                         ),
                         SizedBox(height: SizeUtils.pxToDp(context, 48)),
                         HomeSection(
-                          cardSpacing: 20,
-                          cardsPerView: 4,
+                          cardSpacing: UIConstants.cardSpacing,
+                          cardsPerView: UIConstants.defaultCardsPerView,
                           heading: 'Continue Playing',
                           sectionHeight: 350,
                           items: games,
@@ -191,8 +192,8 @@ class _PlayerProfilePageState extends State<PlayerProfilePage> {
                         ),
                         SizedBox(height: SizeUtils.pxToDp(context, 48)),
                         HomeSection(
-                          cardSpacing: 20,
-                          cardsPerView: 4,
+                          cardSpacing: UIConstants.cardSpacing,
+                          cardsPerView: UIConstants.defaultCardsPerView,
                           heading: 'Games Your Friends Are Playing',
                           sectionHeight: 470,
                           items: games,

@@ -8,7 +8,7 @@ class HomeSection<T> extends StatefulWidget {
   final List<T> items;
   final Widget Function(BuildContext, T, double, int) cardBuilder;
   final double cardSpacing;
-  final double cardsPerView;
+  final int cardsPerView;
   final double sectionHeight;
   final VoidCallback? onEndOfScroll;
   final bool isLoading;

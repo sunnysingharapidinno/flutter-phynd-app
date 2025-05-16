@@ -37,7 +37,7 @@ void main() {
       when(mockGameService.getFavoriteContent(
         page: 1,
         limit: 10,
-        contentType: 'IMAGE',
+        contentType: MediaType.image.value,
       )).thenAnswer((_) async => (
             data: <FavoriteContent>[],
             total: 0,
@@ -76,7 +76,7 @@ void main() {
       when(mockGameService.getFavoriteContent(
         page: 1,
         limit: 10,
-        contentType: 'IMAGE',
+        contentType: MediaType.image.value,
       )).thenAnswer((_) async => (
             data: mockContent,
             total: 2,
@@ -96,7 +96,7 @@ void main() {
       when(mockGameService.getFavoriteContent(
         page: 1,
         limit: 10,
-        contentType: 'IMAGE',
+        contentType: MediaType.image.value,
       )).thenThrow(Exception('Network error'));
 
       await tester.pumpWidget(createWidgetUnderTest());
