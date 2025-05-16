@@ -48,17 +48,20 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _featuredPageController = PageController();
     _fetchFeatGameList().then((_) {
-      _startFeaturedTimer();
+      if (mounted && (_featGamesList != null && _featGamesList!.isNotEmpty)) {
+        _startFeaturedTimer();
+      }
     });
     _fetchTrendGameList();
     _fetchNewGameList();
-    // _fetchBrowseGameList();
+    _fetchBrowseGameList();
   }
 
   void _startFeaturedTimer() {
     _featuredTimer?.cancel();
     _featuredTimer = Timer.periodic(const Duration(seconds: 7), (timer) {
-      if (_featGamesList != null &&
+      if (mounted &&
+          _featGamesList != null &&
           _featGamesList!.isNotEmpty &&
           _featuredPageController.hasClients) {
         int nextPage = (_currentFeaturedIndex + 1) % _featGamesList!.length;
@@ -79,6 +82,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _fetchFeatGameList() async {
+    if (!mounted) return;
     setState(() => _isFeatGamesLoading = true);
 
     final filters = GamePayload(
@@ -87,15 +91,20 @@ class _HomePageState extends State<HomePage> {
 
     try {
       final details = await _gameService.getMarketplaceGames(filters: filters);
-      setState(() => _featGamesList = details.data);
+      if (mounted) {
+        setState(() => _featGamesList = details.data);
+      }
     } catch (e) {
-      print("Error fetching game details: $e");
+      print("Error fetching featured game details: $e");
     } finally {
-      setState(() => _isFeatGamesLoading = false);
+      if (mounted) {
+        setState(() => _isFeatGamesLoading = false);
+      }
     }
   }
 
   Future<void> _fetchTrendGameList() async {
+    if (!mounted) return;
     setState(() => _isTrendGamesLoading = true);
 
     final filters = GamePayload(
@@ -104,15 +113,20 @@ class _HomePageState extends State<HomePage> {
 
     try {
       final details = await _gameService.getMarketplaceGames(filters: filters);
-      setState(() => _trendGamesList = details.data);
+      if (mounted) {
+        setState(() => _trendGamesList = details.data);
+      }
     } catch (e) {
-      print("Error fetching game details: $e");
+      print("Error fetching trending game details: $e");
     } finally {
-      setState(() => _isTrendGamesLoading = false);
+      if (mounted) {
+        setState(() => _isTrendGamesLoading = false);
+      }
     }
   }
 
   Future<void> _fetchNewGameList() async {
+    if (!mounted) return;
     setState(() => _isNewGamesLoading = true);
 
     final filters = GamePayload(
@@ -121,15 +135,20 @@ class _HomePageState extends State<HomePage> {
 
     try {
       final details = await _gameService.getMarketplaceGames(filters: filters);
-      setState(() => _newGamesList = details.data);
+      if (mounted) {
+        setState(() => _newGamesList = details.data);
+      }
     } catch (e) {
-      print("Error fetching game details: $e");
+      print("Error fetching new game details: $e");
     } finally {
-      setState(() => _isNewGamesLoading = false);
+      if (mounted) {
+        setState(() => _isNewGamesLoading = false);
+      }
     }
   }
 
   Future<void> _fetchBrowseGameList() async {
+    if (!mounted) return;
     setState(() => _isTopGamesLoading = true);
 
     final filters = GamePayload(
@@ -138,11 +157,15 @@ class _HomePageState extends State<HomePage> {
 
     try {
       final details = await _gameService.getMarketplaceGames(filters: filters);
-      setState(() => _topGamesList = details.data);
+      if (mounted) {
+        setState(() => _topGamesList = details.data);
+      }
     } catch (e) {
-      print("Error fetching game details: $e");
+      print("Error fetching browse/top game details: $e");
     } finally {
-      setState(() => _isTopGamesLoading = false);
+      if (mounted) {
+        setState(() => _isTopGamesLoading = false);
+      }
     }
   }
 
