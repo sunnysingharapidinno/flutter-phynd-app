@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phynd_app/core/constants/ui_constants.dart';
+import 'package:phynd_app/core/enums/friend_status.dart';
 import 'package:phynd_app/core/enums/player_profile_section_type.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
 import 'package:phynd_app/data/models/response/player_profile_game.dart';
@@ -12,6 +13,8 @@ import 'package:phynd_app/presentation/bloc/auth/auth_bloc.dart';
 import 'package:phynd_app/presentation/bloc/auth/auth_state.dart';
 import 'package:phynd_app/presentation/widgets/cards/clip_card/game_clip_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/fav_game_card.dart';
+import 'package:phynd_app/presentation/widgets/loader/circular_load.dart';
+import 'package:phynd_app/presentation/widgets/notifier.dart';
 import 'package:phynd_app/presentation/widgets/profile/profile_header.dart';
 import 'package:phynd_app/presentation/widgets/carousel/carousel_row.dart';
 
@@ -40,14 +43,26 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
   bool _friendGamesLoading = false;
   List<PlayerProfileGame> _friendGames = [];
   PlayerProfileStats? _profileStats;
+  bool _isFriend = false;
+  FriendStatus? _friendStatus;
 
   bool _isCurrentUser = false;
-  Profile? _currentUserProfileFromAuth;
 
   @override
   void initState() {
     super.initState();
-    _isCurrentUser = widget.userId == null;
+    setState(() {
+      _isCurrentUser = widget.userId == null;
+    });
+
+    if (widget.userId != null) {
+      _checkFriendStatus();
+    } else {
+      setState(() {
+        _isCurrentUser = true;
+        _isFriend = true;
+      });
+    }
 
     if (!_isCurrentUser) {
       _fetchUserProfileById(widget.userId!);
@@ -178,199 +193,172 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (_isCurrentUser) {
-      return BlocConsumer<AuthBloc, AuthState>(
-        listener: (context, authState) {
-          if (authState.status == AuthStatus.authenticated &&
-              authState.profile != null) {
-            if (_currentUserProfileFromAuth == null ||
-                _currentUserProfileFromAuth!.user.id !=
-                    authState.profile!.user.id) {
-              if (mounted) {
-                setState(() {
-                  _userProfile = authState.profile;
-                  _currentUserProfileFromAuth = authState.profile;
-                  _isLoading = false;
-                });
-                _loadAssociatedPlayerData(authState.profile!.user.id);
-              }
-            }
-          } else if (authState.status == AuthStatus.unauthenticated) {
-            if (mounted) {
-              setState(() {
-                _userProfile = null;
-                _currentUserProfileFromAuth = null;
-                _isLoading = false;
-                _favoriteGames = [];
-                _continuePlayingGames = [];
-                _friendGames = [];
-              });
-            }
-          } else if (authState.status == AuthStatus.loading) {
-            if (mounted) {
-              setState(() {
-                _isLoading = true;
-              });
-            }
-          } else if (authState.status == AuthStatus.error) {
-            if (mounted) {
-              setState(() {
-                _isLoading = false;
-                _userProfile = null;
-                _currentUserProfileFromAuth = null;
-              });
-            }
-          }
-        },
-        builder: (context, authState) {
-          if (authState.status == AuthStatus.loading ||
-              (authState.status == AuthStatus.initial &&
-                  _userProfile == null)) {
-            return const Center(
-                child:
-                    CircularProgressIndicator(key: ValueKey("auth_loading")));
-          }
-
-          if (authState.status == AuthStatus.authenticated &&
-              _userProfile != null) {
-            return _buildProfileContent(userId: authState.profile?.user.id);
-          } else if (authState.status == AuthStatus.unauthenticated) {
-            return const Center(
-                child: Text("User not authenticated. Please login."));
-          } else if (authState.status == AuthStatus.error) {
-            return Center(
-                child: Text(
-                    "Authentication error: ${authState.errorMessage ?? 'Unknown error'}"));
-          } else if (_isLoading) {
-            return const Center(
-                child: CircularProgressIndicator(
-                    key: ValueKey("auth_fallback_loading")));
-          }
-          return const Center(child: Text("Profile not available."));
-        },
-      );
-    } else {
-      return _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(
-                  key: ValueKey("other_user_loading")))
-          : _userProfile != null
-              ? _buildProfileContent()
-              : const Center(child: Text("User profile not found."));
+  Future<void> _checkFriendStatus() async {
+    try {
+      final friendStatus =
+          await _userService.checkFriendStatus(userId: widget.userId!);
+      setState(() {
+        _isFriend = friendStatus.status == FriendStatus.accepted;
+        _isCurrentUser = false;
+        _friendStatus = friendStatus.status;
+      });
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 
-  Widget _buildProfileContent({String? userId}) {
-    final String displayName = _userProfile != null
-        ? "${_userProfile!.user.first_name} ${_userProfile!.user.last_name}"
-        : "User";
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, authState) async {
+        debugPrint("auth state: ${authState}, ${widget.userId}");
+        if (widget.userId != null) {
+          _checkFriendStatus();
+        } else {
+          setState(() {
+            _isCurrentUser = true;
+            _isFriend = true;
+          });
+        }
+      },
+      builder: (context, authState) {
+        if (authState.status == AuthStatus.loading || _isLoading) {
+          return const Center(
+              child: CircularLoad(key: ValueKey("auth_loading")));
+        }
 
-    if (_isLoading && !_isCurrentUser) {
-      return const Center(
-          child: CircularProgressIndicator(
-              key: ValueKey("profile_content_outer_loading")));
-    }
+        if (authState.status == AuthStatus.authenticated) {
+          return _buildProfileContent(userProfile: _userProfile);
+        } else if (authState.status == AuthStatus.unauthenticated) {
+          return const Center(
+              child: Text("User not authenticated. Please login."));
+        } else if (authState.status == AuthStatus.error) {
+          return Center(
+              child: Text(
+                  "Authentication error: ${authState.errorMessage ?? 'Unknown error'}"));
+        }
+        return const Center(child: Text("Profile not available."));
+      },
+    );
+  }
 
-    if (_userProfile == null) {
-      return const Center(child: Text("Profile data is unavailable."));
-    }
-
+  Widget _buildProfileContent({Profile? userProfile}) {
     return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ProfileHeader(
-            username: displayName,
-            isOnline: true,
-            avatar: _userProfile?.user.dp_url,
-            currentlyPlaying: 'Marvel Rivals',
-            isOtherProfile: widget.userId != null,
-            friendsCount: _profileStats?.friendCount,
-            followingCount: _profileStats?.userFollowings,
-            mutualFriendsCount: _profileStats?.mutualFriendCount,
-          ),
-          SizedBox(height: SizeUtils.pxToDp(context, 48)),
-          Padding(
-              padding: EdgeInsets.fromLTRB(SizeUtils.pxToDp(context, 32), 0,
-                  SizeUtils.pxToDp(context, 100), 0),
-              child: Column(
-                children: [
-                  CarouselRow(
-                    cardSpacing: 60,
-                    cardsPerView: 5,
-                    heading: 'Favorite Games',
-                    sectionHeight: 470,
-                    items: _favoriteGames,
-                    isLoading: _favoriteGamesLoading,
-                    handleApiCall: (page) {
-                      _gameService.getPlayerProfileSectionGames(
-                        sectionType: PlayerProfileSectionType.favoriteDesc,
-                        userId: (widget.userId == null
-                                ? _userProfile?.user.id
-                                : userId) ??
-                            '',
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: SizeUtils.pxToDp(context, 32),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Profile Header
+            ProfileHeader(
+              username: userProfile?.user.display_name ?? '',
+              isOnline: true,
+              avatar: userProfile?.user.dp_url,
+              currentlyPlaying: 'Marvel Rivals',
+              isOtherProfile: widget.userId != null,
+              friendsCount: _profileStats?.friendCount,
+              followingCount: _profileStats?.userFollowings,
+              mutualFriendsCount: _profileStats?.mutualFriendCount,
+              friendStatus: _friendStatus,
+              onFriendButtonPressed: (friendStatus) async {
+                try {
+                  if (friendStatus == FriendStatus.accepted) {
+                    await _userService.unFriendUser(userId: widget.userId!);
+                    if (mounted) {
+                      Notifier.show(
+                        context,
+                        '${userProfile?.user.display_name} is removed from your friends list',
                       );
-                    },
-                    cardBuilder: (context, game, width, index) {
-                      return FavGameCard(
-                        width: double.infinity,
-                        height: 300,
-                        imageUrl: game.thumbnail ?? '',
-                        rank: index + 1,
-                        title: game.name ?? 'N/A',
-                      );
-                    },
-                  ),
-                  SizedBox(height: SizeUtils.pxToDp(context, 48)),
-                  if (_isCurrentUser) ...[
-                    CarouselRow(
-                      cardSpacing: UIConstants.cardSpacing,
-                      cardsPerView: UIConstants.defaultCardsPerView,
-                      heading: 'Continue Playing',
-                      sectionHeight: 350,
-                      items: _continuePlayingGames,
-                      isLoading: _continuePlayingGamesLoading,
-                      onEndOfScroll: () {
-                        print('onEndOfScroll');
-                      },
-                      cardBuilder: (context, game, width, index) {
-                        return GameClipCard(
-                          height: 233,
-                          thumbnailUrl: game.thumbnail,
-                          videoUrl:
-                              'https://cdn.pixabay.com/video/2025/04/29/275633_large.mp4',
-                          title: game.name,
-                          rating: 5,
-                          esrbRatingImageUrl: game.esrbRatingImgUrl,
-                        );
-                      },
-                    ),
-                    SizedBox(height: SizeUtils.pxToDp(context, 48)),
-                  ],
-                  CarouselRow(
-                    cardSpacing: UIConstants.cardSpacing,
-                    cardsPerView: UIConstants.defaultCardsPerView,
-                    heading: 'Games Your Friends Are Playing',
-                    sectionHeight: 350,
-                    items: _friendGames,
-                    isLoading: _friendGamesLoading,
-                    cardBuilder: (context, game, width, index) {
-                      return GameClipCard(
-                        height: 233,
-                        thumbnailUrl: game.thumbnail,
-                        videoUrl:
-                            'https://cdn.pixabay.com/video/2025/04/29/275633_large.mp4',
-                        title: game.name,
-                        rating: 5,
-                        esrbRatingImageUrl: game.esrbRatingImgUrl,
-                      );
-                    },
-                  ),
-                ],
-              )),
-        ],
+                    }
+                  } else {
+                    await _userService.sendFriendRequest(
+                        userId: widget.userId!);
+                    if (mounted) {
+                      Notifier.show(context, 'Friend request sent');
+                    }
+                  }
+                } finally {
+                  await _checkFriendStatus();
+                }
+              },
+            ),
+            SizedBox(height: SizeUtils.pxToDp(context, 48)),
+
+            // Only render game carousels if friend
+            if (_isFriend) ...[
+              CarouselRow(
+                cardSpacing: 60,
+                cardsPerView: 5,
+                heading: 'Favorite Games',
+                sectionHeight: 470,
+                items: _favoriteGames,
+                isLoading: _favoriteGamesLoading,
+                handleApiCall: (page) {
+                  _gameService.getPlayerProfileSectionGames(
+                    sectionType: PlayerProfileSectionType.favoriteDesc,
+                    userId: userProfile?.user.id ?? '',
+                  );
+                },
+                cardBuilder: (context, game, width, index) {
+                  return FavGameCard(
+                    width: double.infinity,
+                    height: 300,
+                    imageUrl: game.thumbnail ?? '',
+                    rank: index + 1,
+                    title: game.name ?? 'N/A',
+                  );
+                },
+              ),
+              SizedBox(height: SizeUtils.pxToDp(context, 48)),
+              if (_isCurrentUser) ...[
+                CarouselRow(
+                  cardSpacing: UIConstants.cardSpacing,
+                  cardsPerView: UIConstants.defaultCardsPerView,
+                  heading: 'Continue Playing',
+                  sectionHeight: 350,
+                  items: _continuePlayingGames,
+                  isLoading: _continuePlayingGamesLoading,
+                  onEndOfScroll: () {
+                    print('onEndOfScroll');
+                  },
+                  cardBuilder: (context, game, width, index) {
+                    return GameClipCard(
+                      height: 233,
+                      thumbnailUrl: game.thumbnail,
+                      videoUrl:
+                          'https://cdn.pixabay.com/video/2025/04/29/275633_large.mp4',
+                      title: game.name,
+                      rating: 5,
+                      esrbRatingImageUrl: game.esrbRatingImgUrl,
+                    );
+                  },
+                ),
+                SizedBox(height: SizeUtils.pxToDp(context, 48)),
+              ],
+              CarouselRow(
+                cardSpacing: UIConstants.cardSpacing,
+                cardsPerView: UIConstants.defaultCardsPerView,
+                heading: 'Games Your Friends Are Playing',
+                sectionHeight: 350,
+                items: _friendGames,
+                isLoading: _friendGamesLoading,
+                cardBuilder: (context, game, width, index) {
+                  return GameClipCard(
+                    height: 233,
+                    thumbnailUrl: game.thumbnail,
+                    videoUrl:
+                        'https://cdn.pixabay.com/video/2025/04/29/275633_large.mp4',
+                    title: game.name,
+                    rating: 5,
+                    esrbRatingImageUrl: game.esrbRatingImgUrl,
+                  );
+                },
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

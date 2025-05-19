@@ -172,4 +172,8 @@ class ServerAPIEndpoints {
   static const String getPlayerProfileStats =
       'api/v1/users/profile-details/stats/{userid}';
   static const String getScreenSaverSetting = 'api/v1/users/settings';
+  static const String checkFriendStatus =
+      'api/v1/me/friends/status/{other_user_id}';
+  static const String sendFriendRequest = 'api/v1/me/friends/requests';
+  static const String unfriend = 'api/v1/me/friends/{friend_user_id}';
 }
