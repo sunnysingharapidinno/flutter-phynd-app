@@ -71,17 +71,15 @@ class _SavedVideoState extends State<SavedVideoSection> {
       items: _content,
       cardBuilder: (context, content, width, index) {
         return VideoCard(
-          thumbnailUrl:
-              'https://xstrela-dev.s3.us-east-1.amazonaws.com/general/22_05_2024/65ecb31b797e4e1aba1ff46fd30eeb3b.png',
+          thumbnailUrl: content.thumbnailUrl ?? '',
           videoUrl: content.url,
           height: 250,
           timeAgo: content.createdAt.toString(),
           duration: '12:00',
           title: content.title ?? '',
-          publisherAvatarUrl:
-              'https://xstrela-alpha.s3.us-east-1.amazonaws.com/images/temp/DP_IMAGE_URL/PNG/8005f2f1-6d23-4521-84d4-91f16ac200ca',
+          publisherAvatarUrl: content.companyImage ?? '',
           isVerified: true,
-          publisherName: 'NetEase Studios',
+          publisherName: content.companyName ?? '',
           friendsWatchedCount: 10,
         );
       },

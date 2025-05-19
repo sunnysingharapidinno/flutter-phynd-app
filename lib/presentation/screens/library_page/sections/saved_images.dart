@@ -72,7 +72,8 @@ class _SavedImagesSectionState extends State<SavedImagesSection> {
       cardBuilder: (context, content, width, index) {
         return ImageThumbnail(
           imageUrl: content.url,
-          height: 200,
+          height: 207,
+          width: 369,
         );
       },
       onEndOfScroll: () {

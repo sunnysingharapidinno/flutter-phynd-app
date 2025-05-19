@@ -79,10 +79,9 @@ class _FavoriteVideoState extends State<FavoriteVideoSection> {
           timeAgo: content.createdAt.toString(),
           duration: '12:00',
           title: content.title ?? '',
-          publisherAvatarUrl:
-              'https://xstrela-alpha.s3.us-east-1.amazonaws.com/images/temp/DP_IMAGE_URL/PNG/8005f2f1-6d23-4521-84d4-91f16ac200ca',
+          publisherAvatarUrl: content.companyImage ?? '',
           isVerified: true,
-          publisherName: 'NetEase Studios',
+          publisherName: content.companyName ?? '',
           friendsWatchedCount: 10,
         );
       },

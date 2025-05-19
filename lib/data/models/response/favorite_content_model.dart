@@ -11,7 +11,7 @@ class FavoriteContent {
   final String? gameTitle;
   final String? organizationId;
   final String? companyImage;
-
+  final String? thumbnailUrl;
   FavoriteContent({
     required this.gameSlug,
     required this.url,
@@ -23,6 +23,7 @@ class FavoriteContent {
     this.gameTitle,
     this.organizationId,
     this.companyImage,
+    this.thumbnailUrl,
   });
 
   factory FavoriteContent.fromJson(Map<String, dynamic> json) {
@@ -40,6 +41,7 @@ class FavoriteContent {
       gameTitle: json['game_title'] as String?,
       organizationId: json['organization_id'] as String?,
       companyImage: json['company_image'] as String?,
+      thumbnailUrl: json['thumbnail_url'] as String?,
     );
   }
 

@@ -73,7 +73,8 @@ class _FavoriteImagesSectionState extends State<FavoriteImagesSection> {
       cardBuilder: (context, content, width, index) {
         return ImageThumbnail(
           imageUrl: content.url,
-          height: 200,
+          height: 207,
+          width: 369,
         );
       },
       onEndOfScroll: () {
