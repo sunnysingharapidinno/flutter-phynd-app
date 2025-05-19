@@ -45,53 +45,65 @@ class AppRoutes {
 
     switch (settings.name) {
       case home:
-        return MaterialPageRoute(builder: (_) => wrap(const HomePage()));
+        return MaterialPageRoute(
+            builder: (_) => wrap(const HomePage()), settings: settings);
       case gameInterstitial:
         return MaterialPageRoute(
             builder: (_) =>
-                wrap(const GameInterstitialPage(), isFullScreen: true));
+                wrap(const GameInterstitialPage(), isFullScreen: true),
+            settings: settings);
       case login:
-        return MaterialPageRoute(builder: (_) => wrap(const LoginPage()));
+        return MaterialPageRoute(
+            builder: (_) => wrap(const LoginPage()), settings: settings);
       case registration:
         return MaterialPageRoute(
-            builder: (_) => wrap(const RegistrationScreen()));
+            builder: (_) => wrap(const RegistrationScreen()),
+            settings: settings);
       case game:
         if (args is String) {
           return MaterialPageRoute(
-            builder: (_) => wrap(GamePage(gameSlug: args)),
-          );
+              builder: (_) => wrap(GamePage(gameSlug: args)),
+              settings: settings);
         }
         return _errorRoute("Missing or invalid gameSlug");
 
       case playerProfile:
         return MaterialPageRoute(
-          builder: (_) => wrap(PlayerProfilePage(userId: args as String?)),
-        );
+            builder: (_) => wrap(PlayerProfilePage(userId: args as String?)),
+            settings: settings);
 
       case publisherProfile:
         return MaterialPageRoute(
-            builder: (_) => wrap(const PublisherProfilePage()));
+            builder: (_) => wrap(const PublisherProfilePage()),
+            settings: settings);
       case search:
-        return MaterialPageRoute(builder: (_) => wrap(const SearchPage()));
+        return MaterialPageRoute(
+            builder: (_) => wrap(const SearchPage()), settings: settings);
       case quest:
-        return MaterialPageRoute(builder: (_) => wrap(const QuestPage()));
+        return MaterialPageRoute(
+            builder: (_) => wrap(const QuestPage()), settings: settings);
       case questDetails:
         if (args is String) {
           return MaterialPageRoute(
             builder: (_) => wrap(QuestDetailsPage(questId: args)),
+            settings: settings,
           );
         }
         return _errorRoute("Missing or invalid questId");
 
       case support:
-        return MaterialPageRoute(builder: (_) => wrap(const SupportPage()));
+        return MaterialPageRoute(
+            builder: (_) => wrap(const SupportPage()), settings: settings);
       case video:
-        return MaterialPageRoute(builder: (_) => wrap(const VideoPage()));
+        return MaterialPageRoute(
+            builder: (_) => wrap(const VideoPage()), settings: settings);
       case termsAndConditions:
         return MaterialPageRoute(
-            builder: (_) => wrap(const TermsAndConditionsPage()));
+            builder: (_) => wrap(const TermsAndConditionsPage()),
+            settings: settings);
       case library:
-        return MaterialPageRoute(builder: (_) => wrap(const LibraryPage()));
+        return MaterialPageRoute(
+            builder: (_) => wrap(const LibraryPage()), settings: settings);
       default:
         return _errorRoute("Route not found");
     }

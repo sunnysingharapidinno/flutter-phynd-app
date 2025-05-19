@@ -3,19 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
+import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/presentation/widgets/app_idle.dart';
 import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 import 'package:phynd_app/presentation/widgets/shared_app_bar.dart';
 import 'package:phynd_app/presentation/widgets/sidebar.dart';
+import 'package:phynd_app/data/models/response/screen_saver_setting_model.dart';
 
 class BaseLayout extends StatefulWidget {
   final Widget child;
   final bool isFullScreen;
+  final int screenId;
 
   const BaseLayout({
     super.key,
     required this.child,
     this.isFullScreen = false,
+    this.screenId = 1,
   });
 
   @override
@@ -29,14 +33,26 @@ class _BaseLayoutState extends State<BaseLayout> {
 
   final FocusNode _sidebarFocusNode = FocusNode();
   final FocusNode _contentFocusNode = FocusNode();
-  bool _hasContentBeenFocused = false;
+  final FocusNode _baseLayoutKeyboardListenerFocusNode =
+      FocusNode(); // Managed FocusNode
 
-  Timer? _idleTimer;
-  static const _idleDuration = Duration(seconds: 3000);
+  final GameService _gameService = GameService();
+
+  // int screenTimeOut = 0; // Unused variable
+
+  // Timer? _idleTimer; // Unused variable
+  // static const _idleDuration = Duration(seconds: 0);
+
+  Timer? _screenSaverTimer;
+  bool _showScreenSaver = false;
+
+  // Variables to store fetched screen saver settings and manage fetching state
+  ScreenSaverSettingModel? _fetchedScreenSaverSetting;
+  bool _isFetchingSettings = false;
 
   int _currentIdleIndex = 0;
   Timer? _idleScreenRotationTimer;
-  OverlayEntry? _appIdleOverlayEntry; // For managing the AppIdle overlay
+  static const Duration _idleRotationDuration = Duration(seconds: 5);
 
   final List<Map<String, dynamic>> mockGameData = [
     {
@@ -96,198 +112,187 @@ class _BaseLayoutState extends State<BaseLayout> {
     },
   ];
 
-  void _showAppIdleOverlay() {
-    if (_appIdleOverlayEntry != null) return;
-    print("BaseLayout: Showing AppIdle overlay."); // Added for debugging
-
-    _currentIdleIndex = 0;
-    _appIdleOverlayEntry = OverlayEntry(
-      builder: (context) {
-        return Material(
-          type: MaterialType.transparency,
-          child: AppIdle(
-            key: ValueKey(_currentIdleIndex),
-            backgroundImg: mockGameData[_currentIdleIndex]['backgroundImg'],
-            esrb: mockGameData[_currentIdleIndex]['esrb'],
-            friendsCount: mockGameData[_currentIdleIndex]['friendsCount'],
-            gameTextImg: mockGameData[_currentIdleIndex]['gameTextImg'],
-            onlineCount: mockGameData[_currentIdleIndex]['onlineCount'],
-            publisherName: mockGameData[_currentIdleIndex]['publisherName'],
-            releaseYear: mockGameData[_currentIdleIndex]['releaseYear'],
-          ),
-        );
-      },
-    );
-    Overlay.of(context).insert(_appIdleOverlayEntry!);
-
-    _idleScreenRotationTimer?.cancel();
-    _idleScreenRotationTimer =
-        Timer.periodic(const Duration(seconds: 30), (timer) {
-      if (mounted && _appIdleOverlayEntry != null) {
-        // print("BaseLayout: Rotating idle screen content."); // Optional: for very verbose logging
-        setState(() {
-          _currentIdleIndex = (_currentIdleIndex + 1) % mockGameData.length;
-        });
-        _appIdleOverlayEntry?.markNeedsBuild();
-      } else {
-        timer.cancel();
-      }
-    });
-  }
-
-  void _removeAppIdleOverlay() {
-    print("BaseLayout: _removeAppIdleOverlay called"); // Debug print
-    _appIdleOverlayEntry?.remove();
-    _appIdleOverlayEntry = null;
-    _idleScreenRotationTimer?.cancel();
-  }
-
-  void _startIdleTimer() {
-    _idleTimer?.cancel();
-    _idleTimer = Timer(_idleDuration, () {
-      print("BaseLayout: Idle timer expired."); // Debug print
-      if (mounted) {
-        _showAppIdleOverlay();
-      }
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    print("BaseLayout: initState - starting idle timer."); // Debug print
-    _startIdleTimer();
-
-    _sidebarFocusNode.addListener(() {
-      // print("Sidebar focus: ${_sidebarFocusNode.hasFocus}"); // Debug focus changes
-      if (_sidebarFocusNode.hasFocus && _hasContentBeenFocused) {
-        if (mounted) {
-          setState(() {
-            _isSidebarExpanded = true;
-          });
-        }
-      }
-    });
-
-    _contentFocusNode.addListener(() {
-      // print("Content focus: ${_contentFocusNode.hasFocus}"); // Debug focus changes
-      if (_contentFocusNode.hasFocus) {
-        _hasContentBeenFocused = true;
-        if (mounted) {
-          setState(() {
-            _isSidebarExpanded = false;
-          });
-        }
-      }
-    });
+    getScreenSaverSetting();
   }
 
   @override
   void dispose() {
-    print("BaseLayout: dispose called."); // Debug print
-    _idleTimer?.cancel();
-    _removeAppIdleOverlay();
+    // _idleTimer?.cancel(); // Was already commented or removed if unused
+    _screenSaverTimer?.cancel();
+    _idleScreenRotationTimer?.cancel();
     _sidebarFocusNode.dispose();
     _contentFocusNode.dispose();
+    _baseLayoutKeyboardListenerFocusNode.dispose();
     super.dispose();
   }
 
-  void _onUserInteraction() {
-    print("BaseLayout: _onUserInteraction triggered!"); // Debug print
-    _startIdleTimer();
-    if (_appIdleOverlayEntry != null) {
-      _removeAppIdleOverlay();
+  Future<void> getScreenSaverSetting() async {
+    // Always cancel the current timer when this function is called to reset inactivity
+    _screenSaverTimer?.cancel();
+
+    // Check if settings are already being fetched to avoid concurrent calls
+    if (_isFetchingSettings) return;
+
+    // Fetch settings only if they haven't been fetched before
+    if (_fetchedScreenSaverSetting == null) {
+      _isFetchingSettings = true;
+      try {
+        final screenSaverSetting =
+            await _gameService.getScreenSaverSetting(screenId: widget.screenId);
+        if (mounted) {
+          // Store the fetched settings
+          _fetchedScreenSaverSetting = screenSaverSetting;
+        }
+      } catch (e) {
+        debugPrint('Error fetching screen saver setting: ${e.toString()}');
+        // Optionally, handle the error, e.g., by using default settings or preventing timer start
+        _isFetchingSettings = false;
+        return; // Early return if fetching failed
+      } finally {
+        _isFetchingSettings = false;
+      }
+    }
+
+    // Proceed to set/reset the timer only if settings are available
+    if (_fetchedScreenSaverSetting != null &&
+        _fetchedScreenSaverSetting!.timeOutSeconds != null) {
+      _screenSaverTimer = Timer(
+          Duration(seconds: _fetchedScreenSaverSetting!.timeOutSeconds!), () {
+        // debugPrint('Screen saver timeout reached. Timeout was: ${_fetchedScreenSaverSetting!.timeOutSeconds}s');
+        if (mounted) {
+          // Ensure widget is still mounted before calling setState
+          setState(() {
+            _showScreenSaver = true;
+            _currentIdleIndex = 0; // Reset idle index when screensaver starts
+          });
+          _startIdleScreenRotation();
+        }
+      });
+    } else {
+      debugPrint('Screen saver settings not available, timer not started.');
+    }
+  }
+
+  void _startIdleScreenRotation() {
+    _idleScreenRotationTimer?.cancel();
+    if (_showScreenSaver && mockGameData.isNotEmpty) {
+      _idleScreenRotationTimer = Timer.periodic(_idleRotationDuration, (timer) {
+        _rotateIdleScreen();
+      });
+    }
+  }
+
+  void _rotateIdleScreen() {
+    if (mounted && _showScreenSaver && mockGameData.isNotEmpty) {
+      setState(() {
+        _currentIdleIndex = (_currentIdleIndex + 1) % mockGameData.length;
+      });
+    } else {
+      _idleScreenRotationTimer?.cancel();
+    }
+  }
+
+  void _hideScreenSaver() {
+    if (mounted && _showScreenSaver) {
+      setState(() {
+        _showScreenSaver = false;
+      });
+      _idleScreenRotationTimer?.cancel();
+      getScreenSaverSetting();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).extension<AppTheme>();
-    final backgroundColor = theme?.get('bgColor') ?? Colors.black;
+    final backgroundColor = theme?.get('bgColor');
     final double minExpWidth = SizeUtils.pxToDp(context, 100);
     final double maxExpWidth = SizeUtils.pxToDp(context, 400);
 
-    return Listener(
-      onPointerDown: (_) =>
-          _onUserInteraction(), // Only listen to onPointerDown for now
-      // onPointerMove: (_) => _onUserInteraction(), // Temporarily disable
-      // onPointerHover: (_) => _onUserInteraction(), // Temporarily disable
-      child: KeyboardListener(
-        focusNode: FocusNode(),
-        onKeyEvent: (_) => _onUserInteraction(),
-        child: Scaffold(
-          // Removed the conditional logic for _showIdleScreen
-          key: _scaffoldKey,
-          backgroundColor: backgroundColor,
-          appBar: SharedAppBar(),
-          body: Stack(
-            children: [
-              Row(
-                children: [
-                  // Sidebar
-                  FocusTraversalGroup(
-                    child: KeyboardListener(
-                      focusNode: FocusNode(),
-                      onKeyEvent: (KeyEvent event) {
-                        if (event is KeyDownEvent &&
-                            event.logicalKey == LogicalKeyboardKey.arrowRight &&
-                            !_isSidebarExpanded) {
-                          FocusScope.of(context)
-                              .requestFocus(_contentFocusNode);
-                        }
-                      },
-                      child: Focus(
-                        focusNode: _sidebarFocusNode,
-                        autofocus: true,
-                        child: Shortcuts(
-                          shortcuts: {
-                            LogicalKeySet(LogicalKeyboardKey.select):
-                                ActivateIntent(),
-                            LogicalKeySet(LogicalKeyboardKey.enter):
-                                ActivateIntent(),
-                            LogicalKeySet(LogicalKeyboardKey.gameButtonA):
-                                ActivateIntent(),
-                          },
-                          child: Actions(
-                            actions: {
-                              ActivateIntent: CallbackAction<Intent>(
-                                onInvoke: (_) {
-                                  if (mounted) {
-                                    setState(() {
-                                      _isSidebarExpanded = !_isSidebarExpanded;
-                                    });
-                                  }
-                                  return null;
-                                },
-                              ),
-                            },
-                            child: RemoteControlWrapper(
-                              onTap: () {
+    return KeyboardListener(
+      focusNode: _baseLayoutKeyboardListenerFocusNode,
+      onKeyEvent: (KeyEvent event) {
+        if (_showScreenSaver) {
+          _hideScreenSaver();
+        } else {
+          getScreenSaverSetting();
+        }
+      },
+      child: Scaffold(
+        key: _scaffoldKey,
+        backgroundColor: backgroundColor,
+        appBar: !widget.isFullScreen && !_showScreenSaver
+            ? const SharedAppBar()
+            : null,
+        body: Stack(
+          children: [
+            Row(
+              children: [
+                // Sidebar
+                FocusTraversalGroup(
+                  child: KeyboardListener(
+                    focusNode: FocusNode(),
+                    onKeyEvent: (KeyEvent event) {
+                      if (event is KeyDownEvent &&
+                          event.logicalKey == LogicalKeyboardKey.arrowRight &&
+                          !_isSidebarExpanded) {
+                        FocusScope.of(context).requestFocus(_contentFocusNode);
+                      }
+                    },
+                    child: Focus(
+                      focusNode: _sidebarFocusNode,
+                      autofocus: true,
+                      child: Shortcuts(
+                        shortcuts: {
+                          LogicalKeySet(LogicalKeyboardKey.select):
+                              const ActivateIntent(),
+                          LogicalKeySet(LogicalKeyboardKey.enter):
+                              const ActivateIntent(),
+                          LogicalKeySet(LogicalKeyboardKey.gameButtonA):
+                              const ActivateIntent(),
+                        },
+                        child: Actions(
+                          actions: {
+                            ActivateIntent: CallbackAction<Intent>(
+                              onInvoke: (_) {
                                 if (mounted) {
                                   setState(() {
                                     _isSidebarExpanded = !_isSidebarExpanded;
                                   });
                                 }
+                                return null;
                               },
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 200),
-                                width: _isSidebarExpanded
-                                    ? maxExpWidth
-                                    : minExpWidth,
-                                child: Sidebar(
-                                  isSidebarExpanded: _isSidebarExpanded,
-                                  maxExpWidth: maxExpWidth,
-                                  minExpWidth: minExpWidth,
-                                  onFocus: (focused) {
-                                    if (focused && !_isSidebarExpanded) {
-                                      if (mounted) {
-                                        setState(() {
-                                          _isSidebarExpanded = true;
-                                        });
-                                      }
+                            ),
+                          },
+                          child: RemoteControlWrapper(
+                            onTap: () {
+                              if (mounted) {
+                                setState(() {
+                                  _isSidebarExpanded = !_isSidebarExpanded;
+                                });
+                              }
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              width: _isSidebarExpanded
+                                  ? maxExpWidth
+                                  : minExpWidth,
+                              child: Sidebar(
+                                isSidebarExpanded: _isSidebarExpanded,
+                                maxExpWidth: maxExpWidth,
+                                minExpWidth: minExpWidth,
+                                onFocus: (focused) {
+                                  if (focused && !_isSidebarExpanded) {
+                                    if (mounted) {
+                                      setState(() {
+                                        _isSidebarExpanded = true;
+                                      });
                                     }
-                                  },
-                                ),
+                                  }
+                                },
                               ),
                             ),
                           ),
@@ -295,46 +300,72 @@ class _BaseLayoutState extends State<BaseLayout> {
                       ),
                     ),
                   ),
-                  // Main content
-                  Expanded(
-                    child: SafeArea(
-                      child: KeyboardListener(
-                        focusNode: FocusNode(),
-                        onKeyEvent: (KeyEvent event) {
-                          if (event is KeyDownEvent &&
-                              event.logicalKey ==
-                                  LogicalKeyboardKey.arrowLeft) {
-                            FocusScope.of(context)
-                                .requestFocus(_sidebarFocusNode);
-                          }
-                        },
-                        child: Focus(
-                          focusNode: _contentFocusNode,
-                          child: GestureDetector(
-                            onTap: () {
+                ),
+                // Main content
+                Expanded(
+                  child: SafeArea(
+                    child: KeyboardListener(
+                      focusNode: FocusNode(),
+                      onKeyEvent: (KeyEvent event) {
+                        if (event is KeyDownEvent &&
+                            event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+                          FocusScope.of(context)
+                              .requestFocus(_sidebarFocusNode);
+                        }
+                      },
+                      child: Focus(
+                        focusNode: _contentFocusNode,
+                        child: GestureDetector(
+                          onTap: () {
+                            if (_showScreenSaver) {
+                              _hideScreenSaver();
+                            } else {
+                              getScreenSaverSetting();
                               FocusScope.of(context)
                                   .requestFocus(_contentFocusNode);
-                            },
-                            child: Container(
-                              color: Colors.transparent,
-                              child: widget.isFullScreen
-                                  ? widget.child
-                                  : Padding(
-                                      padding: EdgeInsets.only(
-                                          bottom:
-                                              SizeUtils.pxToDp(context, 40)),
-                                      child: widget.child,
-                                    ),
-                            ),
+                            }
+                          },
+                          child: Container(
+                            color: Colors.transparent,
+                            child: widget.isFullScreen
+                                ? widget.child
+                                : Padding(
+                                    padding: EdgeInsets.only(
+                                        bottom: SizeUtils.pxToDp(context, 40)),
+                                    child: widget.child,
+                                  ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+            _showScreenSaver && mockGameData.isNotEmpty
+                ? Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: AppIdle(
+                      backgroundImg: mockGameData[_currentIdleIndex]
+                          ['backgroundImg'],
+                      gameTextImg: mockGameData[_currentIdleIndex]
+                          ['gameTextImg'],
+                      releaseYear: mockGameData[_currentIdleIndex]
+                          ['releaseYear'],
+                      publisherName: mockGameData[_currentIdleIndex]
+                          ['publisherName'],
+                      esrb: mockGameData[_currentIdleIndex]['esrb'],
+                      friendsCount: mockGameData[_currentIdleIndex]
+                          ['friendsCount'],
+                      onlineCount: mockGameData[_currentIdleIndex]
+                          ['onlineCount'],
+                    ),
+                  )
+                : const SizedBox(),
+          ],
         ),
       ),
     );

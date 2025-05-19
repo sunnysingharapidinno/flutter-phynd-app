@@ -12,6 +12,7 @@ import 'package:phynd_app/data/models/response/game_list_model.dart';
 import 'package:phynd_app/data/models/response/game_model.dart';
 import 'package:phynd_app/data/models/response/like_follow_model.dart';
 import 'package:phynd_app/data/models/response/player_profile_game.dart';
+import 'package:phynd_app/data/models/response/screen_saver_setting_model.dart';
 import 'package:phynd_app/data/models/response/video_model.dart';
 import 'package:phynd_app/data/models/response/recent_history_model.dart';
 
@@ -472,6 +473,28 @@ class GameService {
       }
     } catch (e) {
       throw Exception('Error fetching recent history: $e');
+    }
+  }
+
+  Future<ScreenSaverSettingModel> getScreenSaverSetting({
+    required int screenId,
+  }) async {
+    try {
+      final response = await api.get(
+        ServerAPIEndpoints.getScreenSaverSetting,
+        queryParams: {
+          'id': screenId.toString(),
+        },
+        auth: true,
+      );
+
+      final data = jsonDecode(response.body);
+
+      debugPrint('data: ${data}');
+
+      return ScreenSaverSettingModel.fromJson(data);
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
     }
   }
 }

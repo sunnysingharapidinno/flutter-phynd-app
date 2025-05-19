@@ -1,0 +1,33 @@
+# Makefile for Flutter (Android) and Flutter-Tizen
+
+# Commands
+FLUTTER := flutter
+FLUTTER_TIZEN := flutter-tizen
+
+.PHONY: run-android run-tizen build-apk build-tizen clean get analyze
+
+## === RUN ===
+run-android:
+	$(FLUTTER) run
+
+run:
+	$(FLUTTER_TIZEN) run
+
+## === BUILD ===
+build-apk:
+	$(FLUTTER) build apk --release
+
+build:
+	$(FLUTTER_TIZEN) build tizen --release
+
+## === CLEAN ===
+clean:
+	$(FLUTTER) clean
+	$(FLUTTER_TIZEN) clean
+
+## === DEPENDENCIES & LINT ===
+get:
+	$(FLUTTER) pub get
+
+analyze:
+	$(FLUTTER) analyze

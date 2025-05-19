@@ -13,6 +13,7 @@ class CarouselRow<T> extends StatefulWidget {
   final VoidCallback? onEndOfScroll;
   final bool isLoading;
   final bool isLoadingMore;
+  final Function(int page)? handleApiCall;
 
   const CarouselRow({
     super.key,
@@ -25,6 +26,7 @@ class CarouselRow<T> extends StatefulWidget {
     this.onEndOfScroll,
     this.isLoading = false,
     this.isLoadingMore = false,
+    this.handleApiCall,
   });
 
   @override

@@ -171,4 +171,5 @@ class ServerAPIEndpoints {
   static const String getPlayerProfileSectionGames = 'api/v1/users/games';
   static const String getPlayerProfileStats =
       'api/v1/users/profile-details/stats/{userid}';
+  static const String getScreenSaverSetting = 'api/v1/users/settings';
 }

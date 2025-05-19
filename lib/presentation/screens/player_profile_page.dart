@@ -12,12 +12,7 @@ import 'package:phynd_app/presentation/bloc/auth/auth_bloc.dart';
 import 'package:phynd_app/presentation/bloc/auth/auth_state.dart';
 import 'package:phynd_app/presentation/widgets/cards/clip_card/game_clip_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/fav_game_card.dart';
-import 'package:phynd_app/presentation/widgets/cards/friends_play_card.dart';
-import 'package:phynd_app/presentation/widgets/profile/achievements_section.dart';
 import 'package:phynd_app/presentation/widgets/profile/profile_header.dart';
-import 'package:phynd_app/presentation/widgets/profile/quests_in_progress.dart';
-import 'package:phynd_app/presentation/widgets/profile/recently_uploaded_clips.dart';
-import 'package:phynd_app/presentation/widgets/ratings/ratings.dart';
 import 'package:phynd_app/presentation/widgets/carousel/carousel_row.dart';
 
 class PlayerProfilePage<T> extends StatefulWidget {
@@ -45,7 +40,6 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
   bool _friendGamesLoading = false;
   List<PlayerProfileGame> _friendGames = [];
   PlayerProfileStats? _profileStats;
-  bool _profileStatsLoading = false;
 
   bool _isCurrentUser = false;
   Profile? _currentUserProfileFromAuth;
@@ -101,9 +95,6 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
 
   Future<void> _getPlayerStats(String userId) async {
     try {
-      setState(() {
-        _profileStatsLoading = true;
-      });
       final response = await _userService.getPlayerProfileStats(
         userId: userId,
       );
@@ -113,10 +104,6 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
       });
     } catch (e) {
       debugPrint(e.toString());
-    } finally {
-      setState(() {
-        _profileStatsLoading = false;
-      });
     }
   }
 
@@ -177,7 +164,7 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
         userId: userId,
       );
 
-      print("friend games: ${response.data}");
+      debugPrint("friend games: ${response.data}");
 
       setState(() {
         _friendGames = response.data;
@@ -248,7 +235,7 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
 
           if (authState.status == AuthStatus.authenticated &&
               _userProfile != null) {
-            return _buildProfileContent();
+            return _buildProfileContent(userId: authState.profile?.user.id);
           } else if (authState.status == AuthStatus.unauthenticated) {
             return const Center(
                 child: Text("User not authenticated. Please login."));
@@ -275,7 +262,7 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
     }
   }
 
-  Widget _buildProfileContent() {
+  Widget _buildProfileContent({String? userId}) {
     final String displayName = _userProfile != null
         ? "${_userProfile!.user.first_name} ${_userProfile!.user.last_name}"
         : "User";
@@ -317,6 +304,15 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
                     sectionHeight: 470,
                     items: _favoriteGames,
                     isLoading: _favoriteGamesLoading,
+                    handleApiCall: (page) {
+                      _gameService.getPlayerProfileSectionGames(
+                        sectionType: PlayerProfileSectionType.favoriteDesc,
+                        userId: (widget.userId == null
+                                ? _userProfile?.user.id
+                                : userId) ??
+                            '',
+                      );
+                    },
                     cardBuilder: (context, game, width, index) {
                       return FavGameCard(
                         width: double.infinity,

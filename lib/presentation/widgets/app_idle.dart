@@ -31,14 +31,27 @@ class _AppIdleState extends State<AppIdle> {
   bool _showContent = false;
   bool _imageLoaded = false;
 
-  late final ImageProvider _backgroundImage;
+  late ImageProvider _backgroundImage;
 
   @override
   void initState() {
     super.initState();
-    _backgroundImage = NetworkImage(widget.backgroundImg);
+    _loadBackgroundImage(widget.backgroundImg);
+  }
 
-    // Preload the background image
+  @override
+  void didUpdateWidget(covariant AppIdle oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.backgroundImg != widget.backgroundImg) {
+      _loadBackgroundImage(widget.backgroundImg);
+    }
+  }
+
+  void _loadBackgroundImage(String url) {
+    _showBackground = false;
+    _showContent = false;
+    _imageLoaded = false;
+    _backgroundImage = NetworkImage(url);
     _backgroundImage.resolve(const ImageConfiguration()).addListener(
       ImageStreamListener((info, synchronousCall) {
         if (mounted) {
@@ -46,7 +59,6 @@ class _AppIdleState extends State<AppIdle> {
             _imageLoaded = true;
             _showBackground = true;
           });
-
           // Fade in content after a delay
           Future.delayed(const Duration(milliseconds: 2000), () {
             if (mounted) {
@@ -63,6 +75,8 @@ class _AppIdleState extends State<AppIdle> {
     return Stack(
       fit: StackFit.expand,
       children: [
+        // Solid color placeholder while loading
+        if (!_imageLoaded) Container(color: const Color(0xFF1B1D26)),
         // Background image
         AnimatedOpacity(
           opacity: _showBackground && _imageLoaded ? 1.0 : 0.0,
@@ -84,7 +98,7 @@ class _AppIdleState extends State<AppIdle> {
           duration: const Duration(milliseconds: 1000),
           curve: Curves.easeInOut,
           child: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -106,7 +120,7 @@ class _AppIdleState extends State<AppIdle> {
             opacity: _showContent && _imageLoaded ? 1.0 : 0.0,
             duration: const Duration(milliseconds: 1000),
             curve: Curves.easeInOut,
-            child: HeroGameBadge(
+            child: const HeroGameBadge(
               showActionBtns: false,
               onPlayPressed: null,
               onLearnMorePressed: null,
