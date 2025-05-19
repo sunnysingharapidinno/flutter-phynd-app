@@ -4,7 +4,6 @@ import 'package:phynd_app/core/constants/ui_constants.dart';
 import 'package:phynd_app/core/enums/friend_status.dart';
 import 'package:phynd_app/core/enums/player_profile_section_type.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
-import 'package:phynd_app/data/models/response/player_profile_game.dart';
 import 'package:phynd_app/data/models/response/player_profile_stats.dart';
 import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/data/services/user_service.dart';
@@ -36,12 +35,6 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
   bool _isLoading = false;
   final GameService _gameService = GameService();
 
-  bool _favoriteGamesLoading = false;
-  List<PlayerProfileGame> _favoriteGames = [];
-  bool _continuePlayingGamesLoading = false;
-  List<PlayerProfileGame> _continuePlayingGames = [];
-  bool _friendGamesLoading = false;
-  List<PlayerProfileGame> _friendGames = [];
   PlayerProfileStats? _profileStats;
   bool _isFriend = false;
   FriendStatus? _friendStatus;
@@ -51,21 +44,23 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
   @override
   void initState() {
     super.initState();
+
+    bool isCurrentUser = widget.userId == null;
+
     setState(() {
-      _isCurrentUser = widget.userId == null;
+      _isCurrentUser = isCurrentUser;
     });
 
-    if (widget.userId != null) {
-      _checkFriendStatus();
-    } else {
-      setState(() {
-        _isCurrentUser = true;
-        _isFriend = true;
+    if (isCurrentUser) {
+      _isFriend = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final userId = context.read<AuthBloc>().state.profile?.user.id;
+        if (userId != null) _getPlayerStats(userId);
       });
-    }
-
-    if (!_isCurrentUser) {
+    } else {
+      _checkFriendStatus();
       _fetchUserProfileById(widget.userId!);
+      _getPlayerStats(widget.userId!);
     }
   }
 
@@ -79,9 +74,6 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
         _userProfile = profile;
         _isLoading = false;
       });
-      if (mounted) {
-        _loadAssociatedPlayerData(profile.user.id);
-      }
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -89,23 +81,7 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
         });
       }
       debugPrint('Error fetching profile by ID: $e');
-      // Handle error, e.g., show a snackbar or error message
     }
-  }
-
-  Future<void> _loadAssociatedPlayerData(String profileUserId) async {
-    if (profileUserId.isEmpty) {
-      debugPrint("Cannot load associated player data: profileUserId is empty.");
-      return;
-    }
-    debugPrint("Loading associated player data for user id: ${profileUserId}");
-    // Trigger all loads, they manage their own loading states
-    _getPlayerStats(profileUserId);
-    _getPlayerFavoriteGames(profileUserId);
-    if (_isCurrentUser) {
-      _getPlayerContinuePlayingGames(profileUserId);
-    }
-    _getPlayerFriendsGames(profileUserId);
   }
 
   Future<void> _getPlayerStats(String userId) async {
@@ -119,77 +95,6 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
       });
     } catch (e) {
       debugPrint(e.toString());
-    }
-  }
-
-  Future<void> _getPlayerFavoriteGames(String userId) async {
-    try {
-      setState(() {
-        _favoriteGamesLoading = true;
-      });
-      final response = await _gameService.getPlayerProfileSectionGames(
-        sectionType: PlayerProfileSectionType.favoriteDesc,
-        userId: userId,
-      );
-
-      setState(() {
-        _favoriteGames = response.data;
-      });
-      print("favorite games: ${_favoriteGames}");
-    } catch (e) {
-      debugPrint(e.toString());
-    } finally {
-      setState(() {
-        _favoriteGamesLoading = false;
-      });
-    }
-  }
-
-  Future<void> _getPlayerContinuePlayingGames(String userId) async {
-    try {
-      setState(() {
-        _continuePlayingGamesLoading = true;
-      });
-      final response = await _gameService.getPlayerProfileSectionGames(
-        sectionType: PlayerProfileSectionType.continuePlayingDesc,
-        userId: userId,
-      );
-
-      setState(() {
-        _continuePlayingGames = response.data;
-      });
-    } catch (e) {
-      debugPrint(e.toString());
-    } finally {
-      setState(() {
-        _continuePlayingGamesLoading = false;
-      });
-    }
-  }
-
-  Future<void> _getPlayerFriendsGames(String userId) async {
-    try {
-      setState(() {
-        _friendGamesLoading = true;
-      });
-      final response = await _gameService.getPlayerProfileSectionGames(
-        sectionType: _isCurrentUser
-            ? PlayerProfileSectionType.friendGameDesc
-            : PlayerProfileSectionType.continuePlayingMutualDesc,
-        userId: userId,
-      );
-
-      debugPrint("friend games: ${response.data}");
-
-      setState(() {
-        _friendGames = response.data;
-      });
-    } catch (e) {
-      debugPrint(e.toString());
-    } finally {
-      setState(() {
-        _friendGamesLoading = false;
-      });
     }
   }
 
@@ -210,17 +115,7 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
-      listener: (context, authState) async {
-        debugPrint("auth state: ${authState}, ${widget.userId}");
-        if (widget.userId != null) {
-          _checkFriendStatus();
-        } else {
-          setState(() {
-            _isCurrentUser = true;
-            _isFriend = true;
-          });
-        }
-      },
+      listener: (context, authState) async {},
       builder: (context, authState) {
         if (authState.status == AuthStatus.loading || _isLoading) {
           return const Center(
@@ -228,7 +123,8 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
         }
 
         if (authState.status == AuthStatus.authenticated) {
-          return _buildProfileContent(userProfile: _userProfile);
+          return _buildProfileContent(
+              userProfile: _isCurrentUser ? authState.profile : _userProfile);
         } else if (authState.status == AuthStatus.unauthenticated) {
           return const Center(
               child: Text("User not authenticated. Please login."));
@@ -251,7 +147,6 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Profile Header
             ProfileHeader(
               username: userProfile?.user.display_name ?? '',
               isOnline: true,
@@ -285,18 +180,15 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
               },
             ),
             SizedBox(height: SizeUtils.pxToDp(context, 48)),
-
-            // Only render game carousels if friend
             if (_isFriend) ...[
               CarouselRow(
                 cardSpacing: 60,
                 cardsPerView: 5,
                 heading: 'Favorite Games',
                 sectionHeight: 470,
-                items: _favoriteGames,
-                isLoading: _favoriteGamesLoading,
                 handleApiCall: (page) {
-                  _gameService.getPlayerProfileSectionGames(
+                  return _gameService.getPlayerProfileSectionGames(
+                    page: page,
                     sectionType: PlayerProfileSectionType.favoriteDesc,
                     userId: userProfile?.user.id ?? '',
                   );
@@ -318,10 +210,12 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
                   cardsPerView: UIConstants.defaultCardsPerView,
                   heading: 'Continue Playing',
                   sectionHeight: 350,
-                  items: _continuePlayingGames,
-                  isLoading: _continuePlayingGamesLoading,
-                  onEndOfScroll: () {
-                    print('onEndOfScroll');
+                  handleApiCall: (page) {
+                    return _gameService.getPlayerProfileSectionGames(
+                      page: page,
+                      sectionType: PlayerProfileSectionType.continuePlayingDesc,
+                      userId: userProfile?.user.id ?? '',
+                    );
                   },
                   cardBuilder: (context, game, width, index) {
                     return GameClipCard(
@@ -342,8 +236,15 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
                 cardsPerView: UIConstants.defaultCardsPerView,
                 heading: 'Games Your Friends Are Playing',
                 sectionHeight: 350,
-                items: _friendGames,
-                isLoading: _friendGamesLoading,
+                handleApiCall: (page) {
+                  return _gameService.getPlayerProfileSectionGames(
+                    page: page,
+                    sectionType: _isCurrentUser
+                        ? PlayerProfileSectionType.friendGameDesc
+                        : PlayerProfileSectionType.continuePlayingMutualDesc,
+                    userId: userProfile?.user.id ?? '',
+                  );
+                },
                 cardBuilder: (context, game, width, index) {
                   return GameClipCard(
                     height: 233,
