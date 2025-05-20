@@ -11,6 +11,7 @@ import 'package:phynd_app/presentation/screens/library_page/sections/saved_video
 import 'package:phynd_app/presentation/screens/library_page/sections/saved_game.dart';
 import 'package:phynd_app/presentation/screens/library_page/sections/saved_images.dart';
 import 'package:phynd_app/presentation/screens/library_page/models/hero_data.dart';
+import 'package:phynd_app/data/services/game_service.dart';
 
 class LibraryPage extends StatefulWidget {
   const LibraryPage({Key? key}) : super(key: key);
@@ -22,11 +23,14 @@ class LibraryPage extends StatefulWidget {
 class _LibraryPageState extends State<LibraryPage> {
   late HeroData _currentHeroData;
   late HeroData _initialHeroData;
+  List<dynamic> _recentHistory = [];
+  List<dynamic> _favoriteGames = [];
+  List<dynamic> _savedGames = [];
+  bool _loading = true;
 
   @override
   void initState() {
     super.initState();
-    // Set initial hero data
     _initialHeroData = const HeroData(
       imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
       videoUrl: 'https://cdn.pixabay.com/video/2025/04/29/275633_large.mp4',
@@ -39,6 +43,20 @@ class _LibraryPageState extends State<LibraryPage> {
       gameTitle: 'Game Title',
     );
     _currentHeroData = _initialHeroData;
+    _fetchAllData();
+  }
+
+  Future<void> _fetchAllData() async {
+    final gameService = GameService();
+    final recent = await gameService.getRecentHistory(page: 1, limit: UIConstants.defaultPageSize);
+    final favorites = await gameService.getFavoriteGames(page: 1, limit: UIConstants.defaultPageSize);
+    final saved = await gameService.getSavedGames(page: 1, limit: UIConstants.defaultPageSize);
+    setState(() {
+      _recentHistory = recent.data;
+      _favoriteGames = favorites.data;
+      _savedGames = saved.data;
+      _loading = false;
+    });
   }
 
   void _updateHeroData(HeroData newData) {
@@ -55,9 +73,14 @@ class _LibraryPageState extends State<LibraryPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_loading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    final hasAnyData = _recentHistory.isNotEmpty || _favoriteGames.isNotEmpty || _savedGames.isNotEmpty;
     return ListView(
       children: [
-        LibraryHero(heroData: _currentHeroData),
+        if (hasAnyData)
+          LibraryHero(heroData: _currentHeroData),
         Padding(
           padding: EdgeInsets.symmetric(
             horizontal: SizeUtils.pxToDp(context, 56),
