@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/constants/ui_constants.dart';
 import 'package:phynd_app/core/enums/media_type.dart';
-import 'package:phynd_app/data/models/response/favorite_content_model.dart';
 import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/presentation/widgets/cards/video_cards.dart';
 import 'package:phynd_app/presentation/widgets/carousel/carousel_row.dart';
@@ -17,49 +16,10 @@ class SavedVideoSection extends StatefulWidget {
 
 class _SavedVideoState extends State<SavedVideoSection> {
   final GameService _gameService = GameService();
-  List<FavoriteContent> _content = [];
-  bool _isLoading = true;
-  int _currentPage = UIConstants.initialPage;
-  bool _hasMoreContent = true;
 
   @override
   void initState() {
     super.initState();
-    _fetchContent();
-  }
-
-  Future<void> _fetchContent() async {
-    if (_currentPage > 1 && (!_hasMoreContent || _isLoading)) return;
-
-    try {
-      setState(() {
-        _isLoading = true;
-      });
-
-      final result = await _gameService.getSavedContent(
-          page: _currentPage,
-          limit: UIConstants.defaultPageSize,
-          contentType: MediaType.video.value);
-
-      setState(() {
-        if (result.data.isEmpty) {
-          _hasMoreContent = false;
-        } else {
-          if (_currentPage == 1) {
-            _content = result.data;
-          } else {
-            _content.addAll(result.data);
-          }
-          _hasMoreContent = _currentPage < result.totalPage;
-        }
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      debugPrint('Error fetching content: $e');
-    }
   }
 
   @override
@@ -68,7 +28,13 @@ class _SavedVideoState extends State<SavedVideoSection> {
       cardSpacing: UIConstants.cardSpacing,
       cardsPerView: UIConstants.defaultCardsPerView,
       heading: 'Saved Videos',
-      items: _content,
+      handleApiCall: (page) {
+        return _gameService.getSavedContent(
+          page: page,
+          limit: UIConstants.defaultPageSize,
+          contentType: MediaType.video.value,
+        );
+      },
       cardBuilder: (context, content, width, index) {
         return VideoCard(
           thumbnailUrl: content.thumbnailUrl ?? '',
@@ -83,12 +49,6 @@ class _SavedVideoState extends State<SavedVideoSection> {
           friendsWatchedCount: 10,
         );
       },
-      onEndOfScroll: () {
-        _currentPage++;
-        _fetchContent();
-      },
-      isLoading: _isLoading,
-      isLoadingMore: _isLoading,
     );
   }
 }
