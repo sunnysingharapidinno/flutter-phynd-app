@@ -13,6 +13,7 @@ import 'package:phynd_app/data/models/response/game_model.dart';
 import 'package:phynd_app/data/models/response/like_follow_model.dart';
 import 'package:phynd_app/data/models/response/pagination_model.dart';
 import 'package:phynd_app/data/models/response/player_profile_game.dart';
+import 'package:phynd_app/data/models/response/saved_event_model.dart';
 import 'package:phynd_app/data/models/response/pub_featured_game_model.dart';
 import 'package:phynd_app/data/models/response/pub_genre_model.dart';
 import 'package:phynd_app/data/models/response/screen_saver_setting_model.dart';
@@ -166,14 +167,7 @@ class GameService {
     }
   }
 
-  Future<
-      ({
-        List<FavoriteGame> data,
-        int total,
-        int totalPage,
-        int currentPage,
-        int remainingPages
-      })> getFavoriteGames({
+  Future<Paginated<FavoriteGame>> getFavoriteGames({
     int page = 1,
     int limit = 10,
   }) async {
@@ -190,12 +184,9 @@ class GameService {
         final List<FavoriteGame> games = (responseData['data'] as List)
             .map((gameJson) => FavoriteGame.fromJson(gameJson))
             .toList();
-        return (
+        return Paginated(
+          count: responseData['total'] as int,
           data: games,
-          total: responseData['total'] as int,
-          totalPage: responseData['total_page'] as int,
-          currentPage: responseData['current_page'] as int,
-          remainingPages: responseData['remaining_pages'] as int
         );
       } else {
         throw Exception(
@@ -206,14 +197,7 @@ class GameService {
     }
   }
 
-  Future<
-      ({
-        List<FavoriteGame> data,
-        int total,
-        int totalPage,
-        int currentPage,
-        int remainingPages
-      })> getSavedGames({
+  Future<Paginated<FavoriteGame>> getSavedGames({
     int page = 1,
     int limit = 10,
   }) async {
@@ -230,12 +214,9 @@ class GameService {
         final List<FavoriteGame> games = (responseData['data'] as List)
             .map((gameJson) => FavoriteGame.fromJson(gameJson))
             .toList();
-        return (
+        return Paginated(
+          count: responseData['total'] as int,
           data: games,
-          total: responseData['total'] as int,
-          totalPage: responseData['total_page'] as int,
-          currentPage: responseData['current_page'] as int,
-          remainingPages: responseData['remaining_pages'] as int
         );
       } else {
         throw Exception(
@@ -246,14 +227,7 @@ class GameService {
     }
   }
 
-  Future<
-      ({
-        List<FavoriteContent> data,
-        int total,
-        int totalPage,
-        int currentPage,
-        int remainingPages
-      })> getSavedContent({
+  Future<Paginated<FavoriteContent>> getSavedContent({
     int page = 1,
     int limit = 10,
     required String contentType,
@@ -271,12 +245,9 @@ class GameService {
         final List<FavoriteContent> content = (responseData['data'] as List)
             .map((contentJson) => FavoriteContent.fromJson(contentJson))
             .toList();
-        return (
+        return Paginated(
+          count: responseData['total'] as int,
           data: content,
-          total: responseData['total'] as int,
-          totalPage: responseData['total_page'] as int,
-          currentPage: responseData['current_page'] as int,
-          remainingPages: responseData['remaining_pages'] as int
         );
       } else {
         throw Exception(
@@ -287,14 +258,7 @@ class GameService {
     }
   }
 
-  Future<
-      ({
-        List<FavoriteContent> data,
-        int total,
-        int totalPage,
-        int currentPage,
-        int remainingPages
-      })> getFavoriteContent({
+  Future<Paginated<FavoriteContent>> getFavoriteContent({
     int page = 1,
     int limit = 10,
     required String contentType,
@@ -312,12 +276,9 @@ class GameService {
         final List<FavoriteContent> content = (responseData['data'] as List)
             .map((contentJson) => FavoriteContent.fromJson(contentJson))
             .toList();
-        return (
+        return Paginated(
+          count: responseData['total'] as int,
           data: content,
-          total: responseData['total'] as int,
-          totalPage: responseData['total_page'] as int,
-          currentPage: responseData['current_page'] as int,
-          remainingPages: responseData['remaining_pages'] as int
         );
       } else {
         throw Exception(
@@ -328,14 +289,7 @@ class GameService {
     }
   }
 
-  Future<
-      ({
-        List<FavoriteVideo> data,
-        int total,
-        int totalPage,
-        int currentPage,
-        int remainingPages
-      })> getFavoriteVideos({
+  Future<Paginated<FavoriteVideo>> getFavoriteVideos({
     int page = 1,
     int limit = 10,
   }) async {
@@ -352,12 +306,9 @@ class GameService {
         final List<FavoriteVideo> videos = (responseData['data'] as List)
             .map((videoJson) => FavoriteVideo.fromJson(videoJson))
             .toList();
-        return (
+        return Paginated(
+          count: responseData['total'] as int,
           data: videos,
-          total: responseData['total'] as int,
-          totalPage: responseData['total_page'] as int,
-          currentPage: responseData['current_page'] as int,
-          remainingPages: responseData['remaining_pages'] as int
         );
       } else {
         throw Exception(
@@ -368,14 +319,7 @@ class GameService {
     }
   }
 
-  Future<
-      ({
-        List<FavoriteVideo> data,
-        int total,
-        int totalPage,
-        int currentPage,
-        int remainingPages
-      })> getSavedVideos({
+  Future<Paginated<FavoriteVideo>> getSavedVideos({
     int page = 1,
     int limit = 10,
   }) async {
@@ -392,12 +336,9 @@ class GameService {
         final List<FavoriteVideo> videos = (responseData['data'] as List)
             .map((videoJson) => FavoriteVideo.fromJson(videoJson))
             .toList();
-        return (
+        return Paginated(
+          count: responseData['total'] as int,
           data: videos,
-          total: responseData['total'] as int,
-          totalPage: responseData['total_page'] as int,
-          currentPage: responseData['current_page'] as int,
-          remainingPages: responseData['remaining_pages'] as int
         );
       } else {
         throw Exception('Failed to fetch saved videos: ${response.statusCode}');
@@ -437,14 +378,7 @@ class GameService {
     }
   }
 
-  Future<
-      ({
-        List<RecentHistory> data,
-        int total,
-        int totalPage,
-        int currentPage,
-        int remainingPages
-      })> getRecentHistory({
+  Future<Paginated<RecentHistory>> getRecentHistory({
     int page = 1,
     int limit = 10,
   }) async {
@@ -461,12 +395,9 @@ class GameService {
         final List<RecentHistory> games = (responseData['data'] as List)
             .map((gameJson) => RecentHistory.fromJson(gameJson))
             .toList();
-        return (
+        return Paginated(
+          count: responseData['total'] as int,
           data: games,
-          total: responseData['total'] as int,
-          totalPage: responseData['total_page'] as int,
-          currentPage: responseData['current_page'] as int,
-          remainingPages: responseData['remaining_pages'] as int
         );
       } else {
         throw Exception(
@@ -474,6 +405,56 @@ class GameService {
       }
     } catch (e) {
       throw Exception('Error fetching recent history: $e');
+    }
+  }
+
+  Future<Paginated<SavedEvent>> getSavedEvents({
+    int page = 1,
+    int limit = 10,
+  }) async {
+    try {
+      final url = Uri.parse(
+          '${ServerAPIEndpoints.getSavedEvents}?page=$page&limit=$limit');
+      final response = await api.get(
+        url.toString(),
+        auth: true,
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final List<SavedEvent> events = (responseData['data'] as List)
+            .map((eventJson) => SavedEvent.fromJson(eventJson))
+            .toList();
+        return Paginated(count: responseData['total'] as int, data: events);
+      } else {
+        throw Exception('Failed to fetch saved events: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching saved events: $e');
+    }
+  }
+
+  Future<void> removeSavedEvent({
+    required String eventId,
+  }) async {
+    try {
+      final url = Uri.parse('${ServerAPIEndpoints.getSavedEvents}$eventId');
+
+      await api.delete(url.toString(), auth: true);
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
+    }
+  }
+
+  Future<void> removeSavedOffer({
+    required String offerId,
+  }) async {
+    try {
+      final url = Uri.parse('${ServerAPIEndpoints.getSavedOffers}$offerId');
+
+      await api.delete(url.toString(), auth: true);
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
     }
   }
 

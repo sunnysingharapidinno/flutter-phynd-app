@@ -38,8 +38,8 @@ class GameClipCard extends StatelessWidget {
     final textColor = theme?.get('text');
     final cardColor = theme?.get('cardBg');
 
-    final double cardWidth = SizeUtils.pxToDp(context, width ?? 250);
-    final double cardHeight = SizeUtils.pxToDp(context, height ?? 225);
+    final double cardWidth = SizeUtils.pxToDp(context, width ?? 368);
+    final double cardHeight = SizeUtils.pxToDp(context, height ?? 207);
 
     return RemoteControlWrapper(
       onTap: onTap,

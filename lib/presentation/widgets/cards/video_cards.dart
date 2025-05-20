@@ -126,34 +126,35 @@ class VideoCard extends StatelessWidget {
             ],
           ),
           // Publisher Info Section
-          Padding(
-            padding: EdgeInsets.all(SizeUtils.pxToDp(context, 8)),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ImageThumbnail(
-                  imageUrl: publisherAvatarUrl,
-                  height: 40,
-                  width: 40,
-                  borderRadius: 40,
-                  isNetwork: true,
-                  fit: BoxFit.cover,
-                ),
-                SizedBox(width: SizeUtils.pxToDp(context, 8)),
-                Text(
-                  publisherName ?? '',
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: FontUtils.pxToSp(context, 20),
-                    fontWeight: FontWeight.w500,
+          if (publisherName != null && publisherName!.isNotEmpty)
+            Padding(
+              padding: EdgeInsets.all(SizeUtils.pxToDp(context, 8)),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ImageThumbnail(
+                    imageUrl: publisherAvatarUrl,
+                    height: 40,
+                    width: 40,
+                    borderRadius: 40,
+                    isNetwork: true,
+                    fit: BoxFit.cover,
                   ),
-                ),
-                SizedBox(width: SizeUtils.pxToDp(context, 8)),
-                if (isVerified)
-                  VerifiedBadge(size: SizeUtils.pxToDp(context, 20)),
-              ],
+                  SizedBox(width: SizeUtils.pxToDp(context, 8)),
+                  Text(
+                    publisherName!,
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: FontUtils.pxToSp(context, 20),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(width: SizeUtils.pxToDp(context, 8)),
+                  if (isVerified)
+                    VerifiedBadge(size: SizeUtils.pxToDp(context, 20)),
+                ],
+              ),
             ),
-          ),
           // Friends Watched Section
           Padding(
             padding: EdgeInsets.only(

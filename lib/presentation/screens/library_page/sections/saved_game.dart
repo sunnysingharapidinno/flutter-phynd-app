@@ -17,50 +17,11 @@ class SavedGameSection extends StatefulWidget {
 
 class _FavoriteGameState extends State<SavedGameSection> {
   late final GameService _gameService;
-  List<dynamic> _games = [];
-  bool _isLoading = true;
-  int _currentPage = UIConstants.initialPage;
-  bool _hasMoreContent = true;
 
   @override
   void initState() {
     super.initState();
     _gameService = widget.gameService ?? GameService();
-    _fetchCards();
-  }
-
-  Future<void> _fetchCards() async {
-    if (_currentPage > 1 && (!_hasMoreContent || _isLoading)) return;
-
-    try {
-      setState(() {
-        _isLoading = true;
-      });
-
-      final result = await _gameService.getSavedGames(
-        page: _currentPage,
-        limit: UIConstants.defaultPageSize,
-      );
-
-      setState(() {
-        if (result.data.isEmpty) {
-          _hasMoreContent = false;
-        } else {
-          if (_currentPage == 1) {
-            _games = result.data;
-          } else {
-            _games.addAll(result.data);
-          }
-          _hasMoreContent = _currentPage < result.totalPage;
-        }
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      debugPrint('Error fetching games: $e');
-    }
   }
 
   @override
@@ -69,7 +30,12 @@ class _FavoriteGameState extends State<SavedGameSection> {
       cardSpacing: UIConstants.cardSpacing,
       cardsPerView: UIConstants.defaultCardsPerView,
       heading: 'Saved Games',
-      items: _games,
+      handleApiCall: (page) {
+        return _gameService.getSavedGames(
+          page: page,
+          limit: UIConstants.defaultPageSize,
+        );
+      },
       cardBuilder: (context, game, width, index) {
         return GameClipCard(
           thumbnailUrl: game.imageUrl ?? game.image ?? '',
@@ -80,12 +46,6 @@ class _FavoriteGameState extends State<SavedGameSection> {
           esrbRatingImageUrl: game.esrbRatingUrl ?? '',
         );
       },
-      onEndOfScroll: () {
-        _currentPage++;
-        _fetchCards();
-      },
-      isLoading: _isLoading,
-      isLoadingMore: _isLoading,
     );
   }
 }

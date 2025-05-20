@@ -46,15 +46,15 @@ class LibraryPage extends StatelessWidget {
               SizedBox(
                   height:
                       SizeUtils.pxToDp(context, UIConstants.sectionSpacing)),
+              const SavedEventsSection(),
+              SizedBox(
+                  height:
+                      SizeUtils.pxToDp(context, UIConstants.sectionSpacing)),
               const FavoriteImagesSection(),
               SizedBox(
                   height:
                       SizeUtils.pxToDp(context, UIConstants.sectionSpacing)),
               const SavedImagesSection(),
-              SizedBox(
-                  height:
-                      SizeUtils.pxToDp(context, UIConstants.sectionSpacing)),
-              const SavedEventsSection(),
             ],
           ),
         ),

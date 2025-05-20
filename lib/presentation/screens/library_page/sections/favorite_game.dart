@@ -14,50 +14,11 @@ class FavoriteGameSection extends StatefulWidget {
 
 class _FavoriteGameState extends State<FavoriteGameSection> {
   late final GameService _gameService;
-  bool _isLoading = true;
-  int _currentPage = UIConstants.initialPage;
-  bool _hasMoreContent = true;
-  List<dynamic> _games = [];
 
   @override
   void initState() {
     super.initState();
     _gameService = widget.gameService ?? GameService();
-    _fetchCards();
-  }
-
-  Future<void> _fetchCards() async {
-    if (_currentPage > 1 && (!_hasMoreContent || _isLoading)) return;
-
-    try {
-      setState(() {
-        _isLoading = true;
-      });
-
-      final result = await _gameService.getFavoriteGames(
-        page: _currentPage,
-        limit: UIConstants.defaultPageSize,
-      );
-
-      setState(() {
-        if (result.data.isEmpty) {
-          _hasMoreContent = false;
-        } else {
-          if (_currentPage == 1) {
-            _games = result.data;
-          } else {
-            _games.addAll(result.data);
-          }
-          _hasMoreContent = _currentPage < result.totalPage;
-        }
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      debugPrint('Error fetching games: $e');
-    }
   }
 
   @override
@@ -66,7 +27,12 @@ class _FavoriteGameState extends State<FavoriteGameSection> {
       cardSpacing: UIConstants.cardSpacing,
       cardsPerView: UIConstants.defaultCardsPerView,
       heading: 'Favorited Games',
-      items: _games,
+      handleApiCall: (page) {
+        return _gameService.getFavoriteGames(
+          page: page,
+          limit: UIConstants.defaultPageSize,
+        );
+      },
       cardBuilder: (context, game, width, index) {
         return GameClipCard(
           thumbnailUrl: game.imageUrl ?? '',
@@ -77,12 +43,6 @@ class _FavoriteGameState extends State<FavoriteGameSection> {
           esrbRatingImageUrl: game.esrbRatingUrl ?? '',
         );
       },
-      onEndOfScroll: () {
-        _currentPage++;
-        _fetchCards();
-      },
-      isLoading: _isLoading,
-      isLoadingMore: _isLoading,
     );
   }
 }
