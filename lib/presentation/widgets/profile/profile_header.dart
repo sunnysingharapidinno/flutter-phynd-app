@@ -209,6 +209,10 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                     text: getFriendButtonText(),
                     isLoading: _friendButtonLoading,
                     onPressed: () async {
+                      if (widget.friendStatus == FriendStatus.pending) {
+                        return;
+                      }
+
                       try {
                         setState(() {
                           _friendButtonLoading = true;

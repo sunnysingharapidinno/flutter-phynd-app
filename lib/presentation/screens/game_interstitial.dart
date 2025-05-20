@@ -14,15 +14,14 @@ import 'package:phynd_app/presentation/widgets/loader/circular_load.dart';
 import 'package:phynd_app/presentation/widgets/notifier.dart';
 
 class GameInterstitialPage extends StatefulWidget {
-  const GameInterstitialPage({super.key});
+  final String gameSlug;
+  const GameInterstitialPage({super.key, required this.gameSlug});
 
   @override
   State<GameInterstitialPage> createState() => _GameInterstitialPageState();
 }
 
 class _GameInterstitialPageState extends State<GameInterstitialPage> {
-  final _gameSlug = 'xst-electric-sheep-9a116e1e';
-
   late bool _isLoading = false;
   GameDetails? _gameDetails;
   final GameService _gameService = GameService();
@@ -41,8 +40,8 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
 
   Future<void> _checkFollowFavoriteStatus() async {
     try {
-      final status =
-          await _gameService.checkLikeFollowGameStatus(gameSlug: _gameSlug);
+      final status = await _gameService.checkLikeFollowGameStatus(
+          gameSlug: widget.gameSlug);
       setState(
         () => _isFollowed = status.isFollow ?? false,
       );
@@ -57,7 +56,8 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
     setState(() => _isLoading = true);
 
     try {
-      final details = await _gameService.getGameDetails(gameSlug: _gameSlug);
+      final details =
+          await _gameService.getGameDetails(gameSlug: widget.gameSlug);
 
       setState(() => _gameDetails = details);
     } catch (e) {
@@ -73,10 +73,10 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
 
       if (_isFavorite) {
         await _gameService.removeFavoriteSaveGame(
-            gameSlug: _gameSlug, favorite: true);
+            gameSlug: widget.gameSlug, favorite: true);
       } else {
         await _gameService.favoriteSaveGame(
-            gameSlug: _gameSlug, favorite: true);
+            gameSlug: widget.gameSlug, favorite: true);
       }
 
       Notifier.show(context,
@@ -95,9 +95,9 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
     try {
       setState(() => _checkingFollow = true);
       if (_isFollowed) {
-        await _gameService.unFollowGame(gameSlug: _gameSlug);
+        await _gameService.unFollowGame(gameSlug: widget.gameSlug);
       } else {
-        await _gameService.followGame(gameSlug: _gameSlug);
+        await _gameService.followGame(gameSlug: widget.gameSlug);
       }
 
       Notifier.show(context,
@@ -145,11 +145,11 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                 ),
                 child: ImageVideo(
                   imageUrl: _gameDetails?.thumbnail,
-                  videoUrl:
-                      'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+                  videoUrl: _gameDetails?.trailers?.firstOrNull?.url,
                   width: double.infinity,
                   height: double.infinity,
                   fit: BoxFit.cover,
+                  autoPlay: true,
                 ),
               ),
             ],
@@ -249,7 +249,7 @@ class _GameInterstitialPageState extends State<GameInterstitialPage> {
                       borderRadius: 6,
                       onPressed: () {
                         Navigator.pushNamed(context, AppRoutes.game,
-                            arguments: _gameSlug);
+                            arguments: widget.gameSlug);
                       },
                       backgroundColor: buttonBg2,
                       textColor: textColor,

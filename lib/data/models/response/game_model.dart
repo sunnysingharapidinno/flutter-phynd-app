@@ -1,8 +1,13 @@
 import 'package:flutter/foundation.dart';
 
 enum GameOvMediaType {
-  image,
-  video;
+  image('IMAGE'),
+  video('VIDEO'),
+  trailer('TRAILER');
+
+  final String value;
+
+  const GameOvMediaType(this.value);
 
   factory GameOvMediaType.fromString(String value) {
     return GameOvMediaType.values.firstWhere(
@@ -10,8 +15,6 @@ enum GameOvMediaType {
       orElse: () => GameOvMediaType.image,
     );
   }
-
-  String toShortString() => describeEnum(this);
 }
 
 class GameOverview {
@@ -29,10 +32,11 @@ class GameOverview {
 
   factory GameOverview.fromJson(Map<String, dynamic> json) {
     return GameOverview(
-      url: json['url'],
-      title: json['title'],
-      description: json['description'],
-      mediaType: GameOvMediaType.fromString(json['media_type']),
+      url: json['url'] ?? '',
+      title: json['title'] ?? '',
+      description: json['description'] ?? '',
+      mediaType: GameOvMediaType.fromString(
+          json['media_type'] ?? GameOvMediaType.image.value),
     );
   }
 
@@ -41,7 +45,7 @@ class GameOverview {
       'url': url,
       'title': title,
       'description': description,
-      'media_type': mediaType.toShortString(),
+      'media_type': mediaType.value,
     };
   }
 }
@@ -57,7 +61,7 @@ class GameScreenshot {
 
   factory GameScreenshot.fromJson(Map<String, dynamic> json) {
     return GameScreenshot(
-      url: json['url'],
+      url: json['url'] ?? '',
       title: json['title'],
     );
   }
@@ -86,7 +90,7 @@ class Platform {
     );
   }
 
-  Map<String, String?> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'image_url': imageUrl,
       'name': name,
@@ -110,7 +114,7 @@ class Controller {
     );
   }
 
-  Map<String, String?> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'image_url': imageUrl,
       'name': name,
@@ -155,6 +159,7 @@ class GameDetails {
   final String? processorRequirements;
   final String? osRequirements;
   final List<GameOverview> gameMedia;
+  final List<GameOverview>? trailers;
   final List<GameScreenshot> gameScreenshots;
   final List<String> gamePlayModes;
   final bool inAppPurchases;
@@ -215,6 +220,7 @@ class GameDetails {
     this.processorRequirements,
     this.osRequirements,
     required this.gameMedia,
+    this.trailers,
     required this.gameScreenshots,
     required this.gamePlayModes,
     required this.inAppPurchases,
@@ -243,8 +249,9 @@ class GameDetails {
       gameSlug: json['game_slug'] ?? '',
       gameTitle: json['game_title'] ?? '',
       shortBio: json['short_bio'] ?? '',
-      developers: List<String>.from(
-          (json['developers'] ?? []).where((e) => e != null) ?? []),
+      developers: (json['developers'] as List<dynamic>? ?? [])
+          .whereType<String>()
+          .toList(),
       isBrowserBasedGame: json['is_browser_based_game'] ?? false,
       downloadUrl: json['download_url'],
       launcherUrl: json['launcher_url'],
@@ -253,8 +260,11 @@ class GameDetails {
       endDate: json['end_date'],
       isBlockchainSupported: json['is_blockchain_supported'] ?? false,
       blockchainPlatform: json['blockchain_platform'],
-      genre: List<String>.from(json['genre'] ?? []),
-      subGenre: List<String>.from(json['sub_genre'] ?? []),
+      genre:
+          (json['genre'] as List<dynamic>? ?? []).whereType<String>().toList(),
+      subGenre: (json['sub_genre'] as List<dynamic>? ?? [])
+          .whereType<String>()
+          .toList(),
       adSupported: json['ad_supported'] ?? false,
       contentRating: json['content_rating'] ?? false,
       ageRestricted: json['age_restricted'] ?? false,
@@ -266,31 +276,48 @@ class GameDetails {
       discordLink: json['discord_link'],
       whitePaperLink: json['white_paper_link'],
       telegramLink: json['telegram_link'],
-      languageSupported: List<String>.from(json['language_supported'] ?? []),
-      modes: List<String>.from(json['modes'] ?? []),
-      platforms: (json['platforms'] as List? ?? [])
+      languageSupported: (json['language_supported'] as List<dynamic>? ?? [])
+          .whereType<String>()
+          .toList(),
+      modes:
+          (json['modes'] as List<dynamic>? ?? []).whereType<String>().toList(),
+      platforms: (json['platforms'] as List<dynamic>? ?? [])
+          .whereType<Map<String, dynamic>>()
           .map((p) => Platform.fromJson(p))
           .toList(),
-      controllers: (json['controllers'] as List? ?? [])
+      controllers: (json['controllers'] as List<dynamic>? ?? [])
+          .whereType<Map<String, dynamic>>()
           .map((c) => Controller.fromJson(c))
           .toList(),
-      browserSupport: List<String>.from(json['browser_support'] ?? []),
-      tags: List<String>.from(json['tags'] ?? []),
+      browserSupport: (json['browser_support'] as List<dynamic>? ?? [])
+          .whereType<String>()
+          .toList(),
+      tags: (json['tags'] as List<dynamic>? ?? []).whereType<String>().toList(),
       storageRequirements: json['storage_requirements'],
       ramRequirements: json['ram_requirements'],
       processorRequirements: json['processor_requirements'],
       osRequirements: json['os_requirements'],
-      gameMedia: (json['game_media'] as List? ?? [])
+      gameMedia: (json['game_media'] as List<dynamic>? ?? [])
+          .whereType<Map<String, dynamic>>()
           .map((x) => GameOverview.fromJson(x))
           .toList(),
-      gameScreenshots: (json['game_screenshots'] as List? ?? [])
+      trailers: (json['trailers'] as List<dynamic>? ?? [])
+          .whereType<Map<String, dynamic>>()
+          .map((x) => GameOverview.fromJson(x))
+          .toList(),
+      gameScreenshots: (json['game_screenshots'] as List<dynamic>? ?? [])
+          .whereType<Map<String, dynamic>>()
           .map((x) => GameScreenshot.fromJson(x))
           .toList(),
-      gamePlayModes: List<String>.from(json['game_play_modes'] ?? []),
+      gamePlayModes: (json['game_play_modes'] as List<dynamic>? ?? [])
+          .whereType<String>()
+          .toList(),
       inAppPurchases: json['in_app_purchases'] ?? false,
       isGameFeatured: json['is_game_featured'] ?? false,
       isFromVerifiedPublisher: json['is_from_verified_publisher'] ?? false,
-      gameFranchise: List<String>.from(json['game_franchise'] ?? []),
+      gameFranchise: (json['game_franchise'] as List<dynamic>? ?? [])
+          .whereType<String>()
+          .toList(),
       iframable: json['iframable'] ?? false,
       publisherId: json['publisher_id'],
       publisherDisplayName: json['publisher_display_name'],
@@ -338,8 +365,8 @@ class GameDetails {
       'telegram_link': telegramLink,
       'language_supported': languageSupported,
       'modes': modes,
-      'platforms': platforms.map((p) => p.toMap()).toList(),
-      'controllers': controllers.map((c) => c.toMap()).toList(),
+      'platforms': platforms.map((p) => p.toJson()).toList(),
+      'controllers': controllers.map((c) => c.toJson()).toList(),
       'browser_support': browserSupport,
       'tags': tags,
       'storage_requirements': storageRequirements,
@@ -347,6 +374,7 @@ class GameDetails {
       'processor_requirements': processorRequirements,
       'os_requirements': osRequirements,
       'game_media': gameMedia.map((m) => m.toJson()).toList(),
+      'trailers': trailers?.map((t) => t.toJson()).toList(),
       'game_screenshots': gameScreenshots.map((s) => s.toJson()).toList(),
       'game_play_modes': gamePlayModes,
       'in_app_purchases': inAppPurchases,
@@ -409,6 +437,7 @@ class Game {
   final String? processorRequirements;
   final String? osRequirements;
   final List<GameOverview> gameMedia;
+  final List<GameOverview> trailers;
   final List<GameScreenshot> gameScreenshots;
   final List<String>? gamePlayModes;
   final bool? inAppPurchases;
@@ -469,6 +498,7 @@ class Game {
     this.processorRequirements,
     this.osRequirements,
     required this.gameMedia,
+    required this.trailers,
     required this.gameScreenshots,
     this.gamePlayModes,
     this.inAppPurchases,
@@ -497,7 +527,9 @@ class Game {
       gameSlug: json['game_slug'] ?? '',
       gameTitle: json['game_title'] ?? '',
       shortBio: json['short_bio'] ?? '',
-      developers: List<String>.from(json['developers'] ?? []),
+      developers: (json['developers'] as List<dynamic>? ?? [])
+          .whereType<String>()
+          .toList(),
       isBrowserBasedGame: json['is_browser_based_game'],
       downloadUrl: json['download_url'],
       launcherUrl: json['launcher_url'],
@@ -506,8 +538,11 @@ class Game {
       endDate: json['end_date'],
       isBlockchainSupported: json['is_blockchain_supported'],
       blockchainPlatform: json['blockchain_platform'],
-      genre: List<String>.from(json['genre'] ?? []),
-      subGenre: List<String>.from(json['sub_genre'] ?? []),
+      genre:
+          (json['genre'] as List<dynamic>? ?? []).whereType<String>().toList(),
+      subGenre: (json['sub_genre'] as List<dynamic>? ?? [])
+          .whereType<String>()
+          .toList(),
       adSupported: json['ad_supported'],
       contentRating: json['content_rating'],
       ageRestricted: json['age_restricted'],
@@ -519,34 +554,51 @@ class Game {
       discordLink: json['discord_link'],
       whitePaperLink: json['white_paper_link'],
       telegramLink: json['telegram_link'],
-      languageSupported: List<String>.from(json['language_supported'] ?? []),
-      modes: List<String>.from(json['modes'] ?? []),
-      platforms: (json['platforms'] as List? ?? [])
+      languageSupported: (json['language_supported'] as List<dynamic>? ?? [])
+          .whereType<String>()
+          .toList(),
+      modes:
+          (json['modes'] as List<dynamic>? ?? []).whereType<String>().toList(),
+      platforms: (json['platforms'] as List<dynamic>? ?? [])
+          .whereType<Map<String, dynamic>>()
           .map((p) => Platform.fromJson(p))
           .toList(),
-      controllers: (json['controllers'] as List? ?? [])
+      controllers: (json['controllers'] as List<dynamic>? ?? [])
+          .whereType<Map<String, dynamic>>()
           .map((c) => Controller.fromJson(c))
           .toList(),
-      browserSupport: List<String>.from(json['browser_support'] ?? []),
-      tags: List<String>.from(json['tags'] ?? []),
+      browserSupport: (json['browser_support'] as List<dynamic>? ?? [])
+          .whereType<String>()
+          .toList(),
+      tags: (json['tags'] as List<dynamic>? ?? []).whereType<String>().toList(),
       storageRequirements: json['storage_requirements'],
       ramRequirements: json['ram_requirements'],
       processorRequirements: json['processor_requirements'],
       osRequirements: json['os_requirements'],
-      gameMedia: (json['game_media'] as List? ?? [])
+      gameMedia: (json['game_media'] as List<dynamic>? ?? [])
+          .whereType<Map<String, dynamic>>()
           .map((x) => GameOverview.fromJson(x))
           .toList(),
-      gameScreenshots: (json['game_screenshots'] as List? ?? [])
+      trailers: (json['trailers'] as List<dynamic>? ?? [])
+          .whereType<Map<String, dynamic>>()
+          .map((x) => GameOverview.fromJson(x))
+          .toList(),
+      gameScreenshots: (json['game_screenshots'] as List<dynamic>? ?? [])
+          .whereType<Map<String, dynamic>>()
           .map((x) => GameScreenshot.fromJson(x))
           .toList(),
       gamePlayModes: json['game_play_modes'] != null
-          ? List<String>.from(json['game_play_modes'])
+          ? (json['game_play_modes'] as List<dynamic>)
+              .whereType<String>()
+              .toList()
           : null,
       inAppPurchases: json['in_app_purchases'],
       isGameFeatured: json['is_game_featured'],
       isFromVerifiedPublisher: json['is_from_verified_publisher'],
       gameFranchise: json['game_franchise'] != null
-          ? List<String>.from(json['game_franchise'])
+          ? (json['game_franchise'] as List<dynamic>)
+              .whereType<String>()
+              .toList()
           : null,
       iframable: json['iframable'],
       publisherId: json['publisher_id'],
@@ -595,8 +647,8 @@ class Game {
       'telegram_link': telegramLink,
       'language_supported': languageSupported,
       'modes': modes,
-      'platforms': platforms.map((p) => p.toMap()).toList(),
-      'controllers': controllers.map((c) => c.toMap()).toList(),
+      'platforms': platforms.map((p) => p.toJson()).toList(),
+      'controllers': controllers.map((c) => c.toJson()).toList(),
       'browser_support': browserSupport,
       'tags': tags,
       'storage_requirements': storageRequirements,
@@ -604,6 +656,7 @@ class Game {
       'processor_requirements': processorRequirements,
       'os_requirements': osRequirements,
       'game_media': gameMedia.map((m) => m.toJson()).toList(),
+      'trailers': trailers.map((m) => m.toJson()).toList(),
       'game_screenshots': gameScreenshots.map((s) => s.toJson()).toList(),
       'game_play_modes': gamePlayModes,
       'in_app_purchases': inAppPurchases,

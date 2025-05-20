@@ -49,8 +49,11 @@ class AppRoutes {
             builder: (_) => wrap(const HomePage()), settings: settings);
       case gameInterstitial:
         return MaterialPageRoute(
-            builder: (_) =>
-                wrap(const GameInterstitialPage(), isFullScreen: true),
+            builder: (_) => wrap(
+                GameInterstitialPage(
+                  gameSlug: args as String,
+                ),
+                isFullScreen: true),
             settings: settings);
       case login:
         return MaterialPageRoute(
@@ -74,7 +77,7 @@ class AppRoutes {
 
       case publisherProfile:
         return MaterialPageRoute(
-            builder: (_) => wrap(const PublisherProfilePage()),
+            builder: (_) => wrap(PublisherProfilePage(userId: args as String)),
             settings: settings);
       case search:
         return MaterialPageRoute(
