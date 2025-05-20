@@ -14,6 +14,7 @@ import 'package:phynd_app/data/models/response/like_follow_model.dart';
 import 'package:phynd_app/data/models/response/pagination_model.dart';
 import 'package:phynd_app/data/models/response/player_profile_game.dart';
 import 'package:phynd_app/data/models/response/pub_featured_game_model.dart';
+import 'package:phynd_app/data/models/response/pub_genre_model.dart';
 import 'package:phynd_app/data/models/response/screen_saver_setting_model.dart';
 import 'package:phynd_app/data/models/response/video_model.dart';
 import 'package:phynd_app/data/models/response/recent_history_model.dart';
@@ -520,11 +521,66 @@ class GameService {
           .map((gameJson) => PubFeaturedGame.fromJson(gameJson))
           .toList();
 
-      debugPrint('data: ${gameList}');
-
       return Paginated(count: data['total'] as int, data: gameList);
     } catch (e) {
       throw Exception('Invalid response format: $e');
+    }
+  }
+
+  Future<Paginated<PubGenre>> getPubGameGenre({
+    int page = 1,
+    int limit = AppConfig.pageLimit,
+    required String pubId,
+  }) async {
+    try {
+      final response = await api.get(
+        ServerAPIEndpoints.getPubGameGenre,
+        queryParams: {
+          'page': page.toString(),
+          'limit': limit.toString(),
+          'publisher_id': pubId,
+        },
+        auth: true,
+      );
+
+      final data = jsonDecode(response.body);
+
+      final List<PubGenre> genreList = (data['data'] as List)
+          .map((genreJson) => PubGenre.fromJson(genreJson))
+          .toList();
+
+      return Paginated(count: data['total'] as int, data: genreList);
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
+    }
+  }
+
+  Future<void> getPubLatestUpdates({
+    int page = 1,
+    int limit = AppConfig.pageLimit,
+    required String pubId,
+  }) async {
+    try {
+      final response = await api.get(
+        ServerAPIEndpoints.getPubLatestUpdates.replaceAll('{id}', pubId),
+        queryParams: {
+          'page': page.toString(),
+          'limit': limit.toString(),
+        },
+        auth: true,
+      );
+
+      final data = jsonDecode(response.body);
+
+      debugPrint('getPubLatestUpdates: ${data}');
+
+      // final List<PubGenre> genreList = (data['data'] as List)
+      //     .map((genreJson) => PubGenre.fromJson(genreJson))
+      //     .toList();
+
+      // return Paginated(count: data['total'] as int, data: genreList);
+    } catch (e) {
+      throw Exception('Invalid response format getPubLatestUpdates: $e');
     }
   }
 }

@@ -6,16 +6,16 @@ import 'package:phynd_app/presentation/widgets/image/image_thumbnail.dart';
 import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
 
 class GenreCard extends StatelessWidget {
-  final String imageUrl;
-  final String title;
+  final String? imageUrl;
+  final String? title;
   final VoidCallback? onTap;
   final double? height;
   final double? width;
 
   const GenreCard({
     super.key,
-    required this.imageUrl,
-    required this.title,
+    this.imageUrl,
+    this.title,
     this.onTap,
     this.height,
     this.width,
@@ -65,7 +65,7 @@ class GenreCard extends StatelessWidget {
             ),
             // Title Text
             Text(
-              title,
+              title ?? '',
               style: TextStyle(
                   color: textColor,
                   fontSize: FontUtils.pxToSp(context, 32),

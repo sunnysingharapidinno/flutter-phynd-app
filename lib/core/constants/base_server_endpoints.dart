@@ -177,4 +177,6 @@ class ServerAPIEndpoints {
   static const String sendFriendRequest = 'api/v1/me/friends/requests';
   static const String unfriend = 'api/v1/me/friends/{friend_user_id}';
   static const String getPubFeaturedGame = 'api/v1/users/pub-featured-games';
+  static const String getPubGameGenre = 'api/v1/users/pub-game-genres';
+  static const String getPubLatestUpdates = 'api/v1/users/media-section/{id}';
 }

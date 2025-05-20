@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phynd_app/core/constants/app_images.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/core/utils/font_utils.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
@@ -144,11 +145,13 @@ class _PublisherHeaderState extends State<PublisherHeader> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ImageThumbnail(
-                      imageUrl: widget.publisherCircularLogoUrl,
+                      imageUrl: widget.publisherCircularLogoUrl ??
+                          AppImages.profileAvatar,
                       height: 200,
                       width: 200,
                       fit: BoxFit.cover,
                       borderRadius: 200,
+                      isNetwork: widget.publisherCircularLogoUrl != null,
                     ),
                     SizedBox(width: SizeUtils.pxToDp(context, 8)),
                     if (widget.isVerified == true)

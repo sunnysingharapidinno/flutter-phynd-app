@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
-import 'package:phynd_app/core/utils/font_utils.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
-import 'package:phynd_app/presentation/widgets/esrb_badge/esrb_badge.dart'; // Assuming you have this
+import 'package:phynd_app/presentation/widgets/esrb_badge/esrb_badge.dart';
 import 'package:phynd_app/presentation/widgets/image/image_thumbnail.dart';
 import 'package:phynd_app/presentation/widgets/ratings/ratings.dart';
 import 'package:phynd_app/presentation/widgets/remote_control_wrapper.dart';
@@ -60,6 +59,7 @@ class GameClipCard extends StatelessWidget {
                 height: double.infinity,
                 width: double.infinity,
                 fit: BoxFit.cover,
+                isNetwork: true,
               ),
               const Positioned.fill(
                 child: DecoratedBox(
@@ -91,24 +91,24 @@ class GameClipCard extends StatelessWidget {
                         if (hideRating == false)
                           Ratings(rating: rating, maxRating: maxRating),
                         SizedBox(height: SizeUtils.pxToDp(context, 8)),
-                        Text(
-                          title ?? '',
-                          style: TextStyle(
-                            color: textColor,
-                            fontSize: FontUtils.pxToSp(context, 28),
-                            fontWeight: FontWeight.w700,
-                            fontFamily: 'Exo2',
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        )
+                        // Text(
+                        //   title ?? '',
+                        //   style: TextStyle(
+                        //     color: textColor,
+                        //     fontSize: FontUtils.pxToSp(context, 28),
+                        //     fontWeight: FontWeight.w700,
+                        //     fontFamily: 'Exo2',
+                        //   ),
+                        //   maxLines: 1,
+                        //   overflow: TextOverflow.ellipsis,
+                        // )
                       ],
                     ),
                     if (esrbRatingImageUrl != null &&
                         esrbRatingImageUrl!.isNotEmpty)
                       ESRBBadge(
                         imageUrl: esrbRatingImageUrl!,
-                        height: SizeUtils.pxToDp(context, 66),
+                        height: SizeUtils.pxToDp(context, 67),
                       ),
                   ],
                 ),

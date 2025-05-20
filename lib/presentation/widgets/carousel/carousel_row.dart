@@ -41,6 +41,7 @@ class _CarouselRowState<T> extends State<CarouselRow<T>> {
   List<T> _items = [];
   bool _isInitialLoading = true;
   bool _isLoadingMore = false;
+  bool _hasMore = true;
   int _currentPage = 1;
 
   @override
@@ -60,6 +61,7 @@ class _CarouselRowState<T> extends State<CarouselRow<T>> {
     if (_scrollController.position.pixels >=
             _scrollController.position.maxScrollExtent - 200 &&
         !_isLoadingMore &&
+        _hasMore &&
         widget.handleApiCall != null) {
       _loadMore();
     }
@@ -73,12 +75,14 @@ class _CarouselRowState<T> extends State<CarouselRow<T>> {
         _items = result.data;
         _currentPage = 1;
         _isInitialLoading = false;
+        _hasMore = result.count > result.data.length;
       });
     }
   }
 
   Future<void> _loadMore() async {
-    if (widget.handleApiCall == null) return;
+    if (widget.handleApiCall == null || !_hasMore) return;
+
     setState(() => _isLoadingMore = true);
 
     final result = await widget.handleApiCall!(_currentPage + 1);
@@ -86,8 +90,12 @@ class _CarouselRowState<T> extends State<CarouselRow<T>> {
       setState(() {
         _items.addAll(result.data);
         _currentPage++;
+        _hasMore = result.count > _items.length;
       });
+    } else {
+      setState(() => _hasMore = false);
     }
+
     setState(() => _isLoadingMore = false);
   }
 
@@ -96,7 +104,6 @@ class _CarouselRowState<T> extends State<CarouselRow<T>> {
     final theme = Theme.of(context).extension<AppTheme>();
     final textColor = theme?.get('text');
 
-    // Hide section if no data and not loading
     if (!_isInitialLoading && _items.isEmpty) return const SizedBox.shrink();
 
     final sectionHeight = SizeUtils.pxToDp(context, widget.sectionHeight);
