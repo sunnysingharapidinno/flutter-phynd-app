@@ -18,6 +18,7 @@ class EventOfferCard extends StatelessWidget {
   final VoidCallback? onTap;
   final double? height;
   final double? width;
+  final bool isSaved;
 
   const EventOfferCard({
     super.key,
@@ -30,6 +31,7 @@ class EventOfferCard extends StatelessWidget {
     this.onTap,
     this.height = 327,
     this.width = 350,
+    this.isSaved = false,
   });
 
   @override
@@ -110,13 +112,13 @@ class EventOfferCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 PrimaryButton(
-                  text: 'Save',
+                  text: isSaved ? 'Unsave' : 'Save',
                   icon: Icons.bookmark, // Or Icons.bookmark for filled
                   onPressed: onSavePressed,
                   iconColor: textColor,
                   fontSize: 24,
                   iconSize: 27,
-                  width: 184,
+                  width: isSaved ? 200 : 184,
                   height: 52,
                   backgroundColor: buttonBg,
                   borderRadius: 8,
@@ -129,7 +131,6 @@ class EventOfferCard extends StatelessWidget {
                       height: 48,
                       borderRadius: 200,
                       fit: BoxFit.contain,
-                      isNetwork: false,
                     ),
                     SizedBox(width: SizeUtils.pxToDp(context, 8)),
                     Text(
