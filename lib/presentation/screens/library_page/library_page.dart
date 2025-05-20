@@ -10,15 +10,54 @@ import 'package:phynd_app/presentation/screens/library_page/sections/saved_event
 import 'package:phynd_app/presentation/screens/library_page/sections/saved_video.dart';
 import 'package:phynd_app/presentation/screens/library_page/sections/saved_game.dart';
 import 'package:phynd_app/presentation/screens/library_page/sections/saved_images.dart';
+import 'package:phynd_app/presentation/screens/library_page/models/hero_data.dart';
 
-class LibraryPage extends StatelessWidget {
+class LibraryPage extends StatefulWidget {
   const LibraryPage({Key? key}) : super(key: key);
+
+  @override
+  State<LibraryPage> createState() => _LibraryPageState();
+}
+
+class _LibraryPageState extends State<LibraryPage> {
+  late HeroData _currentHeroData;
+  late HeroData _initialHeroData;
+
+  @override
+  void initState() {
+    super.initState();
+    // Set initial hero data
+    _initialHeroData = const HeroData(
+      imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
+      videoUrl: 'https://cdn.pixabay.com/video/2025/04/29/275633_large.mp4',
+      gameTextImg: 'https://www.forgottenplayland.com/_next/image?url=%2Fassets%2Flogo.webp&w=640&q=75',
+      releaseYear: '2024',
+      companyName: 'Top Secret Games',
+      esrb: 'https://xstrela-uat.s3.us-east-1.amazonaws.com/ESRB/everyone.png',
+      friendsCount: 86,
+      onlineCount: 12,
+      gameTitle: 'Game Title',
+    );
+    _currentHeroData = _initialHeroData;
+  }
+
+  void _updateHeroData(HeroData newData) {
+    setState(() {
+      _currentHeroData = newData;
+    });
+  }
+
+  void _resetHeroData() {
+    setState(() {
+      _currentHeroData = _initialHeroData;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListView(
       children: [
-        const LibraryHero(),
+        LibraryHero(heroData: _currentHeroData),
         Padding(
           padding: EdgeInsets.symmetric(
             horizontal: SizeUtils.pxToDp(context, 56),
@@ -26,15 +65,25 @@ class LibraryPage extends StatelessWidget {
           ),
           child: Column(
             children: [
-              const RecentHistorySection(),
+              RecentHistorySection(
+                onHover: _updateHeroData,
+                onHoverExit: _resetHeroData,
+
+              ),  
               SizedBox(
                   height:
                       SizeUtils.pxToDp(context, UIConstants.sectionSpacing)),
-              const FavoriteGameSection(),
+              FavoriteGameSection(
+                onHover: _updateHeroData,
+                onHoverExit: _resetHeroData,
+              ),
               SizedBox(
                   height:
                       SizeUtils.pxToDp(context, UIConstants.sectionSpacing)),
-              const SavedGameSection(),
+              SavedGameSection(
+                onHover: _updateHeroData,
+                onHoverExit: _resetHeroData,
+              ),
               SizedBox(
                   height:
                       SizeUtils.pxToDp(context, UIConstants.sectionSpacing)),
