@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/constants/app_images.dart';
+import 'package:phynd_app/core/enums/friend_status.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/core/utils/font_utils.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
 import 'package:phynd_app/presentation/widgets/buttons/primary_button.dart';
 import 'package:phynd_app/presentation/widgets/image/image_thumbnail.dart';
 
-class ProfileHeader extends StatelessWidget {
+class ProfileHeader extends StatefulWidget {
   final String username;
   final bool isOnline;
   final String? avatar;
@@ -16,6 +17,8 @@ class ProfileHeader extends StatelessWidget {
   final int? friendsCount;
   final int? followingCount;
   final int? mutualFriendsCount;
+  final FriendStatus? friendStatus;
+  final Future<void> Function(FriendStatus?)? onFriendButtonPressed;
 
   const ProfileHeader({
     super.key,
@@ -27,7 +30,16 @@ class ProfileHeader extends StatelessWidget {
     this.friendsCount,
     this.followingCount,
     this.mutualFriendsCount,
+    this.friendStatus,
+    this.onFriendButtonPressed,
   });
+
+  @override
+  State<ProfileHeader> createState() => _ProfileHeaderState();
+}
+
+class _ProfileHeaderState extends State<ProfileHeader> {
+  bool _friendButtonLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +49,18 @@ class ProfileHeader extends StatelessWidget {
     final backgroundColor = theme?.get('profileHeaderOverlay');
     final subText2 = theme?.get('subText2');
 
+    String getFriendButtonText() {
+      if (widget.friendStatus == FriendStatus.pending) {
+        return 'Pending';
+      } else if (widget.friendStatus == FriendStatus.accepted) {
+        return 'Unfriend';
+      }
+      return 'Add Friend';
+    }
+
     return Container(
       width: double.infinity,
-      height: SizeUtils.pxToDp(context, isOtherProfile ? 472 : 330),
+      height: SizeUtils.pxToDp(context, widget.isOtherProfile ? 472 : 330),
       padding: EdgeInsets.symmetric(
           horizontal: SizeUtils.pxToDp(context, 56),
           vertical: SizeUtils.pxToDp(context, 40)),
@@ -49,17 +70,17 @@ class ProfileHeader extends StatelessWidget {
       child: Column(
         children: [
           Row(
-            crossAxisAlignment: isOtherProfile
+            crossAxisAlignment: widget.isOtherProfile
                 ? CrossAxisAlignment.start
                 : CrossAxisAlignment.center,
             children: [
               ImageThumbnail(
                 borderRadius: 250,
-                imageUrl: avatar ?? AppImages.profileAvatarGradient,
+                imageUrl: widget.avatar ?? AppImages.profileAvatarGradient,
                 width: 250,
                 height: 250,
                 fit: BoxFit.cover,
-                isNetwork: avatar != null,
+                isNetwork: widget.avatar != null,
               ),
               SizedBox(width: SizeUtils.pxToDp(context, 24)),
               Column(
@@ -69,7 +90,7 @@ class ProfileHeader extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        username,
+                        widget.username,
                         style: TextStyle(
                           fontSize: FontUtils.pxToSp(context, 48),
                           fontWeight: FontWeight.w600,
@@ -82,13 +103,13 @@ class ProfileHeader extends StatelessWidget {
                         width: SizeUtils.pxToDp(context, 16),
                         height: SizeUtils.pxToDp(context, 16),
                         decoration: BoxDecoration(
-                          color: isOnline ? Colors.green : Colors.grey,
+                          color: widget.isOnline ? Colors.green : Colors.grey,
                           shape: BoxShape.circle,
                         ),
                       ),
                       SizedBox(width: SizeUtils.pxToDp(context, 12)),
                       Text(
-                        isOnline ? 'Online' : 'Offline',
+                        widget.isOnline ? 'Online' : 'Offline',
                         style: TextStyle(
                           fontSize: FontUtils.pxToSp(context, 24),
                           color: textColor,
@@ -126,7 +147,7 @@ class ProfileHeader extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "${friendsCount ?? 0}",
+                            "${widget.friendsCount ?? 0}",
                             style: TextStyle(
                               fontSize: FontUtils.pxToSp(context, 24),
                               fontWeight: FontWeight.w600,
@@ -154,7 +175,7 @@ class ProfileHeader extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "${followingCount ?? 0}",
+                            "${widget.followingCount ?? 0}",
                             style: TextStyle(
                               fontSize: FontUtils.pxToSp(context, 24),
                               fontWeight: FontWeight.w600,
@@ -177,7 +198,7 @@ class ProfileHeader extends StatelessWidget {
               ),
             ],
           ),
-          if (isOtherProfile) ...[
+          if (widget.isOtherProfile) ...[
             SizedBox(height: SizeUtils.pxToDp(context, 64)),
             Row(
               children: [
@@ -185,8 +206,23 @@ class ProfileHeader extends StatelessWidget {
                   width: SizeUtils.pxToDp(context, 472),
                   height: SizeUtils.pxToDp(context, 78),
                   child: PrimaryButton(
-                    text: 'Add Friend',
-                    onPressed: () {},
+                    text: getFriendButtonText(),
+                    isLoading: _friendButtonLoading,
+                    onPressed: () async {
+                      try {
+                        setState(() {
+                          _friendButtonLoading = true;
+                        });
+                        await widget.onFriendButtonPressed
+                            ?.call(widget.friendStatus);
+                      } catch (e) {
+                        debugPrint(e.toString());
+                      } finally {
+                        setState(() {
+                          _friendButtonLoading = false;
+                        });
+                      }
+                    },
                     borderColor: textColor,
                     borderRadius: 16,
                     backgroundColor: backgroundColor,
@@ -203,7 +239,7 @@ class ProfileHeader extends StatelessWidget {
                 ),
                 SizedBox(width: SizeUtils.pxToDp(context, 16)),
                 Text(
-                  '$mutualFriendsCount Mutual Friends ',
+                  '${widget.mutualFriendsCount ?? 0} Mutual Friends ',
                   style: TextStyle(
                     color: subText2,
                     fontSize: FontUtils.pxToSp(context, 36),

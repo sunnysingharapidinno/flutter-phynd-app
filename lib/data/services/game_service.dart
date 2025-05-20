@@ -11,6 +11,7 @@ import 'package:phynd_app/data/models/response/favorite_content_model.dart';
 import 'package:phynd_app/data/models/response/game_list_model.dart';
 import 'package:phynd_app/data/models/response/game_model.dart';
 import 'package:phynd_app/data/models/response/like_follow_model.dart';
+import 'package:phynd_app/data/models/response/pagination_model.dart';
 import 'package:phynd_app/data/models/response/player_profile_game.dart';
 import 'package:phynd_app/data/models/response/screen_saver_setting_model.dart';
 import 'package:phynd_app/data/models/response/video_model.dart';
@@ -404,8 +405,7 @@ class GameService {
     }
   }
 
-  Future<({int count, List<PlayerProfileGame> data})>
-      getPlayerProfileSectionGames({
+  Future<Paginated<PlayerProfileGame>> getPlayerProfileSectionGames({
     int page = 1,
     int limit = AppConfig.pageLimit,
     required PlayerProfileSectionType sectionType,
@@ -429,8 +429,7 @@ class GameService {
       final List<PlayerProfileGame> gameList = (data['data'] as List)
           .map((gameJson) => PlayerProfileGame.fromJson(gameJson))
           .toList();
-      debugPrint("data: ${data}");
-      return (count: data['total'] as int, data: gameList);
+      return Paginated(count: data['total'] as int, data: gameList);
     } catch (e) {
       throw Exception('Invalid response format: $e');
     }

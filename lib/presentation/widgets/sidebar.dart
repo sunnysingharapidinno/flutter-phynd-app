@@ -89,10 +89,11 @@ class Sidebar extends StatelessWidget {
                 child: ListTile(
                   contentPadding: EdgeInsets.zero,
                   onTap: () {
-                    final currentRoute = ModalRoute.of(context)?.settings.name;
-                    if (currentRoute == item['route']) {
-                      return;
-                    }
+                    // final currentRoute = ModalRoute.of(context)?.settings.name;
+                    // if (currentRoute == item['route']
+                    //     ) {
+                    //   return;
+                    // }
 
                     if (item['modal'] != null) {
                       SharedModal.show(

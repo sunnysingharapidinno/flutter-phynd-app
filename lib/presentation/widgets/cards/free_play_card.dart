@@ -102,7 +102,7 @@ class FreePlayCard extends StatelessWidget {
               right: 0,
               child: Container(
                 padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,

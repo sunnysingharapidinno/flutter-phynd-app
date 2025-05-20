@@ -115,6 +115,7 @@ class _EventOfferCardState extends State<EventOfferCard> {
   @override
   Widget build(BuildContext context) {
     return RemoteControlWrapper(
+      key: const ValueKey('event_card_main_wrapper'),
       onTap: () {
         // Handle card tap
       },
@@ -155,6 +156,7 @@ class _EventOfferCardState extends State<EventOfferCard> {
                   top: 8,
                   right: 8,
                   child: RemoteControlWrapper(
+                    key: const ValueKey('event_card_bookmark_wrapper'),
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.5),
@@ -269,6 +271,7 @@ class _EventOfferCardState extends State<EventOfferCard> {
 
                       // Action button
                       RemoteControlWrapper(
+                        key: const ValueKey('event_card_action_wrapper'),
                         child: ElevatedButton(
                           onPressed: () {
                             // Handle action button press

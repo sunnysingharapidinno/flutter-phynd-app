@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:phynd_app/config/app_config.dart';
 import 'package:phynd_app/core/constants/base_server_endpoints.dart';
 import 'package:phynd_app/core/enums/api_env.dart';
+import 'package:phynd_app/core/enums/friend_status.dart';
 import 'package:phynd_app/core/enums/storage.dart';
 import 'package:phynd_app/core/utils/api_service.dart';
 import 'package:phynd_app/core/utils/storage_service.dart';
@@ -249,6 +250,56 @@ class UserService {
       final data = jsonDecode(response.body);
 
       return PlayerProfileStats.fromJson(data);
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
+    }
+  }
+
+  Future<({FriendStatus? status})> checkFriendStatus({
+    required String userId,
+  }) async {
+    try {
+      final response = await api.get(
+        ServerAPIEndpoints.checkFriendStatus
+            .replaceAll('{other_user_id}', userId),
+        auth: true,
+      );
+
+      final data = jsonDecode(response.body);
+
+      final rawStatus = data['status'];
+
+      if (rawStatus == null) {
+        return (status: null); // safely return null status
+      }
+
+      final status = FriendStatus.fromValue(rawStatus);
+      return (status: status);
+    } catch (e) {
+      throw Exception('Failed to get friend status: $e');
+    }
+  }
+
+  Future<void> sendFriendRequest({required String userId}) async {
+    try {
+      await api.post(
+        ServerAPIEndpoints.sendFriendRequest,
+        auth: true,
+        body: {
+          'recipient_user_id': userId,
+        },
+      );
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
+    }
+  }
+
+  Future<void> unFriendUser({required String userId}) async {
+    try {
+      await api.delete(
+        ServerAPIEndpoints.unfriend.replaceAll('{friend_user_id}', userId),
+        auth: true,
+      );
     } catch (e) {
       throw Exception('Invalid response format: $e');
     }

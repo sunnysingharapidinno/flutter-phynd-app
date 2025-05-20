@@ -134,6 +134,7 @@ class _GameTrialsCardState extends State<GameTrialsCard>
             animation: _animationController,
             builder: (context, child) {
               return RemoteControlWrapper(
+                key: const ValueKey('main_remote_wrapper'),
                 onTap: widget.onTap,
                 child: Container(
                   width: _widthAnimation.value,

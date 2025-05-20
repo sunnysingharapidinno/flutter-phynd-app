@@ -41,7 +41,7 @@ class AppRoutes {
     final args = settings.arguments;
 
     Widget wrap(Widget child, {bool? isFullScreen}) =>
-        BaseLayout(child: child, isFullScreen: isFullScreen ?? false);
+        BaseLayout(isFullScreen: isFullScreen ?? false, child: child);
 
     switch (settings.name) {
       case home:
