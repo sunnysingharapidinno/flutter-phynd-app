@@ -255,7 +255,7 @@ class UserService {
     }
   }
 
-  Future<({FriendStatus? status})> checkFriendStatus({
+  Future<({FriendStatus? status, String? id})> checkFriendStatus({
     required String userId,
   }) async {
     try {
@@ -270,11 +270,11 @@ class UserService {
       final rawStatus = data['status'];
 
       if (rawStatus == null) {
-        return (status: null); // safely return null status
+        return (status: null, id: null); // safely return null status
       }
 
       final status = FriendStatus.fromValue(rawStatus);
-      return (status: status);
+      return (status: status, id: data['id'] as String);
     } catch (e) {
       throw Exception('Failed to get friend status: $e');
     }

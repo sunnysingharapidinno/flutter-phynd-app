@@ -10,6 +10,7 @@ class ImageVideo extends StatefulWidget {
   final double? height;
   final double? borderRadius;
   final BoxFit? fit;
+  final bool? autoPlay;
 
   const ImageVideo({
     super.key,
@@ -19,6 +20,7 @@ class ImageVideo extends StatefulWidget {
     this.height,
     this.borderRadius,
     this.fit,
+    this.autoPlay = false,
   });
 
   @override
@@ -28,24 +30,50 @@ class ImageVideo extends StatefulWidget {
 class _ImageVideoState extends State<ImageVideo> {
   late VideoPlayerController _videoController;
   bool _isFocused = false;
+  bool _shouldPlay = false;
+  bool _isVideoInitialized = false;
+
+  bool get _hasValidVideo => widget.videoUrl?.isNotEmpty == true;
 
   @override
   void initState() {
     super.initState();
-    _videoController = VideoPlayerController.network(widget.videoUrl ?? '')
-      ..setLooping(true)
-      ..initialize().then((_) {
-        if (mounted) setState(() {});
-      });
+
+    if (_hasValidVideo) {
+      _videoController = VideoPlayerController.network(widget.videoUrl!)
+        ..setLooping(true)
+        ..setVolume(0)
+        ..initialize().then((_) {
+          if (mounted) {
+            setState(() {
+              _isVideoInitialized = true;
+            });
+
+            if (widget.autoPlay == true) {
+              Future.delayed(const Duration(seconds: 5), () {
+                if (mounted) {
+                  setState(() {
+                    _shouldPlay = true;
+                  });
+                  _videoController.play();
+                }
+              });
+            }
+          }
+        });
+    }
   }
 
   @override
   void dispose() {
-    _videoController.dispose();
+    if (_hasValidVideo) {
+      _videoController.dispose();
+    }
     super.dispose();
   }
 
   void _onFocusChanged(bool focused) {
+    if (!_hasValidVideo || widget.autoPlay == true) return;
     setState(() {
       _isFocused = focused;
       if (_isFocused) {
@@ -58,13 +86,18 @@ class _ImageVideoState extends State<ImageVideo> {
 
   @override
   Widget build(BuildContext context) {
+    final shouldShowVideo = _hasValidVideo &&
+        _isVideoInitialized &&
+        (widget.autoPlay == true ? _shouldPlay : _isFocused);
+
     return GestureDetector(
       onTapDown: (_) => _onFocusChanged(true),
       onTapUp: (_) => _onFocusChanged(false),
       onTapCancel: () => _onFocusChanged(false),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(
-            SizeUtils.pxToDp(context, widget.borderRadius ?? 0)),
+          SizeUtils.pxToDp(context, widget.borderRadius ?? 0),
+        ),
         child: SizedBox(
           width: SizeUtils.pxToDp(context, widget.width ?? 100),
           height: SizeUtils.pxToDp(context, widget.height ?? 100),
@@ -76,7 +109,7 @@ class _ImageVideoState extends State<ImageVideo> {
                 height: widget.height,
                 fit: widget.fit ?? BoxFit.cover,
               ),
-              if (_videoController.value.isInitialized && _isFocused)
+              if (shouldShowVideo)
                 Positioned.fill(
                   child: FittedBox(
                     fit: BoxFit.cover,

@@ -204,6 +204,15 @@ class _HomePageState extends State<HomePage> {
           _buildLatestActivitySection(context),
 
           // PrimaryButton(
+          //     text: "Show Publisher",
+          //     onPressed: () {
+          //       Navigator.pushNamed(
+          //         context,
+          //         AppRoutes.publisherProfile,
+          //         arguments: 'd1ab12f0-f2c2-477c-9dea-c5adec017c7c',
+          //       );
+          //     }),
+          // PrimaryButton(
           //     text: "Show User",
           //     onPressed: () {
           //       Navigator.pushNamed(

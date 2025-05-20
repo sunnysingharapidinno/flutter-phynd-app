@@ -13,6 +13,7 @@ import 'package:phynd_app/data/models/response/game_model.dart';
 import 'package:phynd_app/data/models/response/like_follow_model.dart';
 import 'package:phynd_app/data/models/response/pagination_model.dart';
 import 'package:phynd_app/data/models/response/player_profile_game.dart';
+import 'package:phynd_app/data/models/response/pub_featured_game_model.dart';
 import 'package:phynd_app/data/models/response/screen_saver_setting_model.dart';
 import 'package:phynd_app/data/models/response/video_model.dart';
 import 'package:phynd_app/data/models/response/recent_history_model.dart';
@@ -492,6 +493,36 @@ class GameService {
       debugPrint('data: ${data}');
 
       return ScreenSaverSettingModel.fromJson(data);
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
+    }
+  }
+
+  Future<Paginated<PubFeaturedGame>> getPubFeaturedGame({
+    int page = 1,
+    int limit = AppConfig.pageLimit,
+    required String pubId,
+  }) async {
+    try {
+      final response = await api.get(
+        ServerAPIEndpoints.getPubFeaturedGame,
+        queryParams: {
+          'page': page.toString(),
+          'limit': limit.toString(),
+          'publisher_id': pubId,
+        },
+        auth: true,
+      );
+
+      final data = jsonDecode(response.body);
+
+      final List<PubFeaturedGame> gameList = (data['data'] as List)
+          .map((gameJson) => PubFeaturedGame.fromJson(gameJson))
+          .toList();
+
+      debugPrint('data: ${gameList}');
+
+      return Paginated(count: data['total'] as int, data: gameList);
     } catch (e) {
       throw Exception('Invalid response format: $e');
     }

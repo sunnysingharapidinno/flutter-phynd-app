@@ -4,12 +4,16 @@ import 'package:phynd_app/core/constants/ui_constants.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/core/utils/font_utils.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
+import 'package:phynd_app/data/models/response/profile_model.dart';
+import 'package:phynd_app/data/services/game_service.dart';
+import 'package:phynd_app/data/services/user_service.dart';
 import 'package:phynd_app/presentation/widgets/buttons/primary_button.dart';
 import 'package:phynd_app/presentation/widgets/cards/clip_card/game_clip_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/event_offer_card.dart';
 import 'package:phynd_app/presentation/widgets/cards/genre_cards.dart';
 import 'package:phynd_app/presentation/widgets/cards/video_cards.dart';
 import 'package:phynd_app/presentation/widgets/image/image_thumbnail.dart';
+import 'package:phynd_app/presentation/widgets/loader/circular_load.dart';
 import 'package:phynd_app/presentation/widgets/profile/suggested_quest.dart';
 import 'package:phynd_app/presentation/widgets/publisher/publisher_header.dart';
 import 'package:phynd_app/presentation/widgets/publisher/latest_updates_section.dart';
@@ -18,28 +22,56 @@ import 'package:phynd_app/presentation/widgets/publisher/featured_games_section.
 import 'package:phynd_app/presentation/widgets/ratings/ratings.dart';
 import 'package:phynd_app/presentation/widgets/carousel/carousel_row.dart';
 
-class PublisherProfilePage extends StatelessWidget {
-  const PublisherProfilePage({super.key});
+class PublisherProfilePage extends StatefulWidget {
+  final String userId;
+
+  const PublisherProfilePage({super.key, required this.userId});
+
+  @override
+  State<PublisherProfilePage> createState() => _PublisherProfilePageState();
+}
+
+class _PublisherProfilePageState extends State<PublisherProfilePage> {
+  final UserService _userService = UserService();
+  final GameService _gameService = GameService();
+  bool _isLoading = false;
+  Profile? _userProfile;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _fetchUserProfileById(widget.userId!);
+  }
+
+  Future<void> _fetchUserProfileById(String userId) async {
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+      final profile = await _userService.getUserById(userId: userId);
+      setState(() {
+        _userProfile = profile;
+        _isLoading = false;
+      });
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+      debugPrint('Error fetching profile by ID: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).extension<AppTheme>();
-    final primaryColor = theme?.get('primary');
+
     final textColor = theme?.get('text');
     final textColor2 = theme?.get('subText2');
     final buttonBg = theme?.get('borderColors');
     final onlineColor = theme?.get('onlineIndicator');
-
-    // Sample stats for the publisher header
-    final Map<String, int> publisherStats = {
-      'followers': 7,
-      'games': 1672,
-      'clans': 3,
-      'trials': 40,
-      'drops': 13,
-      'upcomingEvents': 14,
-      'quests': 28,
-    };
 
     // Sample follower avatars
     final List<String> followerAvatars = [
@@ -304,13 +336,14 @@ class PublisherProfilePage extends StatelessWidget {
       },
     ];
 
+    if (_isLoading) {
+      return const Center(child: CircularLoad());
+    }
+
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(
-          0), // Remove padding to allow header to extend full width
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header with banner, profile, title, and stats
           PublisherHeader(
             backgroundImages: [
               'https://xstrela-alpha.s3.us-east-1.amazonaws.com/images/temp/DP_IMAGE_URL/PNG/8005f2f1-6d23-4521-84d4-91f16ac200ca',
@@ -318,12 +351,10 @@ class PublisherProfilePage extends StatelessWidget {
             ],
             followersCount: '1.4k',
             gamesCount: "16",
-            publisherCircularLogoUrl:
-                'https://xstrela-alpha.s3.amazonaws.com/images/MarioKarts.png',
-            publisherNameArtUrl:
-                'https://xstrela-alpha.s3.amazonaws.com/images/MarioKarts.png',
+            publisherCircularLogoUrl: _userProfile?.user.dp_url,
+            publisherNameArtUrl: _userProfile?.user.cover_image_url,
             upcomingEventsCount: '12',
-            isVerified: true,
+            isVerified: _userProfile?.user.is_verified,
           ),
 
           // Follow section with button and followers
@@ -349,7 +380,7 @@ class PublisherProfilePage extends StatelessWidget {
                       borderColor: textColor,
                     ),
                     SizedBox(width: SizeUtils.pxToDp(context, 80)),
-                    ImageThumbnail(
+                    const ImageThumbnail(
                       imageUrl: AppImages.peopleLogoGreyBg,
                       width: 90,
                       height: 90,
@@ -394,9 +425,9 @@ class PublisherProfilePage extends StatelessWidget {
                   cardsPerView: UIConstants.defaultCardsPerView,
                   heading: 'Featured Games',
                   sectionHeight: 350,
-                  items: games,
-                  onEndOfScroll: () {
-                    print('onEndOfScroll');
+                  handleApiCall: (page) async {
+                    return _gameService.getPubFeaturedGame(
+                        pubId: widget.userId, page: page);
                   },
                   cardBuilder: (context, game, width, index) {
                     return GameClipCard(
@@ -405,10 +436,9 @@ class PublisherProfilePage extends StatelessWidget {
                           'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
                       videoUrl:
                           'https://cdn.pixabay.com/video/2025/04/29/275633_large.mp4',
-                      title: 'Heroes of Mavia',
-                      rating: 5,
-                      esrbRatingImageUrl:
-                          'https://xstrela-uat.s3.us-east-1.amazonaws.com/ESRB/everyone.png',
+                      title: game.name,
+                      rating: game.starRatings ?? 0,
+                      esrbRatingImageUrl: game.esrbImgUrl,
                     );
                   },
                 ),

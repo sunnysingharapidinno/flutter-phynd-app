@@ -228,9 +228,7 @@ class _BaseLayoutState extends State<BaseLayout> {
         child: Scaffold(
           key: _scaffoldKey,
           backgroundColor: backgroundColor,
-          appBar: !widget.isFullScreen && !_showScreenSaver
-              ? const SharedAppBar()
-              : null,
+          appBar: !_showScreenSaver ? const SharedAppBar() : null,
           body: Stack(
             children: [
               Row(

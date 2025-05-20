@@ -7,18 +7,18 @@ import 'package:phynd_app/presentation/widgets/verify_badge/verify_badge.dart';
 
 class PublisherHeader extends StatefulWidget {
   final List<String> backgroundImages;
-  final String publisherCircularLogoUrl;
-  final String publisherNameArtUrl;
+  final String? publisherCircularLogoUrl;
+  final String? publisherNameArtUrl;
   final String followersCount;
   final String gamesCount;
   final String upcomingEventsCount;
-  final bool isVerified;
+  final bool? isVerified;
 
   const PublisherHeader({
     super.key,
     required this.backgroundImages,
-    required this.publisherCircularLogoUrl,
-    required this.publisherNameArtUrl,
+    this.publisherCircularLogoUrl,
+    this.publisherNameArtUrl,
     required this.followersCount,
     required this.gamesCount,
     required this.upcomingEventsCount,
@@ -151,7 +151,7 @@ class _PublisherHeaderState extends State<PublisherHeader> {
                       borderRadius: 200,
                     ),
                     SizedBox(width: SizeUtils.pxToDp(context, 8)),
-                    if (widget.isVerified)
+                    if (widget.isVerified == true)
                       VerifiedBadge(
                         size: SizeUtils.pxToDp(context, 42),
                       ),

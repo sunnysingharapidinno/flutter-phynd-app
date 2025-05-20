@@ -22,7 +22,7 @@ class PlayerProfilePage<T> extends StatefulWidget {
 
   const PlayerProfilePage({
     super.key,
-    required this.userId,
+    this.userId,
   });
 
   @override
@@ -167,6 +167,8 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
                         '${userProfile?.user.display_name} is removed from your friends list',
                       );
                     }
+                  } else if (friendStatus == FriendStatus.pending) {
+                    return;
                   } else {
                     await _userService.sendFriendRequest(
                         userId: widget.userId!);
@@ -234,7 +236,9 @@ class _PlayerProfilePageState<T> extends State<PlayerProfilePage<T>> {
               CarouselRow(
                 cardSpacing: UIConstants.cardSpacing,
                 cardsPerView: UIConstants.defaultCardsPerView,
-                heading: 'Games Your Friends Are Playing',
+                heading: _isCurrentUser
+                    ? 'Games Your Friends Are Playing'
+                    : 'Games Your Mutual Friends Are Playing',
                 sectionHeight: 350,
                 handleApiCall: (page) {
                   return _gameService.getPlayerProfileSectionGames(

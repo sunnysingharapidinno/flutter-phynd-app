@@ -1,6 +1,7 @@
 enum FriendStatus {
   pending('PENDING'),
-  accepted('ACCEPTED');
+  accepted('ACCEPTED'),
+  received('RECEIVED');
 
   final String value;
 
