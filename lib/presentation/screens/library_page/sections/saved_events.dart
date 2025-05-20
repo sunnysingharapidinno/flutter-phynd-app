@@ -15,6 +15,7 @@ class SavedEventsSection extends StatefulWidget {
 
 class _SavedEventsSectionState extends State<SavedEventsSection> {
   late final GameService _gameService;
+  int _refreshTrigger = 0;
 
   @override
   void initState() {
@@ -25,27 +26,37 @@ class _SavedEventsSectionState extends State<SavedEventsSection> {
   @override
   Widget build(BuildContext context) {
     return CarouselRow(
+      key: ValueKey(_refreshTrigger),
       cardSpacing: UIConstants.cardSpacing,
       cardsPerView: 2,
       heading: 'Saved Events and Offers',
       sectionHeight: 700,
       handleApiCall: (page) {
-        return _gameService.getSavedContent(
+        return _gameService.getSavedEvents(
           page: page,
           limit: UIConstants.defaultPageSize,
-          contentType: MediaType.image.value,
         );
       },
       cardBuilder: (context, content, width, index) {
         return EventOfferCard(
-          backgroundImageUrl: content.url,
-          publisherLogoUrl:
-              "https://xstrela-alpha.s3.us-east-1.amazonaws.com/images/temp/DP_IMAGE_URL/PNG/8005f2f1-6d23-4521-84d4-91f16ac200ca",
-          gameTitle: "Valorant",
-          isVerified: true,
-          friendsSavedCount: 86,
+          backgroundImageUrl: content.imageUrl,
+          publisherLogoUrl: content.dpUrl ?? "",
+          gameTitle: content.title,
+          isVerified: content.isVerified ?? false,
+          friendsSavedCount: content.friendsSaved,
           width: double.infinity,
           height: 400,
+          isSaved: true,
+          onSavePressed: () async {
+            content.type == 'Offer'
+                ? await _gameService.removeSavedOffer(offerId: content.eventId)
+                : await _gameService.removeSavedEvent(eventId: content.eventId);
+            if (mounted) {
+              setState(() {
+                _refreshTrigger++;
+              });
+            }
+          },
         );
       },
     );

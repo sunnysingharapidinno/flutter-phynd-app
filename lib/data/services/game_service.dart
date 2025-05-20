@@ -13,6 +13,7 @@ import 'package:phynd_app/data/models/response/game_model.dart';
 import 'package:phynd_app/data/models/response/like_follow_model.dart';
 import 'package:phynd_app/data/models/response/pagination_model.dart';
 import 'package:phynd_app/data/models/response/player_profile_game.dart';
+import 'package:phynd_app/data/models/response/saved_event_model.dart';
 import 'package:phynd_app/data/models/response/screen_saver_setting_model.dart';
 import 'package:phynd_app/data/models/response/video_model.dart';
 import 'package:phynd_app/data/models/response/recent_history_model.dart';
@@ -402,6 +403,56 @@ class GameService {
       }
     } catch (e) {
       throw Exception('Error fetching recent history: $e');
+    }
+  }
+
+  Future<Paginated<SavedEvent>> getSavedEvents({
+    int page = 1,
+    int limit = 10,
+  }) async {
+    try {
+      final url = Uri.parse(
+          '${ServerAPIEndpoints.getSavedEvents}?page=$page&limit=$limit');
+      final response = await api.get(
+        url.toString(),
+        auth: true,
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final List<SavedEvent> events = (responseData['data'] as List)
+            .map((eventJson) => SavedEvent.fromJson(eventJson))
+            .toList();
+        return Paginated(count: responseData['total'] as int, data: events);
+      } else {
+        throw Exception('Failed to fetch saved events: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching saved events: $e');
+    }
+  }
+
+  Future<void> removeSavedEvent({
+    required String eventId,
+  }) async {
+    try {
+      final url = Uri.parse('${ServerAPIEndpoints.getSavedEvents}$eventId');
+
+      await api.delete(url.toString(), auth: true);
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
+    }
+  }
+
+  Future<void> removeSavedOffer({
+    required String offerId,
+  }) async {
+    try {
+      final url = Uri.parse('${ServerAPIEndpoints.getSavedOffers}$offerId');
+
+      await api.delete(url.toString(), auth: true);
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
     }
   }
 
