@@ -6,11 +6,14 @@ import 'package:phynd_app/core/constants/base_server_endpoints.dart';
 import 'package:phynd_app/core/enums/api_env.dart';
 import 'package:phynd_app/core/enums/friend_status.dart';
 import 'package:phynd_app/core/enums/storage.dart';
+import 'package:phynd_app/core/enums/user_role.dart';
 import 'package:phynd_app/core/utils/api_service.dart';
 import 'package:phynd_app/core/utils/storage_service.dart';
 import 'package:phynd_app/data/models/response/friend_item.dart';
+import 'package:phynd_app/data/models/response/pagination_model.dart';
 import 'package:phynd_app/data/models/response/player_profile_stats.dart';
 import 'package:phynd_app/data/models/response/profile_model.dart';
+import 'package:phynd_app/data/models/response/pub_following_model.dart';
 import 'package:phynd_app/data/models/response/terms_and_conditions_model.dart';
 
 class UserService {
@@ -163,7 +166,7 @@ class UserService {
     }
   }
 
-  Future<({int count, List<FriendItem> data})> getFriendsList({
+  Future<Paginated<FriendItem>> getFriendsList({
     int page = 1,
     int limit = AppConfig.pageLimit,
     String? search,
@@ -182,13 +185,13 @@ class UserService {
           .map((gameJson) => FriendItem.fromJson(gameJson))
           .toList();
 
-      return (count: data['total'] as int, data: friendList);
+      return Paginated(count: data['total'] as int, data: friendList);
     } catch (e) {
       throw Exception('Invalid response format: $e');
     }
   }
 
-  Future<({int count, List<FriendItem> data})> getFriendRequestList({
+  Future<Paginated<FriendItem>> getFriendRequestList({
     int page = 1,
     int limit = AppConfig.pageLimit,
     String? search,
@@ -208,7 +211,7 @@ class UserService {
           .map((gameJson) => FriendItem.fromJson(gameJson))
           .toList();
 
-      return (count: data['total'] as int, data: friendList);
+      return Paginated(count: data['total'] as int, data: friendList);
     } catch (e) {
       throw Exception('Invalid response format: $e');
     }
@@ -300,6 +303,85 @@ class UserService {
         ServerAPIEndpoints.unfriend.replaceAll('{friend_user_id}', userId),
         auth: true,
       );
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
+    }
+  }
+
+  Future<Paginated<PubFollowing>> getPubFollowing(
+      {int page = 1,
+      int limit = AppConfig.pageLimit,
+      String? search,
+      required String userId}) async {
+    try {
+      final response = await api.get(
+        ServerAPIEndpoints.getPubFollowers,
+        queryParams: {
+          'page': page.toString(),
+          'limit': limit.toString(),
+          'user_id': userId
+        },
+        auth: true,
+      );
+
+      final data = jsonDecode(response.body);
+
+      final List<PubFollowing> gameFollowList = (data['data'] as List)
+          .map((gameJson) => PubFollowing.fromJson(gameJson))
+          .toList();
+
+      return Paginated(count: data['count'] as int, data: gameFollowList);
+    } catch (e) {
+      throw Exception('Invalid response format getPubFollowing: $e');
+    }
+  }
+
+  Future<void> followPub({required String userId}) async {
+    try {
+      final response = await api.post(
+        ServerAPIEndpoints.followPub,
+        body: {
+          'follow_id': userId,
+        },
+        auth: true,
+      );
+
+      final data = jsonDecode(response.body);
+
+      debugPrint('followPub Data: $data');
+    } catch (e) {
+      throw Exception('Invalid response format followPub: $e');
+    }
+  }
+
+  Future<void> unFollowPub({required String userId}) async {
+    try {
+      await api.post(
+        ServerAPIEndpoints.unFollowPub,
+        body: {
+          'follow_id': userId,
+        },
+        auth: true,
+      );
+    } catch (e) {
+      throw Exception('Invalid response format: $e');
+    }
+  }
+
+  Future<({bool isFollowing})> checkIsPubFollowed(
+      {required String userId}) async {
+    try {
+      final response = await api.post(
+        ServerAPIEndpoints.checkPubFollow,
+        body: {
+          'follow_id': userId,
+        },
+        auth: true,
+      );
+
+      final data = jsonDecode(response.body);
+
+      return (isFollowing: data['following'] as bool);
     } catch (e) {
       throw Exception('Invalid response format: $e');
     }

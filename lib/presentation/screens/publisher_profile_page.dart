@@ -5,6 +5,8 @@ import 'package:phynd_app/core/utils/app_theme.dart';
 import 'package:phynd_app/core/utils/font_utils.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
 import 'package:phynd_app/data/models/response/profile_model.dart';
+import 'package:phynd_app/data/models/response/pub_hero_model.dart';
+import 'package:phynd_app/data/models/response/pub_stats_model.dart';
 import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/data/services/user_service.dart';
 import 'package:phynd_app/presentation/widgets/buttons/primary_button.dart';
@@ -14,6 +16,7 @@ import 'package:phynd_app/presentation/widgets/cards/genre_cards.dart';
 import 'package:phynd_app/presentation/widgets/cards/video_cards.dart';
 import 'package:phynd_app/presentation/widgets/image/image_thumbnail.dart';
 import 'package:phynd_app/presentation/widgets/loader/circular_load.dart';
+import 'package:phynd_app/presentation/widgets/notifier.dart';
 import 'package:phynd_app/presentation/widgets/profile/suggested_quest.dart';
 import 'package:phynd_app/presentation/widgets/publisher/publisher_header.dart';
 import 'package:phynd_app/presentation/widgets/publisher/latest_updates_section.dart';
@@ -21,6 +24,7 @@ import 'package:phynd_app/presentation/widgets/publisher/trending_games_section.
 import 'package:phynd_app/presentation/widgets/publisher/featured_games_section.dart';
 import 'package:phynd_app/presentation/widgets/ratings/ratings.dart';
 import 'package:phynd_app/presentation/widgets/carousel/carousel_row.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class PublisherProfilePage extends StatefulWidget {
   final String userId;
@@ -36,14 +40,57 @@ class _PublisherProfilePageState extends State<PublisherProfilePage> {
   final GameService _gameService = GameService();
   bool _isLoading = false;
   Profile? _userProfile;
+  bool _checkingFollow = false;
+  bool _isFollowed = false;
+  PubStatsModel? _pubStats;
+  List<PubHero>? _pubHero;
 
   @override
   void initState() {
     super.initState();
 
-    _fetchUserProfileById(widget.userId!);
+    _fetchUserProfileById(widget.userId);
 
-    // _gameService.getPubLatestUpdates(pubId: widget.userId!);
+    _checkPubFollowed();
+
+    _getPubStats();
+
+    _getPubHero();
+  }
+
+  Future<void> _getPubHero() async {
+    try {
+      final pubHero = await _gameService.getPubHero(pubId: widget.userId);
+      setState(
+        () => _pubHero = pubHero.data,
+      );
+    } catch (e) {
+      debugPrint("Error getting pub stats: $e");
+    }
+  }
+
+  Future<void> _getPubStats() async {
+    try {
+      final pubStats =
+          await _gameService.getPublisherStats(userId: widget.userId);
+      setState(
+        () => _pubStats = pubStats,
+      );
+    } catch (e) {
+      debugPrint("Error getting pub stats: $e");
+    }
+  }
+
+  Future<void> _checkPubFollowed() async {
+    try {
+      final status =
+          await _userService.checkIsPubFollowed(userId: widget.userId);
+      setState(
+        () => _isFollowed = status.isFollowing ?? false,
+      );
+    } catch (e) {
+      debugPrint("Error checking follow status: $e");
+    }
   }
 
   Future<void> _fetchUserProfileById(String userId) async {
@@ -63,6 +110,27 @@ class _PublisherProfilePageState extends State<PublisherProfilePage> {
         });
       }
       debugPrint('Error fetching profile by ID: $e');
+    }
+  }
+
+  Future<void> _handleFollowBtn() async {
+    try {
+      setState(() => _checkingFollow = true);
+      if (_isFollowed) {
+        await _userService.unFollowPub(userId: widget.userId);
+      } else {
+        await _userService.followPub(userId: widget.userId);
+      }
+
+      Notifier.show(context,
+          '${_userProfile?.user.display_name ?? "Publisher"} ${_isFollowed ? 'unfollowed' : 'followed'} successfully');
+
+      await _checkPubFollowed();
+    } catch (e) {
+      Notifier.show(context,
+          'Error ${_isFollowed ? 'unfollow' : 'following'} ${_userProfile?.user.display_name ?? "Publisher"}');
+    } finally {
+      setState(() => _checkingFollow = false);
     }
   }
 
@@ -143,15 +211,24 @@ class _PublisherProfilePageState extends State<PublisherProfilePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           PublisherHeader(
-            backgroundImages: [
-              'https://xstrela-alpha.s3.us-east-1.amazonaws.com/images/temp/DP_IMAGE_URL/PNG/8005f2f1-6d23-4521-84d4-91f16ac200ca',
-              'https://xstrela-alpha.s3.us-east-1.amazonaws.com/images/temp/DP_IMAGE_URL/PNG/8005f2f1-6d23-4521-84d4-91f16ac200ca',
-            ],
+            backgroundImages: _pubHero
+                    ?.map((hero) => hero.heroImageUrl)
+                    .whereType<String>()
+                    .toList() ??
+                [],
+
+            // backgroundImages: const [
+            //   'https://picsum.photos/id/237/536/354',
+            //   'https://picsum.photos/seed/picsum/536/354',
+            //   'https://picsum.photos/id/1084/536/354?grayscale',
+            //   'https://picsum.photos/id/1060/536/354?blur=2',
+            //   'https://picsum.photos/id/870/536/354?grayscale&blur=2',
+            // ],
             followersCount: '1.4k',
-            gamesCount: "16",
+            gamesCount: _pubStats?.gamesCount.toString() ?? '0',
             publisherCircularLogoUrl: _userProfile?.user.dp_url,
             publisherNameArtUrl: _userProfile?.user.cover_image_url,
-            upcomingEventsCount: '12',
+            upcomingEventsCount: _pubStats?.upcomingEvents.toString() ?? '0',
             isVerified: _userProfile?.user.is_verified,
           ),
 
@@ -168,14 +245,17 @@ class _PublisherProfilePageState extends State<PublisherProfilePage> {
                 Row(
                   children: [
                     PrimaryButton(
-                      text: "Follow",
-                      onPressed: () {},
+                      text: _isFollowed ? 'Following' : 'Follow',
+                      onPressed: () {
+                        _handleFollowBtn();
+                      },
                       height: 92,
                       width: 400,
                       borderRadius: 12,
                       fontSize: 40,
                       backgroundColor: buttonBg,
                       borderColor: textColor,
+                      isLoading: _checkingFollow,
                     ),
                     SizedBox(width: SizeUtils.pxToDp(context, 80)),
                     const ImageThumbnail(
@@ -188,7 +268,7 @@ class _PublisherProfilePageState extends State<PublisherProfilePage> {
                     ),
                     SizedBox(width: SizeUtils.pxToDp(context, 19)),
                     Text(
-                      "86 Friends Follow Studio 369",
+                      "86 Friends Follow Studio ${_userProfile?.user.display_name}",
                       style: TextStyle(
                         fontSize: FontUtils.pxToSp(context, 48),
                         color: textColor2,
@@ -246,17 +326,19 @@ class _PublisherProfilePageState extends State<PublisherProfilePage> {
                   cardsPerView: UIConstants.defaultCardsPerView,
                   heading: 'Latest Updates',
                   sectionHeight: 420,
-                  items: games,
-                  cardBuilder: (context, game, width, index) {
+                  handleApiCall: (page) async {
+                    return _gameService.getPubLatestUpdates(
+                        pubId: widget.userId, page: page);
+                  },
+                  cardBuilder: (context, update, width, index) {
                     return VideoCard(
-                        thumbnailUrl:
-                            'https://xstrela-alpha.s3.us-east-1.amazonaws.com/gdb-phynd/publisher-page-tv-screen/game-genre-action/metal-slug-awakening/metal-slug-awakening.jpg',
-                        videoUrl:
-                            'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+                        thumbnailUrl: update.imageUrl,
+                        videoUrl: update.videoUrl,
                         height: 227,
-                        timeAgo: '12 hours ago',
+                        timeAgo:
+                            timeago.format(DateTime.parse(update.updatedAt!)),
                         duration: '12:00',
-                        title: 'New Trailer for Marvel Rivals',
+                        title: update.title,
                         publisherAvatarUrl:
                             'https://xstrela-alpha.s3.us-east-1.amazonaws.com/images/temp/DP_IMAGE_URL/PNG/8005f2f1-6d23-4521-84d4-91f16ac200ca',
                         isVerified: true,

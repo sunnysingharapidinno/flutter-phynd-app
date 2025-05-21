@@ -46,7 +46,7 @@ class PlayCard extends StatelessWidget {
           color: theme.get('cardBg'),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: theme.get('borderColor') ?? Colors.transparent,
+            color: theme.get('borderColor'),
             width: 1,
           ),
         ),
@@ -111,7 +111,7 @@ class PlayCard extends StatelessWidget {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: theme.get('primary')?.withOpacity(0.9),
+                      color: theme.get('primary').withOpacity(0.9),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
@@ -137,8 +137,8 @@ class PlayCard extends StatelessWidget {
                       begin: Alignment.bottomCenter,
                       end: Alignment.topCenter,
                       colors: [
-                        theme.get('cardBg')!.withOpacity(0.9),
-                        theme.get('cardBg')!.withOpacity(0.6),
+                        theme.get('cardBg').withOpacity(0.9),
+                        theme.get('cardBg').withOpacity(0.6),
                         Colors.transparent,
                       ],
                       stops: const [0.4, 0.8, 1.0],

@@ -38,8 +38,28 @@ class ImageThumbnail extends StatelessWidget {
             width: resolvedWidth,
             height: resolvedHeight,
             fit: fit ?? BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => _errorPlaceholder(
-                context, resolvedWidth, resolvedHeight, resolvedRadius),
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+
+              return SizedBox(
+                width: resolvedWidth,
+                height: resolvedHeight,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            (loadingProgress.expectedTotalBytes ?? 1)
+                        : null,
+                    strokeWidth: 2,
+                  ),
+                ),
+              );
+            },
+            errorBuilder: (context, error, stackTrace) {
+              debugPrint('error: $error $imageUrl');
+              return _errorPlaceholder(
+                  context, resolvedWidth, resolvedHeight, resolvedRadius);
+            },
           )
         : Image.asset(
             imageUrl ?? '',

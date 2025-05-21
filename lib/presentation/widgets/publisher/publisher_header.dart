@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:phynd_app/core/constants/app_images.dart';
 import 'package:phynd_app/core/utils/app_theme.dart';
@@ -31,23 +32,33 @@ class PublisherHeader extends StatefulWidget {
 }
 
 class _PublisherHeaderState extends State<PublisherHeader> {
-  final PageController _pageController = PageController();
+  late final PageController _pageController;
   int _currentPage = 0;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
-    _pageController.addListener(() {
-      if (_pageController.page?.round() != _currentPage) {
-        setState(() {
-          _currentPage = _pageController.page!.round();
-        });
+    _pageController = PageController();
+    _startAutoPlay();
+  }
+
+  void _startAutoPlay() {
+    _timer = Timer.periodic(const Duration(seconds: 3), (Timer timer) {
+      if (_pageController.hasClients && widget.backgroundImages.isNotEmpty) {
+        _currentPage = (_currentPage + 1) % widget.backgroundImages.length;
+        _pageController.animateToPage(
+          _currentPage,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
       }
     });
   }
 
   @override
   void dispose() {
+    _timer?.cancel();
     _pageController.dispose();
     super.dispose();
   }
@@ -57,7 +68,7 @@ class _PublisherHeaderState extends State<PublisherHeader> {
     final theme = Theme.of(context).extension<AppTheme>();
     final bgColor = theme?.get('bgColor');
     final dotActiveColor = theme?.get('primary');
-    final dotInactiveColor = Colors.grey[600] ?? Colors.grey;
+    final dotInactiveColor = theme?.get('text');
 
     return SizedBox(
       height: SizeUtils.pxToDp(context, 565),
@@ -66,6 +77,11 @@ class _PublisherHeaderState extends State<PublisherHeader> {
           PageView.builder(
             controller: _pageController,
             itemCount: widget.backgroundImages.length,
+            onPageChanged: (index) {
+              setState(() {
+                _currentPage = index;
+              });
+            },
             itemBuilder: (context, index) {
               return ImageThumbnail(
                 imageUrl: widget.backgroundImages[index],
@@ -74,6 +90,27 @@ class _PublisherHeaderState extends State<PublisherHeader> {
                 fit: BoxFit.cover,
               );
             },
+          ),
+          Positioned(
+            bottom: SizeUtils.pxToDp(context, 100),
+            right: SizeUtils.pxToDp(context, 100),
+            child: Row(
+              children: List.generate(
+                widget.backgroundImages.length,
+                (index) => Container(
+                  margin: EdgeInsets.symmetric(
+                      horizontal: SizeUtils.pxToDp(context, 10)),
+                  width: SizeUtils.pxToDp(context, 16),
+                  height: SizeUtils.pxToDp(context, 16),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _currentPage == index
+                        ? dotActiveColor
+                        : dotInactiveColor,
+                  ),
+                ),
+              ),
+            ),
           ),
           Positioned.fill(
             child: Container(
@@ -106,34 +143,34 @@ class _PublisherHeaderState extends State<PublisherHeader> {
               ),
             ),
           ),
-          if (widget.backgroundImages.length > 1)
-            Positioned(
-              top: SizeUtils.pxToDp(context, 20),
-              left: 0,
-              right: 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List<Widget>.generate(widget.backgroundImages.length,
-                    (index) {
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 150),
-                    margin: EdgeInsets.symmetric(
-                        horizontal: SizeUtils.pxToDp(context, 4)),
-                    height: SizeUtils.pxToDp(context, 8),
-                    width: _currentPage == index
-                        ? SizeUtils.pxToDp(context, 24)
-                        : SizeUtils.pxToDp(context, 8),
-                    decoration: BoxDecoration(
-                      color: _currentPage == index
-                          ? dotActiveColor
-                          : dotInactiveColor,
-                      borderRadius:
-                          BorderRadius.circular(SizeUtils.pxToDp(context, 4)),
-                    ),
-                  );
-                }),
-              ),
-            ),
+          // if (widget.backgroundImages.length > 1)
+          //   Positioned(
+          //     top: SizeUtils.pxToDp(context, 20),
+          //     left: 0,
+          //     right: 0,
+          //     child: Row(
+          //       mainAxisAlignment: MainAxisAlignment.center,
+          //       children: List<Widget>.generate(widget.backgroundImages.length,
+          //           (index) {
+          //         return AnimatedContainer(
+          //           duration: const Duration(milliseconds: 150),
+          //           margin: EdgeInsets.symmetric(
+          //               horizontal: SizeUtils.pxToDp(context, 4)),
+          //           height: SizeUtils.pxToDp(context, 8),
+          //           width: _currentPage == index
+          //               ? SizeUtils.pxToDp(context, 24)
+          //               : SizeUtils.pxToDp(context, 8),
+          //           decoration: BoxDecoration(
+          //             color: _currentPage == index
+          //                 ? dotActiveColor
+          //                 : dotInactiveColor,
+          //             borderRadius:
+          //                 BorderRadius.circular(SizeUtils.pxToDp(context, 4)),
+          //           ),
+          //         );
+          //       }),
+          //     ),
+          //   ),
           Positioned(
             bottom: SizeUtils.pxToDp(context, 64),
             left: SizeUtils.pxToDp(context, 56),

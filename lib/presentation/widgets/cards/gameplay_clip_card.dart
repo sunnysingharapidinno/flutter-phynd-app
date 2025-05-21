@@ -31,7 +31,6 @@ class GameplayClipCard extends StatefulWidget {
 
 class _GameplayClipCardState extends State<GameplayClipCard> {
   final FocusNode _focusNode = FocusNode();
-  bool _isHovered = false;
 
   @override
   void initState() {

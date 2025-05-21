@@ -8,11 +8,15 @@ import 'package:phynd_app/core/enums/player_profile_section_type.dart';
 import 'package:phynd_app/core/utils/api_service.dart';
 import 'package:phynd_app/data/models/payload/game_payload_model.dart';
 import 'package:phynd_app/data/models/response/favorite_content_model.dart';
+import 'package:phynd_app/data/models/response/game_follow_model.dart';
 import 'package:phynd_app/data/models/response/game_list_model.dart';
 import 'package:phynd_app/data/models/response/game_model.dart';
 import 'package:phynd_app/data/models/response/like_follow_model.dart';
 import 'package:phynd_app/data/models/response/pagination_model.dart';
 import 'package:phynd_app/data/models/response/player_profile_game.dart';
+import 'package:phynd_app/data/models/response/pub_hero_model.dart';
+import 'package:phynd_app/data/models/response/pub_latest_update_model.dart';
+import 'package:phynd_app/data/models/response/pub_stats_model.dart';
 import 'package:phynd_app/data/models/response/saved_event_model.dart';
 import 'package:phynd_app/data/models/response/pub_featured_game_model.dart';
 import 'package:phynd_app/data/models/response/pub_genre_model.dart';
@@ -536,7 +540,7 @@ class GameService {
     }
   }
 
-  Future<void> getPubLatestUpdates({
+  Future<Paginated<PubLatestUpdate>> getPubLatestUpdates({
     int page = 1,
     int limit = AppConfig.pageLimit,
     required String pubId,
@@ -553,15 +557,90 @@ class GameService {
 
       final data = jsonDecode(response.body);
 
-      debugPrint('getPubLatestUpdates: ${data}');
+      final List<PubLatestUpdate> pubLatestList = (data['data'] as List)
+          .map((genreJson) => PubLatestUpdate.fromJson(genreJson))
+          .toList();
 
-      // final List<PubGenre> genreList = (data['data'] as List)
-      //     .map((genreJson) => PubGenre.fromJson(genreJson))
-      //     .toList();
-
-      // return Paginated(count: data['total'] as int, data: genreList);
+      return Paginated(count: data['total'] as int, data: pubLatestList);
     } catch (e) {
       throw Exception('Invalid response format getPubLatestUpdates: $e');
+    }
+  }
+
+  Future<Paginated<PubHero>> getPubHero({
+    int page = 1,
+    int limit = AppConfig.pageLimit,
+    required String pubId,
+  }) async {
+    try {
+      final response = await api.get(
+        ServerAPIEndpoints.getPubLatestUpdates.replaceAll('{id}', pubId),
+        queryParams: {
+          'page': page.toString(),
+          'limit': limit.toString(),
+        },
+        auth: true,
+      );
+
+      final data = jsonDecode(response.body);
+
+      final List<PubHero> pubHeroList = (data['data'] as List)
+          .map((genreJson) => PubHero.fromJson(genreJson))
+          .toList();
+
+      return Paginated(count: data['total'] as int, data: pubHeroList);
+    } catch (e) {
+      throw Exception('Invalid response format getPubLatestUpdates: $e');
+    }
+  }
+
+  Future<Paginated<GameFollow>> getGameFollowers({
+    int page = 1,
+    int limit = AppConfig.pageLimit,
+    String? search,
+  }) async {
+    try {
+      final response = await api.get(
+        ServerAPIEndpoints.getGameFollowers,
+        queryParams: {
+          'page': page.toString(),
+          'limit': limit.toString(),
+          'search': search,
+        },
+        auth: true,
+      );
+
+      final data = jsonDecode(response.body);
+
+      final List<GameFollow> gameFollowList = (data['data'] as List)
+          .map((gameJson) => GameFollow.fromJson(gameJson))
+          .toList();
+      debugPrint('getGameFollowers: ${data}');
+      return Paginated(count: data['total'] as int, data: gameFollowList);
+    } catch (e) {
+      throw Exception('Invalid response format getGameFollowers: $e');
+    }
+  }
+
+  Future<PubStatsModel> getPublisherStats({
+    required String userId,
+  }) async {
+    try {
+      final response = await api.get(
+        ServerAPIEndpoints.getPubStats,
+        queryParams: {
+          'user_id': userId,
+        },
+        auth: true,
+      );
+
+      final data = jsonDecode(response.body);
+
+      debugPrint('getPublisherStats: ${data}');
+
+      return PubStatsModel.fromJson(data);
+    } catch (e) {
+      throw Exception('Invalid response format getPublisherStats: $e');
     }
   }
 }

@@ -181,4 +181,11 @@ class ServerAPIEndpoints {
   static const String getPubFeaturedGame = 'api/v1/users/pub-featured-games';
   static const String getPubGameGenre = 'api/v1/users/pub-game-genres';
   static const String getPubLatestUpdates = 'api/v1/users/media-section/{id}';
+  static const String getGameFollowers = 'api/v1/users/game/follow';
+  static const String getPubFollowers = 'api/v1/me/get-followings';
+  static const String followPub = 'api/v1/me/follow-user';
+  static const String unFollowPub = 'api/v1/me/unfollow-user';
+  static const String checkPubFollow = 'api/v1/me/check-follow';
+  static const String getPubStats = 'api/v1/pub/game/me/stats';
+  static const String getPubHero = 'api/v1/users/hero-section/{id}';
 }
