@@ -3,10 +3,19 @@ import 'package:phynd_app/core/constants/ui_constants.dart';
 import 'package:phynd_app/data/services/game_service.dart';
 import 'package:phynd_app/presentation/widgets/cards/clip_card/game_clip_card.dart';
 import 'package:phynd_app/presentation/widgets/carousel/carousel_row.dart';
+import 'package:phynd_app/presentation/screens/library_page/models/hero_data.dart';
 
 class FavoriteGameSection extends StatefulWidget {
   final GameService? gameService;
-  const FavoriteGameSection({super.key, this.gameService});
+  final Function(HeroData) onHover;
+  final VoidCallback onHoverExit;
+
+  const FavoriteGameSection({
+    super.key, 
+    this.gameService,
+    required this.onHover,
+    required this.onHoverExit,
+  });
 
   @override
   State<FavoriteGameSection> createState() => _FavoriteGameState();
@@ -34,13 +43,31 @@ class _FavoriteGameState extends State<FavoriteGameSection> {
         );
       },
       cardBuilder: (context, game, width, index) {
-        return GameClipCard(
-          thumbnailUrl: game.imageUrl ?? '',
-          videoUrl: game.trailerUrl ?? '',
-          title: game.title ?? '',
-          rating: game.rating ?? 0.0,
-          maxRating: 5,
-          esrbRatingImageUrl: game.esrbRatingUrl ?? '',
+        return MouseRegion(
+          onEnter: (_) {
+            widget.onHover(HeroData(
+              imageUrl: game.imageUrl ?? '',
+              videoUrl: game.trailerUrl ?? '',
+              gameTextImg: game.imageUrl ?? '',
+              releaseYear: '2024',
+              companyName: game.companyName ?? '',
+              esrb: game.esrbRatingUrl ?? '',
+              friendsCount: 0,
+              onlineCount: 0,
+              gameTitle: game.title ?? '',
+            ));
+          },
+          onExit: (_) {
+            widget.onHoverExit();
+          },
+          child: GameClipCard(
+            thumbnailUrl: game.imageUrl ?? '',
+            videoUrl: game.trailerUrl ?? '',
+            title: game.title ?? '',
+            rating: game.rating ?? 0.0,
+            maxRating: 5,
+            esrbRatingImageUrl: game.esrbRatingUrl ?? '',
+          ),
         );
       },
     );
