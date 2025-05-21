@@ -2,12 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:phynd_app/core/utils/size_utils.dart';
 import 'package:phynd_app/presentation/widgets/hero_game_badge.dart';
 import 'package:phynd_app/presentation/widgets/image_video.dart';
+import 'package:phynd_app/presentation/screens/library_page/models/hero_data.dart';
 
 class LibraryHero extends StatelessWidget {
-  const LibraryHero({super.key});
+  final HeroData heroData;
+
+  
+  const LibraryHero({
+    super.key,
+    required this.heroData,
+  });
 
   @override
   Widget build(BuildContext context) {
+    print('heroData: ${heroData.gameTitle}');
     return Container(
       height: SizeUtils.pxToDp(context, 565),
       width: double.infinity,
@@ -15,12 +23,9 @@ class LibraryHero extends StatelessWidget {
       child: Stack(
         children: [
           // ImageVideo at the background, with full width and height
-          const ImageVideo(
-            imageUrl:
-                'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
-            videoUrl:
-                'https://cdn.pixabay.com/video/2025/04/29/275633_large.mp4',
-
+          ImageVideo(
+            imageUrl: heroData.imageUrl,
+            videoUrl: heroData.videoUrl,
             width: double.infinity, // Ensuring full width
             height: double.infinity, // Ensuring full height
           ),
@@ -46,8 +51,18 @@ class LibraryHero extends StatelessWidget {
             child: IntrinsicWidth(
               child: IntrinsicHeight(
                 child: HeroGameBadge(
+                  gameTextImg: heroData.gameTextImg,
+                  releaseYear: heroData.releaseYear,
+                  publisherName: (heroData.companyName != null && heroData.companyName!.isNotEmpty) 
+                      ? heroData.companyName! 
+                      : "Unknown Company",
+                  esrb: heroData.esrb,
+                  friendsCount: heroData.friendsCount,
+                  onlineCount: heroData.onlineCount,
                   onPlayPressed: () {},
                   onLearnMorePressed: () {},
+                  showGameTitle: true,
+                  gameTitle: heroData.gameTitle,
                 ),
               ),
             ),

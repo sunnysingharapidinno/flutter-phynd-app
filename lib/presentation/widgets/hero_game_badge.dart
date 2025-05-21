@@ -18,7 +18,8 @@ class HeroGameBadge extends StatelessWidget {
   final String? esrb;
   final int? friendsCount;
   final int? onlineCount;
-
+  final bool showGameTitle;
+  final String? gameTitle;
   const HeroGameBadge({
     super.key,
     this.onPlayPressed,
@@ -30,6 +31,8 @@ class HeroGameBadge extends StatelessWidget {
     this.esrb,
     this.friendsCount,
     this.onlineCount,
+    this.showGameTitle = true,
+    this.gameTitle,
   });
 
   @override
@@ -46,13 +49,23 @@ class HeroGameBadge extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        ImageThumbnail(
-          imageUrl: gameTextImg ??
-              'https://www.forgottenplayland.com/_next/image?url=%2Fassets%2Flogo.webp&w=640&q=75',
-          height: 146,
-          fit: BoxFit.contain,
-          width: 380,
-        ),
+
+        (showGameTitle && (gameTextImg == null || gameTextImg!.isEmpty))
+            ? Text(
+                gameTitle ?? 'Game Title',
+                style: TextStyle(
+                  fontSize: FontUtils.pxToSp(context, 56),
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                ),
+              )
+            : ImageThumbnail(
+                imageUrl: gameTextImg ??
+                    'https://www.forgottenplayland.com/_next/image?url=%2Fassets%2Flogo.webp&w=640&q=75',
+                height: 146,
+                fit: BoxFit.contain,
+                width: 380,
+              ),
         SizedBox(height: SizeUtils.pxToDp(context, 3)),
         // Info Row
         Row(
